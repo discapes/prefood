@@ -20,11 +20,13 @@
 			</picture>
 		</span>
 
-		to your new<br />SvelteKit app
+		to <a href="https://miikat.dev"><b>Miika</b></a>'s<br />totally cool <br /><span
+			class="tracking-widest">webapp</span
+		>
 	</h1>
 
-	<h2>
-		try editing <strong>src/routes/index.svelte</strong>
+	<h2 class=" border-b border-black flex gap-3">
+		Here's a <b class="tracking-[8px]">counter:</b>
 	</h2>
 
 	<Counter />

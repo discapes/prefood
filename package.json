@@ -33,9 +33,13 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@aws-sdk/client-dynamodb": "^3.142.0",
+		"@aws-sdk/util-dynamodb": "^3.142.0",
 		"@fontsource/fira-mono": "^4.5.0",
 		"cookie": "^0.4.1",
 		"postgres": "^3.2.4",
-		"prettier-plugin-svelte": "^2.7.0"
+		"prettier-plugin-svelte": "^2.7.0",
+		"sass": "^1.54.3",
+		"stripe": "^10.0.0"
 	}
 }

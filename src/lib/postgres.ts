@@ -7,7 +7,7 @@ const sql = postgres({
 	username: PG_USER,
 	password: PG_PASSWORD,
 	database: 'pizzapp',
-	max_lifetime: '10',
+	max_lifetime: 10
 });
 
 export default sql;

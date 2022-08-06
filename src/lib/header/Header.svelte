@@ -5,7 +5,7 @@
 	const listedPages = [
 		{ path: '/', name: 'Home' },
 		{ path: '/about', name: 'About' },
-		{ path: '/todos', name: 'Todos' },
+		// { path: '/todos', name: 'Todos' },
 		{ path: '/restaurants', name: 'Restaurants' }
 	];
 </script>
@@ -33,7 +33,11 @@
 		</svg>
 	</nav>
 
-	<div class="corner">
+	<div class="corner flex justify-start items-end">
+		<button
+			class="w-5/6 h-5/6 rounded-bl darkmodetoggle"
+			on:click={() => document.body.classList.toggle('dark')}
+		/>
 		<!-- TODO put something else here? github link? -->
 	</div>
 </header>
@@ -66,7 +70,7 @@
 	nav {
 		display: flex;
 		justify-content: center;
-		--background: rgba(255, 255, 255, 0.7);
+		--background: var(--header-color);
 	}
 
 	svg {

@@ -14,12 +14,16 @@
 	export let restaurants: Restaurant[] = [];
 </script>
 
-<section class="flex justify-center">
+<svelte:head>
+	<title>Restaurants - pizzapp</title>
+</svelte:head>
+
+<section class="flex justify-center p-10">
 	<ol class="flex gap-3">
 		{#each restaurants as res (res.slug)}
-			<a sveltekit:prefetch href={`restaurants/${res.slug}`}>
-				<li class="text-xl block bg-white/80 hover:bg-white rounded p-5">{res.name}</li>
-			</a>
+			<li class="block btn p-5 hover:underline">
+				<a class="btn" sveltekit:prefetch href={`restaurants/${res.slug}`}> {res.name}</a>
+			</li>
 		{/each}
 	</ol>
 </section>

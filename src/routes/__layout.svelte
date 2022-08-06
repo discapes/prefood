@@ -1,17 +1,22 @@
 <script lang="ts">
 	import Header from '$lib/header/Header.svelte';
-	import '../app.css';
+	import '../theme.css';
+	import '../classes.css';
 </script>
 
-<Header />
+<div class="flex flex-col min-h-[100vh]">
+	<Header />
 
-<main>
-	<slot />
-</main>
+	<main class="grow flex flex-col">
+		<slot />
+	</main>
 
-<footer>
-	<p>visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to learn SvelteKit</p>
-</footer>
+	<footer>
+		<p class="border border-black dark:border-white p-3">
+			made with <a href="https://kit.svelte.dev">sveltekit</a>
+		</p>
+	</footer>
+</div>
 
 <style>
 	main {
