@@ -1,12 +1,13 @@
-import { PG_PASSWORD, PG_HOST } from '$env/static/private';
+import { PG_PASSWORD, PG_HOST, PG_USER } from '$env/static/private';
 import postgres from 'postgres';
 
 const sql = postgres({
 	host: PG_HOST,
 	port: 5432,
-	username: 'postgres',
+	username: PG_USER,
 	password: PG_PASSWORD,
-	database: 'pizzapp'
+	database: 'pizzapp',
+	max_lifetime: '10',
 });
 
 export default sql;
