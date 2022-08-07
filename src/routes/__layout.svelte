@@ -1,18 +1,39 @@
+<script context="module">
+	export const prerender = true;
+</script>
+
 <script lang="ts">
 	import Header from '$lib/header/Header.svelte';
+	import { onMount, setContext } from 'svelte';
+	import { writable } from 'svelte/store';
+	import type { Writable } from 'svelte/store';
 	import '../theme.css';
-	import '../classes.css';
+	import '../classes.scss';
+
+	let darkmode: Writable<boolean | null> = writable(null);
+	setContext('darkmode', darkmode);
+
+	onMount(() => {
+		$darkmode = localStorage.getItem('darkmode') == 'true';
+		if ($darkmode) document.body.classList.add('dark');
+		else document.body.classList.remove('dark');
+	});
+	function darkmodetoggle() {
+		document.body.classList.toggle('dark');
+		$darkmode = document.body.classList.contains('dark');
+		localStorage.setItem('darkmode', $darkmode.toString());
+	}
 </script>
 
 <div class="flex flex-col min-h-[100vh]">
-	<Header />
+	<Header on:darkmodetoggle={darkmodetoggle} />
 
 	<main class="grow flex flex-col">
 		<slot />
 	</main>
 
 	<footer>
-		<p class="border border-black dark:border-white p-3">
+		<p class="border border-black/30 dark:border-white/40 p-3 rounded">
 			made with <a href="https://kit.svelte.dev">sveltekit</a>
 		</p>
 	</footer>

@@ -2,7 +2,6 @@
 	// return {
 	// 	cahce: "no cache, invalidate this manually and refresh? or do swr?"??;
 	// }
-	export const prerender = false;
 </script>
 
 <script lang="ts">
@@ -19,10 +18,14 @@
 </svelte:head>
 
 <section class="flex justify-center p-10">
-	<ol class="flex gap-3">
+	<ol class="flex gap-10">
 		{#each restaurants as res (res.slug)}
-			<li class="block btn p-5 hover:underline">
-				<a class="btn" sveltekit:prefetch href={`restaurants/${res.slug}`}> {res.name}</a>
+			<li class="block btn scale">
+				<a class="nolink" sveltekit:prefetch href={`restaurants/${res.slug}`}>
+					<div class="btn m-2">
+						<span class="text-4xl m-2">{res.name}</span>
+					</div>
+				</a>
 			</li>
 		{/each}
 	</ol>

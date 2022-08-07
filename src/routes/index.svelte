@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-	// export const prerender = true;
+	export const prerender = true;
 </script>
 
 <script lang="ts">
@@ -16,7 +16,7 @@
 		<span class="welcome">
 			<picture>
 				<source srcset="svelte-welcome.webp" type="image/webp" />
-				<img src="svelte-welcome.png" alt="Welcome" />
+				<img src="svelte-welcome.png" alt="" />
 			</picture>
 		</span>
 
@@ -25,7 +25,7 @@
 		>
 	</h1>
 
-	<h2 class=" border-b border-black flex gap-3">
+	<h2 class=" border-b border-black dark:border-white flex gap-3">
 		Here's a <b class="tracking-[8px]">counter:</b>
 	</h2>
 

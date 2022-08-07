@@ -2,6 +2,7 @@
 	import type { Load } from './__types';
 
 	export const load: Load = ({ error, status }) => {
+		console.error(error);
 		return {
 			props: {
 				status,

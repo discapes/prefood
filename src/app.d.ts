@@ -16,3 +16,7 @@ declare namespace App {
 
 	// interface Stuff {}
 }
+
+declare global {
+	const Stripe: any;
+}

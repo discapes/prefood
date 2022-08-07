@@ -7,7 +7,7 @@
 	left: 50%;
 	font-family: 'Oswald', sans-serif;
 	font-style: italic;
-	overflow: hidden;
+	overflow: visible;
 }
 
 .glitch {
@@ -41,23 +41,6 @@
 	animation: noise-2 20s linear infinite alternate-reverse, glitch 5s 5s infinite;
 }
 
-// .glitch::after {
-//     background: rgb(12 74 110);
-// }
-
-// .glitch::before {
-//     background: rgb(12 74 110);
-// }
-
-// @keyframes glitch {
-//     1%{
-//       transform: rotateX(10deg) skewX(90deg);
-//     }
-//     2%{
-//       transform: rotateX(0deg) skewX(0deg);
-//     }
-//   }
-
 @keyframes noise-1 {
 	$steps: 30;
 
@@ -81,29 +64,6 @@
 		}
 	}
 }
-
-// .scanlines {
-// 	overflow: hidden;
-// 	mix-blend-mode: difference;
-// }
-
-// .scanlines::before {
-// 	content: '';
-// 	position: absolute;
-// 	width: 100%;
-// 	height: 90%;
-// 	top: 0;
-// 	left: 0;
-
-// 	background: repeating-linear-gradient(
-// 		to bottom,
-// 		transparent 0%,
-// 		rgba(255, 255, 255, 0.05) 0.5%,
-// 		transparent 1%
-// 	);
-
-// 	animation: fudge 7s ease-in-out alternate infinite;
-// }
 
 @keyframes fudge {
 	from {

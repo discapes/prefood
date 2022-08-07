@@ -41,6 +41,10 @@
 		border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 		margin: 1rem 0;
 	}
+	:global(.dark) .counter {
+		border-top: 1px solid rgba(255, 255, 255, 0.9) !important;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.9) !important;
+	}
 
 	.counter button {
 		width: 2em;
@@ -56,7 +60,7 @@
 	}
 
 	.counter button:hover {
-		background-color: var(--secondary-color);
+		background-color: var(--button-color);
 	}
 
 	svg {

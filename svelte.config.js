@@ -13,7 +13,7 @@ const config = {
 		adapter: adapter(),
 
 		prerender: {
-			default: true
+			default: false
 		},
 
 		// Override http methods in the Todo forms

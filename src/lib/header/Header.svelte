@@ -1,19 +1,21 @@
 <script>
 	import { page } from '$app/stores';
+	import { createEventDispatcher } from 'svelte';
 	import logo from './svelte-logo.svg';
 
+	const dispatch = createEventDispatcher();
 	const listedPages = [
 		{ path: '/', name: 'Home' },
-		{ path: '/about', name: 'About' },
+		{ path: '/m4m', name: 'M4M' },
 		// { path: '/todos', name: 'Todos' },
 		{ path: '/restaurants', name: 'Restaurants' }
 	];
 </script>
 
 <header>
-	<div class="corner">
-		<a href="https://kit.svelte.dev">
-			<img src={logo} alt="SvelteKit" />
+	<div class="corner inline-flex justify-end items-end">
+		<a class="w-5/6 h-5/6" href="https://kit.svelte.dev">
+			<img class="w-full h-full" src={logo} alt="SvelteKit" />
 		</a>
 	</div>
 
@@ -33,16 +35,30 @@
 		</svg>
 	</nav>
 
-	<div class="corner flex justify-start items-end">
+	<div class="corner inline-flex justify-start items-end">
 		<button
 			class="w-5/6 h-5/6 rounded-bl darkmodetoggle"
-			on:click={() => document.body.classList.toggle('dark')}
+			on:click={() => dispatch('darkmodetoggle')}
 		/>
-		<!-- TODO put something else here? github link? -->
 	</div>
 </header>
 
 <style>
+	.darkmodetoggle {
+		background-image: url('/moon.png');
+		background-size: contain;
+		background-repeat: no-repeat;
+		filter: invert(100%);
+		background-position: center left;
+	}
+
+	:global(.dark) .darkmodetoggle {
+		background: url('/sun.png');
+		background-repeat: no-repeat;
+		background-size: contain;
+		background-position: center left;
+	}
+
 	header {
 		display: flex;
 		justify-content: space-between;
@@ -53,18 +69,8 @@
 		height: 3em;
 	}
 
-	.corner a {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		width: 100%;
-		height: 100%;
-	}
-
 	.corner img {
-		width: 2em;
-		height: 2em;
-		object-fit: contain;
+		object-position: center right;
 	}
 
 	nav {
