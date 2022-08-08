@@ -23,6 +23,12 @@
 		border: 1px solid #424353;
 	}
 }
+.dark button.cont:hover:enabled {
+	filter: brightness(130%);
+}
+button.cont:hover:enabled {
+	filter: brightness(94%);
+}
 
 .scale {
 	transition: all 0.2s ease-in-out;

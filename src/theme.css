@@ -11,7 +11,7 @@
 }
 
 * {
-	transition: color 0.2s linear;
+	transition: color 0.1s linear;
 }
 
 body {
@@ -128,6 +128,7 @@ input[type='checkbox'] {
 	margin: 0;
 	display: grid;
 	place-content: center;
+	cursor: pointer;
 }
 
 input[type='checkbox']::before {

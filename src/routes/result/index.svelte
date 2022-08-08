@@ -6,6 +6,7 @@
 	import Banner from '$lib/Banner.svelte';
 	import { PUBLIC_STRIPE_KEY } from '$env/static/public';
 	import { onMount } from 'svelte';
+	import { loadStripe } from '@stripe/stripe-js';
 
 	let title: string = '...';
 	let subtitle: string = '';
@@ -16,8 +17,10 @@
 		const clientSecret = params.get('payment_intent_client_secret');
 		if (!clientSecret) return { status: 400 };
 
-		const stripe = new globalThis.Stripe(PUBLIC_STRIPE_KEY, { apiVersion: '2022-08-01' });
+		const stripe = await loadStripe(PUBLIC_STRIPE_KEY, { apiVersion: '2022-08-01' });
+		if (!stripe) throw new Error("Couldn't load stripe!");
 		const { paymentIntent } = await stripe.retrievePaymentIntent(clientSecret);
+		if (!paymentIntent) throw new Error("Couldn't retrieve paymentintent");
 
 		({ title, subtitle } = getMessage(paymentIntent.status));
 
@@ -39,7 +42,6 @@
 <svelte:head>
 	<title>{title}</title>
 	<meta name="description" content={subtitle} />
-	<script src="https://js.stripe.com/v3/"></script>
 </svelte:head>
 
 <Banner {title} {subtitle} />

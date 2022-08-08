@@ -16,5 +16,12 @@ module.exports = {
 		browser: true,
 		es2017: true,
 		node: true
-	}
+	},
+	overrides: [
+		{
+			rules: {
+				'max-len': '150'
+			}
+		}
+	]
 };

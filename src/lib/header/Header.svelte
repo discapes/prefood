@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { page } from '$app/stores';
 	import { createEventDispatcher } from 'svelte';
 	import logo from './svelte-logo.svg';
@@ -7,7 +7,8 @@
 	const listedPages = [
 		{ path: '/', name: 'Home' },
 		{ path: '/m4m', name: 'M4M' },
-		// { path: '/todos', name: 'Todos' },
+		{ path: '/account', name: 'Account' },
+		{ path: '/orders', name: 'Orders' },
 		{ path: '/restaurants', name: 'Restaurants' }
 	];
 </script>
@@ -23,7 +24,7 @@
 		<svg viewBox="0 0 2 3" aria-hidden="true">
 			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
 		</svg>
-		<ul>
+		<ul class="flex flex-col py-2 rounded-b-xl gap-1 sm:flex-row sm:py-0 sm:rounded-none">
 			{#each listedPages as listedPage}
 				<li class:active={$page.url.pathname === listedPage.path}>
 					<a sveltekit:prefetch href={listedPage.path}>{listedPage.name}</a>
@@ -36,10 +37,7 @@
 	</nav>
 
 	<div class="corner inline-flex justify-start items-end">
-		<button
-			class="w-5/6 h-5/6 rounded-bl darkmodetoggle"
-			on:click={() => dispatch('darkmodetoggle')}
-		/>
+		<button class="w-5/6 h-5/6 rounded-bl darkmodetoggle" on:click={() => dispatch('darkmodetoggle')} />
 	</div>
 </header>
 
@@ -91,9 +89,7 @@
 
 	ul {
 		position: relative;
-		padding: 0;
-		margin: 0;
-		height: 3em;
+		/* height: 3em; */
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -113,10 +109,15 @@
 		width: 0;
 		height: 0;
 		position: absolute;
-		top: 0;
+		top: -5px;
 		left: calc(50% - var(--size));
 		border: var(--size) solid transparent;
 		border-top: var(--size) solid var(--accent-color);
+	}
+	@media (min-width: 640px) {
+		li.active::before {
+			top: 0;
+		}
 	}
 
 	nav a {

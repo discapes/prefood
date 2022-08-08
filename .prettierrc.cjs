@@ -2,7 +2,7 @@ module.exports = {
 	useTabs: true,
 	singleQuote: true,
 	trailingComma: 'none',
-	printWidth: 100,
+	printWidth: 150,
 	plugins: [require('prettier-plugin-svelte')],
 	overrides: [
 		{

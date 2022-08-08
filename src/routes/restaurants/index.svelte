@@ -5,10 +5,8 @@
 </script>
 
 <script lang="ts">
-	type Restaurant = {
-		name: string;
-		slug: string;
-	};
+	import type { Restaurant } from 'src/types/types';
+	import { fly } from 'svelte/transition';
 
 	export let restaurants: Restaurant[] = [];
 </script>
@@ -17,11 +15,11 @@
 	<title>Restaurants - pizzapp</title>
 </svelte:head>
 
-<section class="flex justify-center p-10">
-	<ol class="flex gap-10">
-		{#each restaurants as res (res.slug)}
+<section in:fly={{ duration: 200, y: 200 }} class="flex justify-center p-10">
+	<ol class="flex gap-10 flex-wrap">
+		{#each restaurants as res (res.name)}
 			<li class="block btn scale">
-				<a class="nolink" sveltekit:prefetch href={`restaurants/${res.slug}`}>
+				<a class="nolink" sveltekit:prefetch href={`restaurants/${res.name}`}>
 					<div class="btn m-2">
 						<span class="text-4xl m-2">{res.name}</span>
 					</div>

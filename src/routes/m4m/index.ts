@@ -1,7 +1,7 @@
 import type { RequestHandler } from '@sveltejs/kit';
-import { getPublicStripe, getSecretStripe } from '$lib/stripe';
+import { getSecretStripe } from '$lib/stripe';
 
-export const GET: RequestHandler = async ({ params }) => {
+export const GET: RequestHandler = async () => {
 	const stripe = getSecretStripe();
 	const paymentIntent = await stripe.paymentIntents.create({
 		amount: 100,

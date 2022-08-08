@@ -15,6 +15,8 @@
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
 		"@types/cookie": "^0.5.1",
+		"@types/google.accounts": "^0.0.2",
+		"@types/uuid": "^8.3.4",
 		"@typescript-eslint/eslint-plugin": "^5.27.0",
 		"@typescript-eslint/parser": "^5.27.0",
 		"autoprefixer": "^10.4.8",
@@ -34,12 +36,16 @@
 	"type": "module",
 	"dependencies": {
 		"@aws-sdk/client-dynamodb": "^3.142.0",
+		"@aws-sdk/lib-dynamodb": "^3.145.0",
 		"@aws-sdk/util-dynamodb": "^3.142.0",
 		"@fontsource/fira-mono": "^4.5.0",
+		"@stripe/stripe-js": "^1.35.0",
 		"cookie": "^0.4.1",
+		"google-auth-library": "^8.1.1",
 		"postgres": "^3.2.4",
 		"prettier-plugin-svelte": "^2.7.0",
 		"sass": "^1.54.3",
-		"stripe": "^10.0.0"
+		"stripe": "^10.0.0",
+		"uuid": "^8.3.2"
 	}
 }

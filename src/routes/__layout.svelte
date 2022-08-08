@@ -13,11 +13,6 @@
 	let darkmode: Writable<boolean | null> = writable(null);
 	setContext('darkmode', darkmode);
 
-	onMount(() => {
-		$darkmode = localStorage.getItem('darkmode') == 'true';
-		if ($darkmode) document.body.classList.add('dark');
-		else document.body.classList.remove('dark');
-	});
 	function darkmodetoggle() {
 		document.body.classList.toggle('dark');
 		$darkmode = document.body.classList.contains('dark');
@@ -26,9 +21,14 @@
 </script>
 
 <div class="flex flex-col min-h-[100vh]">
+	<script>
+		$darkmode = localStorage.getItem('darkmode') == 'true';
+		if ($darkmode) document.body.classList.add('dark');
+		else document.body.classList.remove('dark');
+	</script>
 	<Header on:darkmodetoggle={darkmodetoggle} />
 
-	<main class="grow flex flex-col">
+	<main class="grow flex flex-col items-center">
 		<slot />
 	</main>
 

@@ -2,46 +2,35 @@
 	import { PUBLIC_STRIPE_KEY } from '$env/static/public';
 	import { getContext, onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type { Writable } from 'svelte/store';
+	import type { Unsubscriber, Writable } from 'svelte/store';
 	import Slider from '$lib/Slider.svelte';
 	import { beforeNavigate } from '$app/navigation';
+	import { loadStripe, type Stripe, type StripeElements, type StripePaymentElement } from '@stripe/stripe-js';
 
 	const darkmode: Writable<boolean> = getContext('darkmode');
 	export let clientSecret: string;
 
-	let paymentElement: any;
-	let elements: any;
-	let stripe: any;
-	let stripeScript: HTMLScriptElement;
-	let paymentIntentID: any;
-	let unsubFromDarkmode: any;
+	let paymentElement: StripePaymentElement;
+	let elements: StripeElements;
+	let stripe: Stripe;
+	let paymentIntentID: string;
+	let unsubFromDarkmode: Unsubscriber;
 
 	let buttonVisible = false;
 	let buttonLoading = true;
 	let euros = 1;
 
-	onMount(() => {
-		if (globalThis.Stripe != undefined) {
-			stripeLoaded();
-		} else {
-			stripeScript.onload = () => {
-				stripeLoaded();
-			};
-		}
+	onMount(async () => {
+		stripe = (await loadStripe(PUBLIC_STRIPE_KEY, { apiVersion: '2022-08-01' }))!;
+		if (!stripe) throw new Error("Couldn't load stripe!");
+		stripe.retrievePaymentIntent(clientSecret).then((pi) => (paymentIntentID = pi.paymentIntent!.id));
+		createElements(document.body.classList.contains('dark'));
 	});
 
 	beforeNavigate(() => {
 		if (paymentElement) paymentElement.destroy();
 		if (unsubFromDarkmode) unsubFromDarkmode();
 	});
-
-	async function stripeLoaded() {
-		stripe = new globalThis.Stripe(PUBLIC_STRIPE_KEY, { apiVersion: '2022-08-01' });
-		stripe
-			.retrievePaymentIntent(clientSecret)
-			.then((pi) => (paymentIntentID = pi.paymentIntent.id));
-		createElements(document.body.classList.contains('dark'));
-	}
 
 	async function updateAmount() {
 		buttonLoading = true;
@@ -64,7 +53,7 @@
 
 		const appearance = {
 			theme: dark ? 'night' : 'stripe'
-		};
+		} as const;
 		elements = stripe.elements({ appearance, clientSecret });
 		paymentElement = elements.create('payment');
 		paymentElement.mount('#paymentElement');
@@ -105,7 +94,6 @@
 </svelte:head>
 
 <div class="flex flex-col justify-center items-center grow">
-	<script bind:this={stripeScript} src="https://js.stripe.com/v3/"></script>
 	<div>
 		{#if buttonVisible}
 			<div in:fade={{ duration: 1000 }} class="my-8 flex items-center">
@@ -115,12 +103,7 @@
 		{/if}
 		<div id="paymentElement" class="mb-9 outline-none" />
 		{#if buttonVisible}
-			<button
-				disabled={buttonLoading}
-				in:fade={{ duration: 1000 }}
-				on:click={pay}
-				class="tracking-widest"
-			>
+			<button disabled={buttonLoading} in:fade={{ duration: 1000 }} on:click={pay} class="tracking-widest">
 				{#if buttonLoading}
 					<div class="m4mspinner" />
 				{:else}
