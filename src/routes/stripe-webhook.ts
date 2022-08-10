@@ -1,8 +1,6 @@
-import ddb from '$lib/ddb';
 import type { RequestHandler } from '@sveltejs/kit';
-import Stripe from 'stripe';
 
-export const POST: RequestHandler = async (e) => {
+export const POST: RequestHandler = async () => {
 	/*
 		TODO
 		elsewhere: set the webhook to here

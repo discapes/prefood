@@ -21,9 +21,9 @@ export function randomElem<T>(array: T[]) {
 
 /**
  * sends a request to the specified url from a form. this will change the window location.
- * @param {string} path the path to send the post request to
- * @param {object} params the parameters to add to the url
- * @param {string} [method=post] the method to use on the form
+ * param {string} path the path to send the post request to
+ * param {object} params the parameters to add to the url
+ * param {string} [method=post] the method to use on the form
  */
 
 export function post(path: string, params: Record<string, string>, method = 'post') {
@@ -46,7 +46,7 @@ export function post(path: string, params: Record<string, string>, method = 'pos
 	form.submit();
 }
 
-export function inputValidator(node: HTMLInputElement, val: any) {
+export function inputValidator(node: HTMLInputElement, _val: any) {
 	let check = false;
 	return {
 		update(val: any) {

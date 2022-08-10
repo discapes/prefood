@@ -16,6 +16,7 @@
 		"@sveltejs/kit": "next",
 		"@types/cookie": "^0.5.1",
 		"@types/google.accounts": "^0.0.2",
+		"@types/serviceworker": "^0.0.50",
 		"@types/uuid": "^8.3.4",
 		"@typescript-eslint/eslint-plugin": "^5.27.0",
 		"@typescript-eslint/parser": "^5.27.0",
@@ -37,7 +38,6 @@
 	"dependencies": {
 		"@aws-sdk/client-dynamodb": "^3.142.0",
 		"@aws-sdk/lib-dynamodb": "^3.145.0",
-		"@aws-sdk/util-dynamodb": "^3.142.0",
 		"@fontsource/fira-mono": "^4.5.0",
 		"@stripe/stripe-js": "^1.35.0",
 		"cookie": "^0.4.1",

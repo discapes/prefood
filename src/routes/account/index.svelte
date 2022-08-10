@@ -6,7 +6,8 @@
 	export let userData: User;
 	let width: number = 0;
 
-	function signOut() {
+	async function signOut() {
+		await fetch('/account/logout', { method: 'POST' });
 		document.cookie = 'sessionID=; Max-Age=0;';
 		document.cookie = 'userID=; Max-Age=0;';
 		location.reload();

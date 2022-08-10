@@ -1,6 +1,5 @@
 import { getItem } from '$lib/ddb.js';
-import { slugToName } from '$lib/util';
-import type { MenuItem, Restaurant } from 'src/types/types';
+import type { Restaurant } from 'src/types/types';
 import type { RequestHandler } from './__types';
 
 export const GET: RequestHandler = async ({ params }) => {
