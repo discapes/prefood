@@ -11,7 +11,7 @@
     - [ ] githubid as index key
   - [ ] email as index key, link all identification methods
 - [ ] limit sessionIDs
-- [ ] describe database schema somewhere
+- [x] describe database schema somewhere
 - [ ] stripe webhook
   - [ ] send receipt
 - [ ] serviceworker
