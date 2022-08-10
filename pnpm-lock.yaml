@@ -14,7 +14,7 @@ specifiers:
   '@typescript-eslint/eslint-plugin': ^5.27.0
   '@typescript-eslint/parser': ^5.27.0
   autoprefixer: ^10.4.8
-  cookie: ^0.4.1
+  cookie: ^0.5.0
   eslint: ^8.16.0
   eslint-config-prettier: ^8.5.0
   eslint-plugin-svelte3: ^4.0.0
@@ -36,10 +36,10 @@ specifiers:
 
 dependencies:
   '@aws-sdk/client-dynamodb': 3.142.0
-  '@aws-sdk/lib-dynamodb': 3.145.0_2bytdghdovk6lt4szbiygkehyq
+  '@aws-sdk/lib-dynamodb': 3.145.0_i2dguq5yoavbjqq6riwih43m2i
   '@fontsource/fira-mono': 4.5.8
   '@stripe/stripe-js': 1.35.0
-  cookie: 0.4.2
+  cookie: 0.5.0
   google-auth-library: 8.1.1
   postgres: 3.2.4
   prettier-plugin-svelte: 2.7.0_o3ioganyptcsrh6x4hnxvjkpqi
@@ -387,7 +387,7 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /@aws-sdk/lib-dynamodb/3.145.0_2bytdghdovk6lt4szbiygkehyq:
+  /@aws-sdk/lib-dynamodb/3.145.0_i2dguq5yoavbjqq6riwih43m2i:
     resolution: {integrity: sha512-8w5cEbeDYzvJtnlBIT6H41+NDe2XG0OGOrYr5ZFbCRlPwX1sPW7FAx6jhqgUvEAhi15MLh5kVaDwjK1w1k8prw==}
     engines: {node: '>= 12.0.0'}
     peerDependencies:
@@ -396,6 +396,8 @@ packages:
       '@aws-sdk/types': ^3.0.0
     dependencies:
       '@aws-sdk/client-dynamodb': 3.142.0
+      '@aws-sdk/smithy-client': 3.142.0
+      '@aws-sdk/types': 3.127.0
       '@aws-sdk/util-dynamodb': 3.145.0
       tslib: 2.4.0
     dev: false
@@ -1393,8 +1395,8 @@ packages:
     resolution: {integrity: sha512-ty/fTekppD2fIwRvnZAVdeOiGd1c7YXEixbgJTNzqcxJWKQnjJ/V1bNEEE6hygpM3WjwHFUVK6HTjWSzV4a8sQ==}
     dev: true
 
-  /cookie/0.4.2:
-    resolution: {integrity: sha512-aSWTXFzaKWkvHO1Ny/s+ePFpvKsPnjc551iI41v3ny/ow6tBG5Vd+FuqGNhh1LxOmVzOlGUriIlOaokOvhaStA==}
+  /cookie/0.5.0:
+    resolution: {integrity: sha512-YZ3GUyn/o8gfKJlnlX7g7xq4gyO6OSuhGPKaaGssGB2qgDUS0gPgtTvoyZLTt9Ab6dC4hfc9dV5arkvc/OCmrw==}
     engines: {node: '>= 0.6'}
     dev: false
 
