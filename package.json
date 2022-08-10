@@ -40,7 +40,7 @@
 		"@aws-sdk/lib-dynamodb": "^3.145.0",
 		"@fontsource/fira-mono": "^4.5.0",
 		"@stripe/stripe-js": "^1.35.0",
-		"cookie": "^0.4.1",
+		"cookie": "^0.5.0",
 		"google-auth-library": "^8.1.1",
 		"postgres": "^3.2.4",
 		"prettier-plugin-svelte": "^2.7.0",
