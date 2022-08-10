@@ -24,6 +24,7 @@
   - [ ] add tags
   - [x] add readme
   - [x] add license and copyright
+  - [x] create dev branch
 
 ## [0.0.6] 2022-08-10
 
