@@ -10,7 +10,7 @@
   - [ ] add GitHub authentication
     - [ ] githubid as index key
   - [ ] email as index key, link all identification methods
-- [ ] limit sessionIDs
+- [x] limit sessionIDs
 - [ ] describe database schema somewhere
 - [ ] stripe webhook
   - [ ] send receipt

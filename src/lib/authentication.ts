@@ -31,9 +31,14 @@ export async function createOrUpdateAccount({ sessionID, userID, payload }: { se
 			':email': payload.email,
 			':name': payload.name,
 			':picture': payload.picture
-		}
+		},
+		ReturnValues: 'UPDATED_NEW'
 	});
-	return await ddb.send(cmd);
+	const res = await ddb.send(cmd);
+	if (res?.Attributes?.sessionIDs.size > 3) {
+		removeSessionID({ sessionID: res!.Attributes!.sessionIDs.values().next(), userID });
+	}
+	return res;
 }
 
 // doesn't autheticate!
