@@ -20,6 +20,7 @@
 - [ ] info page with link to my website
 - [ ] add short cache on cdn (return cache headers on load())
 - [x] add Dependabot with pnpm lockfile updater
+  - [x] re-trigger lockfile updater
 - [x] open repo to public
   - [x] squash commits
   - [x] add tags
