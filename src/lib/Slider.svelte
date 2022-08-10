@@ -53,10 +53,6 @@
 		onDragStart(e);
 	}
 
-	function onHover(e) {
-		thumbHover = thumbHover ? false : true;
-	}
-
 	function onDragStart(e) {
 		// If mouse event add a pointer events shield
 		if (e.type === 'mousedown') document.body.append(mouseEventShield);
@@ -133,8 +129,7 @@
 		if (e.preventDefault) e.preventDefault();
 
 		// Get client's x cord either touch or mouse
-		const clientX =
-			e.type === 'touchmove' || e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+		const clientX = e.type === 'touchmove' || e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
 
 		calculateNewValue(clientX);
 	}
@@ -184,6 +179,7 @@
 	>
 		<div class="range__track" bind:this={container}>
 			<div class="range__track--highlighted" bind:this={progressBar} />
+			<!-- svelte-ignore a11y-mouse-events-have-key-events -->
 			<div
 				class="range__thumb"
 				class:range__thumb--holding={holding}
@@ -264,16 +260,11 @@
 		margin-top: -8px;
 		transition: box-shadow 100ms;
 		user-select: none;
-		box-shadow: var(
-			--thumb-boxshadow,
-			0 1px 1px 0 rgba(0, 0, 0, 0.14),
-			0 0px 2px 1px rgba(0, 0, 0, 0.2)
-		);
+		box-shadow: var(--thumb-boxshadow, 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 0px 2px 1px rgba(0, 0, 0, 0.2));
 	}
 
 	.range__thumb--holding {
-		box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 2px 1px rgba(0, 0, 0, 0.2),
-			0 0 0 6px var(--thumb-holding-outline, rgba(113, 119, 250, 0.3));
+		box-shadow: 0 1px 1px 0 rgba(0, 0, 0, 0.14), 0 1px 2px 1px rgba(0, 0, 0, 0.2), 0 0 0 6px var(--thumb-holding-outline, rgba(113, 119, 250, 0.3));
 	}
 
 	.range__tooltip {

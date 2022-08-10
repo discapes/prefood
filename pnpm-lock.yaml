@@ -3,13 +3,13 @@ lockfileVersion: 5.4
 specifiers:
   '@aws-sdk/client-dynamodb': ^3.142.0
   '@aws-sdk/lib-dynamodb': ^3.145.0
-  '@aws-sdk/util-dynamodb': ^3.142.0
   '@fontsource/fira-mono': ^4.5.0
   '@stripe/stripe-js': ^1.35.0
   '@sveltejs/adapter-auto': next
   '@sveltejs/kit': next
   '@types/cookie': ^0.5.1
   '@types/google.accounts': ^0.0.2
+  '@types/serviceworker': ^0.0.50
   '@types/uuid': ^8.3.4
   '@typescript-eslint/eslint-plugin': ^5.27.0
   '@typescript-eslint/parser': ^5.27.0
@@ -37,7 +37,6 @@ specifiers:
 dependencies:
   '@aws-sdk/client-dynamodb': 3.142.0
   '@aws-sdk/lib-dynamodb': 3.145.0_2bytdghdovk6lt4szbiygkehyq
-  '@aws-sdk/util-dynamodb': 3.142.0
   '@fontsource/fira-mono': 4.5.8
   '@stripe/stripe-js': 1.35.0
   cookie: 0.4.2
@@ -53,6 +52,7 @@ devDependencies:
   '@sveltejs/kit': 1.0.0-next.405_svelte@3.49.0+vite@3.0.4
   '@types/cookie': 0.5.1
   '@types/google.accounts': 0.0.2
+  '@types/serviceworker': 0.0.50
   '@types/uuid': 8.3.4
   '@typescript-eslint/eslint-plugin': 5.32.0_iosr3hrei2tubxveewluhu5lhy
   '@typescript-eslint/parser': 5.32.0_qugx7qdu5zevzvxaiqyxfiwquq
@@ -669,13 +669,6 @@ packages:
       tslib: 2.4.0
     dev: false
 
-  /@aws-sdk/util-dynamodb/3.142.0:
-    resolution: {integrity: sha512-imJxJxiZcB50X4/MIe2d4hrKcGPTJQwatbdqp8dpm2NgMzZYp4DMsSPw7J+Q2V2JdmMJ4pPJ2ZKntg/oAnqqJA==}
-    engines: {node: '>= 12.0.0'}
-    dependencies:
-      tslib: 2.4.0
-    dev: false
-
   /@aws-sdk/util-dynamodb/3.145.0:
     resolution: {integrity: sha512-Vj+hJ2s9AsKTZHs0s4v3SmtQdK46C/nUn6XpWXMjXvCcZI5yNRam689+9FspGNGyLosWOMskPQFE0YmjpjIYWQ==}
     engines: {node: '>= 12.0.0'}
@@ -984,6 +977,10 @@ packages:
     resolution: {integrity: sha512-BPdoIt1lfJ6B7rw35ncdwBZrAssjcwzI5LByIrYs+tpXlj/CAkuVdRsgZDdP4lq5EjyWzwxZCqAoFyHKFwp32g==}
     dependencies:
       '@types/node': 18.6.4
+    dev: true
+
+  /@types/serviceworker/0.0.50:
+    resolution: {integrity: sha512-ECID8bzO7aChQrWk3BpJqH6/3Rrzcs7wlFR+AAqMhy0A0zTlVMlNgVniTYp8l72NZZtQ4DETzLen3mpAjypuoA==}
     dev: true
 
   /@types/uuid/8.3.4:

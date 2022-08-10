@@ -4,7 +4,7 @@
 
 <script lang="ts">
 	import Header from '$lib/header/Header.svelte';
-	import { onMount, setContext } from 'svelte';
+	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import type { Writable } from 'svelte/store';
 	import '../theme.css';

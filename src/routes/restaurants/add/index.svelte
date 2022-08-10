@@ -59,7 +59,7 @@
 		<button class="cont" on:click={del}>Delete</button>
 	</div>
 	<div class="flex flex-col gap-3">
-		<label>Menu items:</label>
+		Menu items:
 		{#each menu as item}
 			<div class="flex flex-col gap-1" transition:fly={{ duration: 200 }}>
 				<input class="cont w-full" use:inputValidator={item.name} bind:value={item.name} placeholder="Item name" />

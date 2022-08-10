@@ -6,7 +6,7 @@ import ddb, { getItem } from './ddb';
 export async function authenticate({ sessionID, userID }: { sessionID?: string; userID?: string }) {
 	if (sessionID && userID) {
 		const userData = <User>await getItem('users', { userID });
-		if (userData && userData.sessionIDs.includes(sessionID)) {
+		if (userData && userData.sessionIDs?.has(sessionID)) {
 			return userData;
 		}
 	}
@@ -17,8 +17,8 @@ export async function createOrUpdateAccount({ sessionID, userID, payload }: { se
 	const cmd = new UpdateCommand({
 		TableName: 'users',
 		Key: { userID },
-		UpdateExpression: `SET sessionIDs = list_append(if_not_exists(sessionIDs, :empty_list), :newSessionIDs),
-							payload = if_not_exists(payload, :payload),
+		UpdateExpression: `ADD sessionIDs :newSessionIDs
+							SET	payload = :payload,
 							email = :email,
 							#name = :name,
 							picture = :picture`,
@@ -26,12 +26,24 @@ export async function createOrUpdateAccount({ sessionID, userID, payload }: { se
 			'#name': 'name'
 		},
 		ExpressionAttributeValues: {
-			':newSessionIDs': [sessionID],
+			':newSessionIDs': new Set([sessionID]),
 			':payload': payload,
-			':empty_list': [],
 			':email': payload.email,
 			':name': payload.name,
 			':picture': payload.picture
+		}
+	});
+	return await ddb.send(cmd);
+}
+
+// doesn't autheticate!
+export async function removeSessionID({ sessionID, userID }: { sessionID: string; userID: string }) {
+	const cmd = new UpdateCommand({
+		TableName: 'users',
+		Key: { userID },
+		UpdateExpression: `DELETE sessionIDs :delSessionID`,
+		ExpressionAttributeValues: {
+			':delSessionID': new Set([sessionID])
 		}
 	});
 	return await ddb.send(cmd);

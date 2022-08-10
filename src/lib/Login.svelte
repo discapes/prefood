@@ -23,7 +23,7 @@
 	}
 
 	function onSignIn(response: any) {
-		post('/account', { tokenID: response.credential, rememberMe: rememberMe.toString() });
+		post('/account/login', { tokenID: response.credential, rememberMe: rememberMe.toString() });
 	}
 
 	onMount(async () => {
@@ -33,10 +33,6 @@
 			callback: onSignIn
 		});
 		renderButton();
-		let n = 0;
-		darkmode.subscribe((dark) => {
-			if (n++ > 0) renderButton();
-		});
 	});
 
 	function loadGoogle(): Promise<void> {

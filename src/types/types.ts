@@ -24,7 +24,9 @@ type User = {
 	email: string;
 	picture: string;
 	stripeCustomerID: string;
-	sessionIDs: string[];
+	sessionIDs?: Set<string>;
 };
+
+export type Typify<T> = { [K in keyof T]: Typify<T[K]> };
 
 export type { MenuItem, User, Restaurant, Order };

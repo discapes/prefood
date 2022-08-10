@@ -2,7 +2,7 @@ import { authenticate } from '$lib/authentication';
 import ddb from '$lib/ddb';
 import { QueryCommand } from '@aws-sdk/lib-dynamodb';
 import type { RequestHandler } from '@sveltejs/kit';
-import type { Order } from 'src/types/types';
+import type { Typify, User } from 'src/types/types';
 
 const ORDERS_USERID_KEY = 'personID';
 
@@ -22,7 +22,7 @@ export const GET: RequestHandler = async ({ locals: { userID, sessionID } }) => 
 		if (!orderData) throw new Error(`Internal error: couldn't find order data from ${userID}`);
 		return {
 			body: {
-				userData,
+				userData: <Typify<User>>userData,
 				orders: orderData
 			}
 		};
