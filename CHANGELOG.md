@@ -19,12 +19,11 @@
   - [ ] ssr pages: networkfirst, cache on client for an hour
 - [ ] info page with link to my website
 - [ ] add short cache on cdn (return cache headers on load())
-- [ ] open repo to public
+- [x] open repo to public
   - [x] squash commits
-  - [ ] add tags
+  - [x] add tags
   - [x] add readme
   - [x] add license and copyright
-  - [x] create dev branch
 
 ## [0.0.6] 2022-08-10
 
@@ -132,10 +131,3 @@
 - PostgreSQL connection
 - restaurant and menu pages
 - TailwindCSS
-
-[0.0.6]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.5...v0.0.6
-[0.0.5]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.4...v0.0.5
-[0.0.4]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.3...v0.0.4
-[0.0.3]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.2...v0.0.3
-[0.0.2]: https://github.com/olivierlacan/keep-a-changelog/compare/v0.0.1...v0.0.2
-[0.0.1]: https://github.com/olivierlacan/keep-a-changelog/releases/tag/v0.0.1
