@@ -16,7 +16,7 @@
 		"@sveltejs/kit": "1.0.0-next.426",
 		"@types/cookie": "^0.5.1",
 		"@types/google.accounts": "^0.0.2",
-		"@types/serviceworker": "^0.0.50",
+		"@types/serviceworker": "^0.0.51",
 		"@types/uuid": "^8.3.4",
 		"@typescript-eslint/eslint-plugin": "^5.33.1",
 		"@typescript-eslint/parser": "^5.33.1",
