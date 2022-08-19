@@ -1,15 +1,18 @@
 <script lang="ts">
-	import Login from '$lib/Login.svelte';
-	import type { User } from 'src/types/types';
-	import { fly } from 'svelte/transition';
+	import type { PageData } from "./$types";
+	import Login from "$lib/Login.svelte";
+	import type { User } from "src/types/types";
+	import { fly } from "svelte/transition";
 
-	export let userData: User;
+	export let data: PageData;
+	let userData: User | undefined = data.userData;
+
 	let width: number = 0;
 
 	async function signOut() {
-		await fetch('/account/logout', { method: 'POST' });
-		document.cookie = 'sessionID=; Max-Age=0;';
-		document.cookie = 'userID=; Max-Age=0;';
+		await fetch("/account/logout", { method: "POST" });
+		document.cookie = "sessionID=; Max-Age=0;";
+		document.cookie = "userID=; Max-Age=0;";
 		location.reload();
 	}
 </script>

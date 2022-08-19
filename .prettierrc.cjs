@@ -1,13 +1,13 @@
 module.exports = {
 	useTabs: true,
-	singleQuote: true,
-	trailingComma: 'none',
+	singleQuote: false,
+	trailingComma: "es5",
 	printWidth: 150,
-	plugins: [require('prettier-plugin-svelte')],
+	plugins: [require("prettier-plugin-svelte")],
 	overrides: [
 		{
-			files: '*.svelte',
-			options: { parser: 'svelte' }
-		}
-	]
+			files: "*.svelte",
+			options: { parser: "svelte" },
+		},
+	],
 };

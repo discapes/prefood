@@ -1,11 +1,11 @@
-import { build, files, prerendered, version } from '$service-worker';
+import { build, files, prerendered, version } from "$service-worker";
 
 const IMMUTABLE_CACHE = `immutable`;
 const PRERENDER_CACHE_PREFIX = `prerendered`;
 const PRERENDER_CACHE = `${PRERENDER_CACHE_PREFIX}-${version}`;
 const RUNTIME_CACHE = `runtime`;
 
-self.addEventListener('install', () =>
+self.addEventListener("install", () =>
 	/*e.waitUntil*/ Promise.all([
 		caches.keys().then((cacheList) =>
 			Promise.all(
@@ -36,7 +36,7 @@ self.addEventListener('install', () =>
 								return iCache.delete(oldURL);
 							})
 					)
-				)
+				),
 			])
 		),
 
@@ -44,7 +44,7 @@ self.addEventListener('install', () =>
 
 		(async () => {
 			console.log(`sw installing`);
-		})()
+		})(),
 	])
 );
 

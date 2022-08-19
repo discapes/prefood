@@ -1,6 +1,11 @@
 /* spinner/processing state, errors */
-.m4mspinner, .spinner2, .spinner3, .m4mspinner:before, .m4mspinner:after,
-.spinner3:before, .spinner2:after {
+.m4mspinner,
+.spinner2,
+.spinner3,
+.m4mspinner:before,
+.m4mspinner:after,
+.spinner3:before,
+.spinner2:after {
 	border-radius: 50%;
 }
 
@@ -12,7 +17,9 @@
 	content: "";
 }
 
-.m4mspinner, .spinner2, .spinner3 {
+.m4mspinner,
+.spinner2,
+.spinner3 {
 	color: var(--text-color);
 	font-size: 22px;
 	text-indent: -99999px;
@@ -25,10 +32,11 @@
 }
 
 .m4mspinner {
-	color: white
+	color: white;
 }
 
-.m4mspinner:before, .spinner3:before {
+.m4mspinner:before,
+.spinner3:before {
 	width: 10.4px;
 	height: 20.4px;
 	background: #5469d4;
@@ -39,7 +47,8 @@
 	animation: loading 2s infinite ease 1.5s;
 }
 
-.m4mspinner:after, .spinner2:after {
+.m4mspinner:after,
+.spinner2:after {
 	width: 10.4px;
 	height: 10.2px;
 	background: #5469d4;

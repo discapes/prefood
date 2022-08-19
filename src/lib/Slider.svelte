@@ -1,15 +1,15 @@
 <script>
 	// @ts-nocheck
 
-	import { createEventDispatcher } from 'svelte';
-	import { fly, fade } from 'svelte/transition';
+	import { createEventDispatcher } from "svelte";
+	import { fly, fade } from "svelte/transition";
 
 	// Props
 	export let min = 0;
 	export let max = 100;
 	export let initialValue = 0;
 	export let id = null;
-	export let value = typeof initialValue === 'string' ? parseInt(initialValue) : initialValue;
+	export let value = typeof initialValue === "string" ? parseInt(initialValue) : initialValue;
 
 	// Node Bindings
 	let container = null;
@@ -30,9 +30,9 @@
 
 	// Mouse shield used onMouseDown to prevent any mouse events penetrating other elements,
 	// ie. hover events on other elements while dragging. Especially for Safari
-	const mouseEventShield = document.createElement('div');
-	mouseEventShield.setAttribute('class', 'mouse-over-shield');
-	mouseEventShield.addEventListener('mouseover', (e) => {
+	const mouseEventShield = document.createElement("div");
+	mouseEventShield.setAttribute("class", "mouse-over-shield");
+	mouseEventShield.addEventListener("mouseover", (e) => {
 		e.preventDefault();
 		e.stopPropagation();
 	});
@@ -44,7 +44,7 @@
 	// Allows both bind:value and on:change for parent value retrieval
 	function setValue(val) {
 		value = val;
-		dispatch('change', { value });
+		dispatch("change", { value });
 	}
 
 	function onTrackEvent(e) {
@@ -55,18 +55,18 @@
 
 	function onDragStart(e) {
 		// If mouse event add a pointer events shield
-		if (e.type === 'mousedown') document.body.append(mouseEventShield);
+		if (e.type === "mousedown") document.body.append(mouseEventShield);
 		currentThumb = thumb;
 	}
 
 	function onDragEnd(e) {
 		// If using mouse - remove pointer event shield
-		if (e.type === 'mouseup') {
+		if (e.type === "mouseup") {
 			if (document.body.contains(mouseEventShield)) document.body.removeChild(mouseEventShield);
 			// Needed to check whether thumb and mouse overlap after shield removed
 			if (isMouseInElement(e, thumb)) thumbHover = true;
 		}
-		if (currentThumb) dispatch('dragend');
+		if (currentThumb) dispatch("dragend");
 		currentThumb = null;
 	}
 
@@ -86,14 +86,14 @@
 		if (keydownAcceleration < 50) keydownAcceleration++;
 		let throttled = Math.ceil(keydownAcceleration / 5);
 
-		if (e.key === 'ArrowUp' || e.key === 'ArrowRight') {
+		if (e.key === "ArrowUp" || e.key === "ArrowRight") {
 			if (value + throttled > max || value >= max) {
 				setValue(max);
 			} else {
 				setValue(value + throttled);
 			}
 		}
-		if (e.key === 'ArrowDown' || e.key === 'ArrowLeft') {
+		if (e.key === "ArrowDown" || e.key === "ArrowLeft") {
 			if (value - throttled < min || value <= min) {
 				setValue(min);
 			} else {
@@ -123,13 +123,13 @@
 	// Handles both dragging of touch/mouse as well as simple one-off click/touches
 	function updateValueOnEvent(e) {
 		// touchstart && mousedown are one-off updates, otherwise expect a currentPointer node
-		if (!currentThumb && e.type !== 'touchstart' && e.type !== 'mousedown') return false;
+		if (!currentThumb && e.type !== "touchstart" && e.type !== "mousedown") return false;
 
 		if (e.stopPropagation) e.stopPropagation();
 		if (e.preventDefault) e.preventDefault();
 
 		// Get client's x cord either touch or mouse
-		const clientX = e.type === 'touchmove' || e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+		const clientX = e.type === "touchmove" || e.type === "touchstart" ? e.touches[0].clientX : e.clientX;
 
 		calculateNewValue(clientX);
 	}
@@ -281,7 +281,7 @@
 	}
 
 	.range__tooltip::after {
-		content: '';
+		content: "";
 		display: block;
 		position: absolute;
 		height: 7px;

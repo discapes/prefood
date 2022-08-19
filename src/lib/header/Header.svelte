@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { page } from '$app/stores';
-	import { createEventDispatcher } from 'svelte';
-	import logo from './svelte-logo.svg';
+	import { page } from "$app/stores";
+	import { createEventDispatcher } from "svelte";
+	import logo from "./svelte-logo.svg";
 
 	const dispatch = createEventDispatcher();
 	const listedPages = [
-		{ path: '/', name: 'Home' },
-		{ path: '/m4m', name: 'M4M' },
-		{ path: '/account', name: 'Account' },
-		{ path: '/orders', name: 'Orders' },
-		{ path: '/restaurants', name: 'Restaurants' }
+		{ path: "/", name: "Home" },
+		{ path: "/m4m", name: "M4M" },
+		{ path: "/account", name: "Account" },
+		{ path: "/orders", name: "Orders" },
+		{ path: "/restaurants", name: "Restaurants" },
 	];
 </script>
 
@@ -37,13 +37,13 @@
 	</nav>
 
 	<div class="corner inline-flex justify-start items-end">
-		<button class="w-5/6 h-5/6 rounded-bl darkmodetoggle" on:click={() => dispatch('darkmodetoggle')} />
+		<button class="w-5/6 h-5/6 rounded-bl darkmodetoggle" on:click={() => dispatch("darkmodetoggle")} />
 	</div>
 </header>
 
 <style>
 	.darkmodetoggle {
-		background-image: url('/moon.png');
+		background-image: url("/moon.png");
 		background-size: contain;
 		background-repeat: no-repeat;
 		filter: invert(100%);
@@ -51,7 +51,7 @@
 	}
 
 	:global(.dark) .darkmodetoggle {
-		background: url('/sun.png');
+		background: url("/sun.png");
 		background-repeat: no-repeat;
 		background-size: contain;
 		background-position: center left;
@@ -105,7 +105,7 @@
 
 	li.active::before {
 		--size: 6px;
-		content: '';
+		content: "";
 		width: 0;
 		height: 0;
 		position: absolute;

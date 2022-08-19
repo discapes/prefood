@@ -1,6 +1,6 @@
-import type { RequestHandler } from '@sveltejs/kit';
+import type { Action } from "./$types";
 
-export const POST: RequestHandler = async () => {
+export const POST: Action = async () => {
 	/*
 		TODO
 		elsewhere: set the webhook to here
@@ -10,7 +10,4 @@ export const POST: RequestHandler = async () => {
 		set customer id for userID if needToSetCustomerID
 		far future: trigger web push notification for subscribers
 	 */
-	return {
-		status: 200
-	};
 };

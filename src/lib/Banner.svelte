@@ -10,5 +10,5 @@
 </div>
 
 <style lang="scss">
-	@import '../banner.module.scss';
+	@import "../banner.module.scss";
 </style>

@@ -1,11 +1,7 @@
-<script context="module">
-	export const prerender = true;
-</script>
-
 <script lang="ts">
-	import Banner from '$lib/Banner.svelte';
+	import Banner from "$lib/Banner.svelte";
 
-	let title: string = 'CANCEL';
+	let title: string = "CANCEL";
 	let subtitle: string = "didn't work, try again";
 </script>
 

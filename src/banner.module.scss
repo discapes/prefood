@@ -1,11 +1,11 @@
-@use 'sass:math';
+@use "sass:math";
 
 .container {
 	position: absolute;
 	transform: translate(-50%, -50%);
 	top: 40%;
 	left: 50%;
-	font-family: 'Oswald', sans-serif;
+	font-family: "Oswald", sans-serif;
 	font-style: italic;
 	overflow: visible;
 }

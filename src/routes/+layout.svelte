@@ -1,30 +1,26 @@
-<script context="module">
-	export const prerender = true;
-</script>
-
 <script lang="ts">
-	import Header from '$lib/header/Header.svelte';
-	import { setContext } from 'svelte';
-	import { writable } from 'svelte/store';
-	import type { Writable } from 'svelte/store';
-	import '../theme.css';
-	import '../classes.scss';
+	import Header from "$lib/header/Header.svelte";
+	import { setContext } from "svelte";
+	import { writable } from "svelte/store";
+	import type { Writable } from "svelte/store";
+	import "../theme.css";
+	import "../classes.scss";
 
 	let darkmode: Writable<boolean | null> = writable(null);
-	setContext('darkmode', darkmode);
+	setContext("darkmode", darkmode);
 
 	function darkmodetoggle() {
-		document.body.classList.toggle('dark');
-		$darkmode = document.body.classList.contains('dark');
-		localStorage.setItem('darkmode', $darkmode.toString());
+		document.body.classList.toggle("dark");
+		$darkmode = document.body.classList.contains("dark");
+		localStorage.setItem("darkmode", $darkmode.toString());
 	}
 </script>
 
 <div class="flex flex-col min-h-[100vh]">
 	<script>
-		$darkmode = localStorage.getItem('darkmode') == 'true';
-		if ($darkmode) document.body.classList.add('dark');
-		else document.body.classList.remove('dark');
+		$darkmode = localStorage.getItem("darkmode") == "true";
+		if ($darkmode) document.body.classList.add("dark");
+		else document.body.classList.remove("dark");
 	</script>
 	<Header on:darkmodetoggle={darkmodetoggle} />
 
