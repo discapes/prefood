@@ -9,7 +9,7 @@ specifiers:
   '@sveltejs/kit': 1.0.0-next.426
   '@types/cookie': ^0.5.1
   '@types/google.accounts': ^0.0.2
-  '@types/serviceworker': ^0.0.50
+  '@types/serviceworker': ^0.0.51
   '@types/uuid': ^8.3.4
   '@typescript-eslint/eslint-plugin': ^5.33.1
   '@typescript-eslint/parser': ^5.33.1
@@ -52,7 +52,7 @@ devDependencies:
   '@sveltejs/kit': 1.0.0-next.426_svelte@3.49.0+vite@3.0.9
   '@types/cookie': 0.5.1
   '@types/google.accounts': 0.0.2
-  '@types/serviceworker': 0.0.50
+  '@types/serviceworker': 0.0.51
   '@types/uuid': 8.3.4
   '@typescript-eslint/eslint-plugin': 5.33.1_vsoshirnpb7xw6mr7xomgfas2i
   '@typescript-eslint/parser': 5.33.1_4rv7y5c6xz3vfxwhbrcxxi73bq
@@ -65,7 +65,7 @@ devDependencies:
   svelte: 3.49.0
   svelte-check: 2.8.1_wfbwvhujpq55dwnmdsqpqghtky
   svelte-preprocess: 4.10.7_v47vl5ncx4rolutzzqi3rog55m
-  tailwindcss: 3.1.8
+  tailwindcss: 3.1.8_postcss@8.4.16
   tslib: 2.4.0
   typescript: 4.7.4
   vite: 3.0.9_sass@1.54.4
@@ -993,8 +993,8 @@ packages:
       '@types/node': 18.7.6
     dev: true
 
-  /@types/serviceworker/0.0.50:
-    resolution: {integrity: sha512-ECID8bzO7aChQrWk3BpJqH6/3Rrzcs7wlFR+AAqMhy0A0zTlVMlNgVniTYp8l72NZZtQ4DETzLen3mpAjypuoA==}
+  /@types/serviceworker/0.0.51:
+    resolution: {integrity: sha512-GU4MjqsFAjp5immrhYkgOrGm+qmd6Qzo9oObuv69elswx4nCmLN74kWwXiAFTubI5s1WQJaIcDzy8daEPMIaDA==}
     dev: true
 
   /@types/uuid/8.3.4:
@@ -3054,10 +3054,12 @@ packages:
     resolution: {integrity: sha512-+lmjic1pApJWDfPCpUUTc1m8azDqYCG1JN9YEngrx/hUyIcFJo6VZhj0A1Ai0wqoHcEIuQy+e9tk+4uDgdtsFA==}
     engines: {node: '>= 8'}
 
-  /tailwindcss/3.1.8:
+  /tailwindcss/3.1.8_postcss@8.4.16:
     resolution: {integrity: sha512-YSneUCZSFDYMwk+TGq8qYFdCA3yfBRdBlS7txSq0LUmzyeqRe3a8fBQzbz9M3WS/iFT4BNf/nmw9mEzrnSaC0g==}
     engines: {node: '>=12.13.0'}
     hasBin: true
+    peerDependencies:
+      postcss: ^8.0.9
     dependencies:
       arg: 5.0.2
       chokidar: 3.5.3
