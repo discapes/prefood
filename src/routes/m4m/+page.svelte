@@ -1,14 +1,16 @@
 <script lang="ts">
-	import { PUBLIC_STRIPE_KEY } from '$env/static/public';
-	import { getContext, onMount } from 'svelte';
-	import { fade } from 'svelte/transition';
-	import type { Unsubscriber, Writable } from 'svelte/store';
-	import Slider from '$lib/Slider.svelte';
-	import { beforeNavigate } from '$app/navigation';
-	import { loadStripe, type Stripe, type StripeElements, type StripePaymentElement } from '@stripe/stripe-js';
+	import type { PageData } from "./$types";
+	export let data: PageData;
 
-	const darkmode: Writable<boolean> = getContext('darkmode');
-	export let clientSecret: string;
+	import { PUBLIC_STRIPE_KEY } from "$env/static/public";
+	import { getContext, onMount } from "svelte";
+	import { fade } from "svelte/transition";
+	import type { Unsubscriber, Writable } from "svelte/store";
+	import Slider from "$lib/Slider.svelte";
+	import { beforeNavigate } from "$app/navigation";
+	import { loadStripe, type Stripe, type StripeElements, type StripePaymentElement } from "@stripe/stripe-js";
+
+	const darkmode: Writable<boolean> = getContext("darkmode");
 
 	let paymentElement: StripePaymentElement;
 	let elements: StripeElements;
@@ -21,10 +23,10 @@
 	let euros = 1;
 
 	onMount(async () => {
-		stripe = (await loadStripe(PUBLIC_STRIPE_KEY, { apiVersion: '2022-08-01' }))!;
+		stripe = (await loadStripe(PUBLIC_STRIPE_KEY, { apiVersion: "2022-08-01" }))!;
 		if (!stripe) throw new Error("Couldn't load stripe!");
-		stripe.retrievePaymentIntent(clientSecret).then((pi) => (paymentIntentID = pi.paymentIntent!.id));
-		createElements(document.body.classList.contains('dark'));
+		stripe.retrievePaymentIntent(data.clientSecret).then((pi) => (paymentIntentID = pi.paymentIntent!.id));
+		createElements(document.body.classList.contains("dark"));
 	});
 
 	beforeNavigate(() => {
@@ -35,8 +37,8 @@
 	async function updateAmount() {
 		buttonLoading = true;
 		const res = await fetch(location.href, {
-			method: 'POST',
-			body: JSON.stringify({ paymentIntentID, euros })
+			method: "POST",
+			body: JSON.stringify({ paymentIntentID, euros }),
 		});
 		if (res.status == 200) buttonLoading = false;
 	}
@@ -52,13 +54,13 @@
 		buttonLoading = true;
 
 		const appearance = {
-			theme: dark ? 'night' : 'stripe'
+			theme: dark ? "night" : "stripe",
 		} as const;
-		elements = stripe.elements({ appearance, clientSecret });
-		paymentElement = elements.create('payment');
-		paymentElement.mount('#paymentElement');
+		elements = stripe.elements({ appearance, clientSecret: data.clientSecret });
+		paymentElement = elements.create("payment");
+		paymentElement.mount("#paymentElement");
 		buttonVisible = true;
-		paymentElement.on('ready', () => {
+		paymentElement.on("ready", () => {
 			paymentElement.focus();
 			buttonLoading = false;
 		});
@@ -70,8 +72,8 @@
 			elements,
 			confirmParams: {
 				// Make sure to change this to your payment completion page
-				return_url: location.origin + '/result'
-			}
+				return_url: location.origin + "/result",
+			},
 		});
 
 		// This point will only be reached if there is an immediate error when
@@ -79,7 +81,7 @@
 		// your `return_url`. For some payment methods like iDEAL, your customer will
 		// be redirected to an intermediate site first to authorize the payment, then
 		// redirected to the `return_url`.
-		if (error.type === 'card_error' || error.type === 'validation_error') {
+		if (error.type === "card_error" || error.type === "validation_error") {
 			buttonLoading = false;
 		} else {
 			console.error(error);
@@ -115,7 +117,7 @@
 </div>
 
 <style>
-	@import '../../spinner.module.css';
+	@import "../../spinner.module.css";
 	button {
 		background: #5469d4;
 		font-family: Arial, sans-serif;

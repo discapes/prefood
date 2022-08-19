@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { inputValidator, numberValidator } from '$lib/util';
+	import { inputValidator, numberValidator } from "$lib/util";
 
-	import type { MenuItem, Restaurant } from 'src/types/types';
-	import { fly } from 'svelte/transition';
+	import type { MenuItem, Restaurant } from "src/types/types";
+	import { fly } from "svelte/transition";
 
 	let name: string | undefined;
 	let stars: number | undefined;
@@ -10,29 +10,29 @@
 	let menu: Partial<MenuItem>[] = [{}];
 
 	async function save() {
-		if (!name || typeof stars !== 'number' || typeof reviews !== 'number') return alert('Enter all restaurant fields correctly.');
-		if (!menu.every((i) => i.name && i.image && typeof i.price_cents == 'number')) return alert('Fill all menu fields correctly.');
+		if (!name || typeof stars !== "number" || typeof reviews !== "number") return alert("Enter all restaurant fields correctly.");
+		if (!menu.every((i) => i.name && i.image && typeof i.price_cents == "number")) return alert("Fill all menu fields correctly.");
 
 		const restaurant: Restaurant = {
 			name,
 			stars,
 			reviews,
-			menu: <MenuItem[]>menu
+			menu: <MenuItem[]>menu,
 		};
 
 		const res = await fetch(location.href, {
-			method: 'POST',
-			body: JSON.stringify({ restaurant, action: 'set' })
+			method: "POST",
+			body: JSON.stringify({ restaurant, action: "set" }),
 		});
 		if (res.ok) location.reload();
 		else alert(`Error: ${res.statusText}`);
 	}
 
 	async function del() {
-		if (!name) return alert('Enter restaurant name correctly.');
+		if (!name) return alert("Enter restaurant name correctly.");
 		const res = await fetch(location.href, {
-			method: 'POST',
-			body: JSON.stringify({ name, action: 'delete' })
+			method: "POST",
+			body: JSON.stringify({ name, action: "delete" }),
 		});
 		if (res.ok) location.reload();
 		else alert(`Error: ${res.statusText}`);

@@ -1,18 +1,14 @@
-<script context="module">
-	// return {
-	// 	cache: "1 hour"??;
-	// }
-</script>
-
 <script lang="ts">
-	import type { Restaurant } from 'src/types/types';
-	import { fly } from 'svelte/transition';
+	import type { Restaurant } from "src/types/types";
+	import { fly } from "svelte/transition";
+	import type { PageData } from "./$types";
 
 	type RestaurantWithCheckboxes = Restaurant & {
 		menu: { checked?: boolean }[];
 	};
 
-	export let restaurant: RestaurantWithCheckboxes;
+	export let data: PageData;
+	let restaurant: RestaurantWithCheckboxes = data.restaurant;
 
 	let buttonLoading = false;
 	$: buttonDisabled = restaurant.menu.every((i: any) => !i.checked);
@@ -39,7 +35,7 @@
 							type="checkbox"
 						/>
 						{item.name}
-						<span class="bg-slate-200 dark:bg-neutral-700 -m-1 rounded p-1 mr-1">{(item.price_cents / 100).toFixed(2).replace('.', ',')}&nbsp€</span>
+						<span class="bg-slate-200 dark:bg-neutral-700 -m-1 rounded p-1 mr-1">{(item.price_cents / 100).toFixed(2).replace(".", ",")}&nbsp€</span>
 					</div>
 				</li>
 			{/each}
@@ -52,7 +48,7 @@
 </section>
 
 <style>
-	@import '../../../spinner.module.css';
+	@import "../../../spinner.module.css";
 
 	pre {
 		background-color: rgba(150, 150, 150, 0.1);

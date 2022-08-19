@@ -3,55 +3,55 @@
 </script>
 
 <script lang="ts">
-	import { PUBLIC_GOOGLE_CLIENT_ID } from '$env/static/public';
-	import { post } from '$lib/util';
-	import { getContext, afterUpdate, onMount } from 'svelte';
-	import type { Writable } from 'svelte/store';
+	import { PUBLIC_GOOGLE_CLIENT_ID } from "$env/static/public";
+	import { post } from "$lib/util";
+	import { getContext, afterUpdate, onMount } from "svelte";
+	import type { Writable } from "svelte/store";
 
 	let rememberMe = true;
 	let signInButton: HTMLElement;
-	const darkmode: Writable<boolean | null> = getContext('darkmode');
+	const darkmode: Writable<boolean | null> = getContext("darkmode");
 
 	afterUpdate(renderButton);
 
 	function renderButton() {
 		if (window.google)
 			google.accounts.id.renderButton(signInButton, {
-				type: 'standard',
-				theme: localStorage.getItem('darkmode') == 'true' ? 'filled_blue' : 'outline'
+				type: "standard",
+				theme: localStorage.getItem("darkmode") == "true" ? "filled_blue" : "outline",
 			});
 	}
 
 	function onSignIn(response: any) {
-		post('/account/login', { tokenID: response.credential, rememberMe: rememberMe.toString() });
+		post("/account/login", { tokenID: response.credential, rememberMe: rememberMe.toString() });
 	}
 
 	onMount(async () => {
 		await loadGoogle();
 		google.accounts.id.initialize({
 			client_id: PUBLIC_GOOGLE_CLIENT_ID,
-			callback: onSignIn
+			callback: onSignIn,
 		});
 		renderButton();
 	});
 
 	function loadGoogle(): Promise<void> {
 		return new Promise((resolve, reject) => {
-			const script = document.createElement('script');
+			const script = document.createElement("script");
 			script.src = `https://accounts.google.com/gsi/client`;
 			const headOrBody = document.head || document.body;
 			headOrBody.appendChild(script);
 
-			script.addEventListener('load', () => {
+			script.addEventListener("load", () => {
 				if (window.google) {
 					resolve();
 				} else {
-					reject(new Error('Google is not available'));
+					reject(new Error("Google is not available"));
 				}
 			});
 
-			script.addEventListener('error', () => {
-				reject(new Error('Failed to load Google'));
+			script.addEventListener("error", () => {
+				reject(new Error("Failed to load Google"));
 			});
 		});
 	}

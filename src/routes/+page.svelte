@@ -1,9 +1,5 @@
-<script context="module" lang="ts">
-	export const prerender = true;
-</script>
-
 <script lang="ts">
-	import Counter from '$lib/Counter.svelte';
+	import Counter from "$lib/Counter.svelte";
 </script>
 
 <svelte:head>
@@ -20,9 +16,7 @@
 			</picture>
 		</span>
 
-		to <a href="https://miikat.dev"><b>Miika</b></a>'s<br />totally cool <br /><span
-			class="tracking-widest">webapp</span
-		>
+		to <a href="https://miikat.dev"><b>Miika</b></a>'s<br />totally cool <br /><span class="tracking-widest">webapp</span>
 	</h1>
 
 	<h2 class=" border-b border-black dark:border-white flex gap-3">

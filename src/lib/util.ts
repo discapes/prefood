@@ -26,16 +26,16 @@ export function randomElem<T>(array: T[]) {
  * param {string} [method=post] the method to use on the form
  */
 
-export function post(path: string, params: Record<string, string>, method = 'post') {
+export function post(path: string, params: Record<string, string>, method = "post") {
 	// The rest of this code assumes you are not using a library.
 	// It can be made less verbose if you use one.
-	const form = document.createElement('form');
+	const form = document.createElement("form");
 	form.method = method;
 	form.action = path;
 
 	for (const key in params) {
-		const hiddenField = document.createElement('input');
-		hiddenField.type = 'hidden';
+		const hiddenField = document.createElement("input");
+		hiddenField.type = "hidden";
 		hiddenField.name = key;
 		hiddenField.value = params[key];
 
@@ -52,10 +52,10 @@ export function inputValidator(node: HTMLInputElement, _val: any) {
 		update(val: any) {
 			if (check == false && val) check = true;
 			else if (check) {
-				node.style.outlineColor = val ? '' : 'red';
-				node.style.outlineStyle = val ? '' : 'solid';
+				node.style.outlineColor = val ? "" : "red";
+				node.style.outlineStyle = val ? "" : "solid";
 			}
-		}
+		},
 	};
 }
 
@@ -66,11 +66,11 @@ export function numberValidator(node: HTMLInputElement, val: any) {
 		update(val: any) {
 			if (check == false && val !== initial) check = true;
 			if (check) {
-				const good = typeof val == 'number';
-				node.style.outlineColor = good ? '' : 'red';
-				node.style.outlineStyle = good ? '' : 'solid';
+				const good = typeof val == "number";
+				node.style.outlineColor = good ? "" : "red";
+				node.style.outlineStyle = good ? "" : "solid";
 			}
-		}
+		},
 	};
 }
 
@@ -83,13 +83,13 @@ export function removeElem<T>(arr: T[], elem: T) {
 
 const dialogs: HTMLDivElement[] = [];
 export function dialog(text: string, duration: number, fadeduration: number) {
-	let div = document.createElement('div');
+	let div = document.createElement("div");
 	const offset = dialogs.reduce((prev, cur) => prev + cur.clientHeight + 10, 0) + 10;
 	dialogs.push(div);
-	div.style.top = offset + 'px';
-	div.style.right = '10px';
+	div.style.top = offset + "px";
+	div.style.right = "10px";
 	div.innerText = text;
-	div.classList.add('dialog');
+	div.classList.add("dialog");
 	document.body.appendChild(div);
 	setTimeout(() => (div.style.animation = `fade-out ${fadeduration}s`), duration * 1000);
 	setTimeout(() => {
