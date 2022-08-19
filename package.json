@@ -13,7 +13,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "next",
-		"@sveltejs/kit": "1.0.0-next.426",
+		"@sveltejs/kit": "1.0.0-next.427",
 		"@types/cookie": "^0.5.1",
 		"@types/google.accounts": "^0.0.2",
 		"@types/serviceworker": "^0.0.50",
