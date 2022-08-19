@@ -1,13 +1,13 @@
-import { UpdateCommand } from '@aws-sdk/lib-dynamodb';
-import type { TokenPayload } from 'google-auth-library';
-import type { User } from 'src/types/types';
-import ddb, { getItem } from './ddb';
+import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import type { TokenPayload } from "google-auth-library";
+import type { UnserializableUser, User } from "src/types/types";
+import ddb, { getItem } from "./ddb";
 
 export async function authenticate({ sessionID, userID }: { sessionID?: string; userID?: string }) {
 	if (sessionID && userID) {
-		const userData = <User>await getItem('users', { userID });
+		const userData = <UnserializableUser>await getItem("users", { userID });
 		if (userData && userData.sessionIDs?.has(sessionID)) {
-			return userData;
+			return { ...userData, sessionIDs: [...userData.sessionIDs] } as User;
 		}
 	}
 }
@@ -15,7 +15,7 @@ export async function authenticate({ sessionID, userID }: { sessionID?: string; 
 // doesn't autheticate!
 export async function createOrUpdateAccount({ sessionID, userID, payload }: { sessionID: string; userID: string; payload: TokenPayload }) {
 	const cmd = new UpdateCommand({
-		TableName: 'users',
+		TableName: "users",
 		Key: { userID },
 		UpdateExpression: `ADD sessionIDs :newSessionIDs
 							SET	payload = :payload,
@@ -23,15 +23,15 @@ export async function createOrUpdateAccount({ sessionID, userID, payload }: { se
 							#name = :name,
 							picture = :picture`,
 		ExpressionAttributeNames: {
-			'#name': 'name'
+			"#name": "name",
 		},
 		ExpressionAttributeValues: {
-			':newSessionIDs': new Set([sessionID]),
-			':payload': payload,
-			':email': payload.email,
-			':name': payload.name,
-			':picture': payload.picture
-		}
+			":newSessionIDs": new Set([sessionID]),
+			":payload": payload,
+			":email": payload.email,
+			":name": payload.name,
+			":picture": payload.picture,
+		},
 	});
 	return await ddb.send(cmd);
 }
@@ -39,12 +39,12 @@ export async function createOrUpdateAccount({ sessionID, userID, payload }: { se
 // doesn't autheticate!
 export async function removeSessionID({ sessionID, userID }: { sessionID: string; userID: string }) {
 	const cmd = new UpdateCommand({
-		TableName: 'users',
+		TableName: "users",
 		Key: { userID },
 		UpdateExpression: `DELETE sessionIDs :delSessionID`,
 		ExpressionAttributeValues: {
-			':delSessionID': new Set([sessionID])
-		}
+			":delSessionID": new Set([sessionID]),
+		},
 	});
 	return await ddb.send(cmd);
 }

@@ -1,13 +1,13 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DDB_ACCESS_ID, DDB_ACCESS_KEY } from '$env/static/private';
-import { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
+import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
+import { DDB_ACCESS_ID, DDB_ACCESS_KEY } from "$env/static/private";
+import { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 
 const ddbClient = new DynamoDBClient({
-	region: 'eu-north-1',
+	region: "eu-north-1",
 	credentials: {
 		accessKeyId: DDB_ACCESS_ID,
-		secretAccessKey: DDB_ACCESS_KEY
-	}
+		secretAccessKey: DDB_ACCESS_KEY,
+	},
 });
 
 const marshallOptions = {
@@ -16,12 +16,12 @@ const marshallOptions = {
 	// Whether to remove undefined values while marshalling.
 	removeUndefinedValues: true, // false, by default.
 	// Whether to convert typeof object to map attribute.
-	convertClassInstanceToMap: true // false, by default.
+	convertClassInstanceToMap: true, // false, by default.
 };
 
 const unmarshallOptions = {
 	// Whether to return numbers as a string instead of converting them to native JavaScript numbers.
-	wrapNumbers: false // false, by default.
+	wrapNumbers: false, // false, by default.
 };
 
 const ddb = DynamoDBDocumentClient.from(ddbClient, { unmarshallOptions, marshallOptions });
@@ -41,7 +41,7 @@ export async function getItem(table: string, key: Record<string, PrimaryKey>, pr
 	const cmd = new GetCommand({
 		TableName: table,
 		Key: key,
-		ProjectionExpression: proj
+		ProjectionExpression: proj,
 	});
 
 	const res = await ddb.send(cmd);
@@ -52,8 +52,8 @@ export async function putItem(table: string, item: Record<string, unknown>, cond
 	const cmd = new PutCommand({
 		TableName: table,
 		Item: item,
-		ReturnValues: 'ALL_OLD',
-		ConditionExpression: condition
+		ReturnValues: "ALL_OLD",
+		ConditionExpression: condition,
 	});
 
 	const oldItem = await ddb.send(cmd);
@@ -64,7 +64,7 @@ export async function deleteItem(table: string, key: Record<string, PrimaryKey>)
 	const cmd = new DeleteCommand({
 		TableName: table,
 		Key: key,
-		ReturnValues: 'ALL_OLD'
+		ReturnValues: "ALL_OLD",
 	});
 
 	const res = await ddb.send(cmd);
