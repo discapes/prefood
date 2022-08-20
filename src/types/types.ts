@@ -1,40 +1,47 @@
-type MenuItem = {
+export type MenuItem = {
 	name: string;
 	price_cents: number;
 	image: string;
 };
 
-type Order = {
-	restaurant: string;
-	userID: number;
+export type Order = {
+	restaurantName: string;
+	userID: string;
 	items: MenuItem[];
 	timestamp: number;
 };
 
-type Restaurant = {
+export type Restaurant = {
 	name: string;
 	menu: MenuItem[];
 	stars: number;
 	reviews: number;
 };
 
-type User = {
-	id: number;
+export type User = {
+	userID: string;
+	googleID?: string;
+	githubID?: string;
 	name: string;
 	email: string;
 	picture: string;
-	stripeCustomerID: string;
+	stripeCustomerID?: string;
 	sessionIDs?: string[];
 };
-type UnserializableUser = {
-	id: number;
+
+export type UnserializableUser = {
+	userID: string;
+	googleID?: string;
+	githubID?: string;
 	name: string;
 	email: string;
 	picture: string;
-	stripeCustomerID: string;
+	stripeCustomerID?: string;
 	sessionIDs?: Set<string>;
 };
 
-export type Typify<T> = { [K in keyof T]: Typify<T[K]> };
-
-export type { MenuItem, User, Restaurant, Order, UnserializableUser };
+export type SessionMetadata = {
+	userID: string;
+	restaurantName: string;
+	itemsJSON: string;
+};

@@ -2,10 +2,9 @@ import { authenticate } from "$lib/authentication";
 import ddb from "$lib/ddb";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
-import type { Order, Typify, User } from "src/types/types";
+import type { Order, User } from "src/types/types";
 import type { PageServerLoad } from "./$types";
 
-const ORDERS_USERID_KEY = "personID";
 export const prerender = false;
 
 export const load: PageServerLoad = async ({ locals: { userID, sessionID } }) => {
@@ -17,7 +16,7 @@ export const load: PageServerLoad = async ({ locals: { userID, sessionID } }) =>
 			const orderData = await orderDataPromise;
 			if (!orderData) throw error(500, `couldn't find order data from ${userID}`);
 			return {
-				userData: <Typify<User>>userData,
+				userData: <User>userData,
 				orders: orderData,
 			};
 		}
@@ -26,10 +25,11 @@ export const load: PageServerLoad = async ({ locals: { userID, sessionID } }) =>
 	async function getOrderData(userID: string) {
 		const cmd = new QueryCommand({
 			TableName: "orders",
-			KeyConditionExpression: `${ORDERS_USERID_KEY} = :userID`,
+			KeyConditionExpression: `userID = :userID`,
 			ExpressionAttributeValues: {
 				":userID": userID,
 			},
+			ScanIndexForward: false,
 		});
 		const res = await ddb.send(cmd);
 		return <Order[]>res.Items;

@@ -1,9 +1,9 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import { DDB_ACCESS_ID, DDB_ACCESS_KEY } from "$env/static/private";
+import { DDB_REGION, DDB_ACCESS_ID, DDB_ACCESS_KEY } from "$env/static/private";
 import { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
 
 const ddbClient = new DynamoDBClient({
-	region: "eu-north-1",
+	region: DDB_REGION,
 	credentials: {
 		accessKeyId: DDB_ACCESS_ID,
 		secretAccessKey: DDB_ACCESS_KEY,

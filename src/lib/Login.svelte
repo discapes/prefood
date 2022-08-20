@@ -23,7 +23,7 @@
 	}
 
 	function onSignIn(response: any) {
-		post("/account/login", { tokenID: response.credential, rememberMe: rememberMe.toString() });
+		post("/account/login/google", { tokenID: response.credential, rememberMe: rememberMe.toString() });
 	}
 
 	onMount(async () => {

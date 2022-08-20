@@ -15,6 +15,13 @@ export function shuffle<T>(array: T[]) {
 	return array;
 }
 
+export function formatHHMMSS(date: Date) {
+	let hh = date.getHours();
+	let mm = date.getMinutes();
+	let ss = date.getSeconds();
+	return [hh, mm, ss].map((n) => String(n).padStart(2, "0")).join(":");
+}
+
 export function randomElem<T>(array: T[]) {
 	return array[Math.floor(Math.random() * array.length)];
 }

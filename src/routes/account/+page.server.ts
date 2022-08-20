@@ -1,6 +1,6 @@
 import type { PageServerLoad } from "./$types";
 import { authenticate } from "$lib/authentication";
-import type { Typify, User } from "src/types/types";
+import type { User } from "src/types/types";
 
 export const prerender = false;
 
@@ -9,6 +9,6 @@ export const load: PageServerLoad = async ({ locals: { userID, sessionID } }) =>
 	const userData = await authenticate({ sessionID, userID });
 
 	return {
-		userData: <Typify<User>>userData,
+		userData: <User>userData,
 	};
 };
