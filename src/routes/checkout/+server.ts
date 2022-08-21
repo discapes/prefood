@@ -18,14 +18,12 @@ export const POST: RequestHandler = async ({ url, request, locals: { userID, ses
 	const menuItemsP = getMenuItems(restaurantName, itemNamesFromFormData);
 	const [userData, menuItems] = await Promise.all([userDataP, menuItemsP]);
 
-	if (!userData) throw error(400, "login to order");
-
 	const line_items = getLineItems(restaurantName, menuItems, url.href);
 
 	const metadata: SessionMetadata = {
-		userID: userData.userID,
+		userID: userData?.userID ?? "",
 		restaurantName,
-		linkedCID: userData.stripeCustomerID ?? "",
+		linkedCID: userData?.stripeCustomerID ?? "",
 	};
 
 	const session = await stripe.checkout.sessions.create({
@@ -34,13 +32,13 @@ export const POST: RequestHandler = async ({ url, request, locals: { userID, ses
 		success_url: `${url.origin}/orders`,
 		cancel_url: `${url.origin}/restaurants/${restaurantName}`,
 		allow_promotion_codes: true,
-		customer: userData.stripeCustomerID,
-		customer_email: userData.stripeCustomerID ? undefined : userData.email,
-		customer_creation: userData.stripeCustomerID ? undefined : "always",
+		customer: userData?.stripeCustomerID,
+		customer_email: !userData || userData.stripeCustomerID ? undefined : userData.email,
+		customer_creation: !userData || userData.stripeCustomerID ? undefined : "always",
 		payment_intent_data: {
 			statement_descriptor: restaurantName,
 			statement_descriptor_suffix: `- ${restaurantName}`,
-			setup_future_usage: "on_session",
+			setup_future_usage: userData ? "on_session" : undefined,
 		},
 		metadata,
 	});

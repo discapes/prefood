@@ -13,7 +13,9 @@
 - [ ] limit sessionIDs
 - [x] describe database schema somewhere
 - [ ] stripe webhook
-  - [ ] send receipt
+  - [x] send receipt
+  - [x] create tracking page
+  - [ ] anonymous accounts
   - [x] save customerID
   - [x] create order from line_items
 - [ ] serviceworker

@@ -38,7 +38,7 @@ body.dark {
 
 p {
 	max-width: 30rem;
-	margin: 1rem auto;
+	margin: 0;
 	line-height: 1.35;
 }
 

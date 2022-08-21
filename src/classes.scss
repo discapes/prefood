@@ -40,6 +40,16 @@ button.cont:hover:enabled {
 	}
 }
 
+.smallscale {
+	transition: all 0.1s ease-in-out;
+	&:hover {
+		transform: scale(104%);
+		&:disabled {
+			transform: none;
+		}
+	}
+}
+
 .nolink {
 	color: var(--text-color) !important;
 	&:hover {

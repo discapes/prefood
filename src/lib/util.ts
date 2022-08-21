@@ -1,3 +1,5 @@
+import type { Order } from "src/types/types";
+
 export function shuffle<T>(array: T[]) {
 	let currentIndex = array.length,
 		randomIndex;
@@ -13,6 +15,17 @@ export function shuffle<T>(array: T[]) {
 	}
 
 	return array;
+}
+
+export function getSlugFromOrder(order: Order) {
+	return btoa(order.userID) + "-" + order.timestamp;
+}
+
+export function getDataFromOrderSlug(slug: string) {
+	return {
+		userID: atob(slug.slice(0, slug.indexOf("-"))),
+		timestamp: +slug.slice(slug.indexOf("-") + 1),
+	};
 }
 
 export function formatHHMMSS(date: Date) {

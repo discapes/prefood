@@ -9,7 +9,7 @@ export const prerender = false;
 
 export const load: PageServerLoad = async ({ locals: { userID, sessionID } }) => {
 	if (userID) {
-		let orderDataPromise = getOrderData(userID);
+		let orderDataPromise = getOrdersForUser(userID);
 		const userData = await authenticate({ sessionID, userID });
 
 		if (userData) {
@@ -22,7 +22,7 @@ export const load: PageServerLoad = async ({ locals: { userID, sessionID } }) =>
 		}
 	}
 
-	async function getOrderData(userID: string) {
+	async function getOrdersForUser(userID: string) {
 		const cmd = new QueryCommand({
 			TableName: "orders",
 			KeyConditionExpression: `userID = :userID`,
@@ -32,6 +32,6 @@ export const load: PageServerLoad = async ({ locals: { userID, sessionID } }) =>
 			ScanIndexForward: false,
 		});
 		const res = await ddb.send(cmd);
-		return <Order[]>res.Items;
+		return <Order[] | undefined>res.Items;
 	}
 };
