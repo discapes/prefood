@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { PUBLIC_GOOGLE_CLIENT_ID } from "$env/static/public";
 	import { page } from "$app/stores";
+	import type { LinkAccountButtonOptions, SignInButtonOptions } from "src/types/types";
 
-	export let rememberMe: boolean;
+	export let opts: SignInButtonOptions | LinkAccountButtonOptions;
 
 	$: params = new URLSearchParams({
 		client_id: PUBLIC_GOOGLE_CLIENT_ID,
@@ -11,7 +12,7 @@
 		scope: "profile",
 		state: JSON.stringify({
 			referer: $page.url.href,
-			rememberMe,
+			opts,
 		}),
 	});
 </script>

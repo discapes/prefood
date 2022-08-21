@@ -3,10 +3,18 @@
 ## TODO
 
 - [ ] more authentication options
-  - [ ] show linked identifications on account page
+  - [x] show linked identifications on account page
   - [ ] email authentication
   - [x] GitHub authentication
+  - [ ] checkout state parameter and if its needed to prevent XSRF
+  - [ ] allow changing profile info and authentication methods, and delete account
+  - [ ] cover edge cases
+    - [ ] user tries to link external account thats already linked to an internal account
+    - [ ] make sure email is unique key
+    - [ ] can't create account with email x if email x is already a key
 - [ ] add titles for each page
+- [ ] human readable receipt
+- [ ] don't leak stripe data
 - [ ] view where restaurant owners can change status of orders
 - [ ] serviceworker
   - [ ] Web push API

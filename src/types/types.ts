@@ -47,3 +47,9 @@ export type SessionMetadata = {
 	userID: string;
 	restaurantName: string;
 };
+
+export type SignInButtonOptions = {
+	rememberMe: boolean;
+};
+
+export type LinkAccountButtonOptions = {};

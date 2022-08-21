@@ -18,33 +18,6 @@ export async function authenticate({ sessionID, userID }: { sessionID?: string; 
 	}
 }
 
-export async function linkGoogle({ userID, googleID, g_payload }: { userID: string; googleID: string; g_payload: TokenPayload }) {
-	console.log(`Linking googleID ${googleID} to userID ${userID}`);
-	const cmd = new UpdateCommand({
-		TableName: "users",
-		Key: { userID },
-		UpdateExpression: `SET g_payload = :g_payload, googleID = :googleID`,
-		ExpressionAttributeValues: {
-			":g_payload": g_payload,
-			":googleID": googleID,
-		},
-	});
-	return await ddb.send(cmd);
-}
-
-export async function linkGithub({ userID, githubID }: { userID: string; githubID: string }) {
-	console.log(`Linking githubID ${githubID} to userID ${userID}`);
-	const cmd = new UpdateCommand({
-		TableName: "users",
-		Key: { userID },
-		UpdateExpression: `SET githubID = :githubID`,
-		ExpressionAttributeValues: {
-			":githubID": githubID,
-		},
-	});
-	return await ddb.send(cmd);
-}
-
 export async function createAccount({
 	idFieldName,
 	idValue,
@@ -101,6 +74,19 @@ export async function getUserID({ idFieldName, idValue }: { idFieldName: Identif
 		console.log(`userID ${userID} found`);
 		return userID;
 	}
+}
+
+export async function linkAccount({ idFieldName, idValue, userID }: { idFieldName: IdentificationKeyName; idValue: string; userID: string }) {
+	console.log(`Linking ${idFieldName} ${idValue} to userID ${userID}`);
+	const cmd = new UpdateCommand({
+		TableName: "users",
+		Key: { userID },
+		UpdateExpression: `SET ${idFieldName} = :idValue`,
+		ExpressionAttributeValues: {
+			":idValue": idValue,
+		},
+	});
+	return await ddb.send(cmd);
 }
 
 export async function addNewSessionID({ userID }: { userID: string }) {

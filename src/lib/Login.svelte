@@ -13,8 +13,8 @@
 	<h1 class="mb-0">Sign in</h1>
 
 	<div class="flex gap-3 items font-['Roboto']">
-		<GoogleButton {rememberMe} />
-		<GithubButton {rememberMe} />
+		<GoogleButton opts={{ rememberMe }} />
+		<GithubButton opts={{ rememberMe }} />
 	</div>
 
 	<div class="flex gap-3 items-stretch">

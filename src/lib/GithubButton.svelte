@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { page } from "$app/stores";
 	import { PUBLIC_GITHUB_CLIENT_ID } from "$env/static/public";
+	import type { LinkAccountButtonOptions, SignInButtonOptions } from "src/types/types";
 
-	export let rememberMe: boolean;
+	export let opts: SignInButtonOptions | LinkAccountButtonOptions;
 
 	$: forward_options = JSON.stringify({
 		referer: $page.url.href,
-		rememberMe,
+		opts,
 	});
 	$: redirect_uri = `${$page.url.origin}/account/login/github?options=${forward_options}`;
 </script>
