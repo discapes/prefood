@@ -5,9 +5,9 @@
 
 ### users
 
-| _userID_ | _googleID_? | _githubID_? | _email_ | name   | g_payload?      | picture? | sessionIDs   |
-| -------- | ----------- | ----------- | ------- | ------ | --------------- | -------- | ------------ |
-| string   | string      | string      | string  | string | Map\<K: string> | string   | Set\<string> |
+| _userID_ | _googleID_? | _githubID_? | _email_ | name   | g_payload?      | picture? | sessionIDs   | stripeCustomerID? |
+| -------- | ----------- | ----------- | ------- | ------ | --------------- | -------- | ------------ | ----------------- |
+| string   | string      | string      | string  | string | Map\<K: string> | string   | Set\<string> | string            |
 
 ### restaurant
 

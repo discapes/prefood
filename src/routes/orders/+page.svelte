@@ -34,7 +34,7 @@
 						<div class="flex flex-col gap-1">
 							{#each order.items as item}
 								<p>
-									{item.name} - {(item.price_cents / 100).toFixed(2).replace(".", ",")}&nbsp;€
+									{item.quantity}x {item.description} - {(item.amount_total / 100).toFixed(2).replace(".", ",")}&nbsp;€
 								</p>
 							{/each}
 						</div>

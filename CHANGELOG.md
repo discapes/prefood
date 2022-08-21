@@ -14,6 +14,8 @@
 - [x] describe database schema somewhere
 - [ ] stripe webhook
   - [ ] send receipt
+  - [x] save customerID
+  - [x] create order from line_items
 - [ ] serviceworker
   - [ ] on update popup changelog, reload on close
   - [ ] ssr pages: networkfirst, cache on client for an hour

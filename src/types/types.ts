@@ -1,3 +1,5 @@
+import type Stripe from "stripe";
+
 export type MenuItem = {
 	name: string;
 	price_cents: number;
@@ -7,7 +9,7 @@ export type MenuItem = {
 export type Order = {
 	restaurantName: string;
 	userID: string;
-	items: MenuItem[];
+	items: Stripe.LineItem[];
 	timestamp: number;
 };
 
@@ -41,7 +43,7 @@ export type UnserializableUser = {
 };
 
 export type SessionMetadata = {
+	linkedCID: string;
 	userID: string;
 	restaurantName: string;
-	itemsJSON: string;
 };

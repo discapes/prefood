@@ -3,8 +3,11 @@ import type Stripe from "stripe";
 import type { RequestHandler } from "./$types";
 import ddb, { putItem } from "$lib/ddb";
 import type { Order, SessionMetadata } from "src/types/types";
+import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { error } from "@sveltejs/kit";
 
 const endpointSecret = "whsec_7875c134218714a9d36bb383f34e1e0ac2fb5199d8d8cbabc1a757b8098fbf26";
+const stripe = getSecretStripe();
 
 function toBuffer(ab: ArrayBuffer): Buffer {
 	const buf = Buffer.alloc(ab.byteLength);
@@ -16,7 +19,6 @@ function toBuffer(ab: ArrayBuffer): Buffer {
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-	const stripe = getSecretStripe();
 	const sig = request.headers.get("stripe-signature");
 
 	const _rawBody = await request.arrayBuffer();
@@ -53,11 +55,27 @@ export const POST: RequestHandler = async ({ request }) => {
 
 async function fulfillOrder(session: Stripe.Checkout.Session) {
 	const metadata: SessionMetadata = <SessionMetadata>session.metadata;
+	const line_items = await (await stripe.checkout.sessions.retrieve(session.id, { expand: ["line_items"] })).line_items?.data;
+	if (!line_items) throw error(500, `couldn't retrieve session`);
+
 	const order: Order = {
 		restaurantName: metadata.restaurantName,
 		userID: metadata.userID,
-		items: JSON.parse(metadata.itemsJSON),
+		items: line_items,
 		timestamp: Date.now(),
 	};
+
 	await putItem("orders", order);
+	if (!metadata.linkedCID) {
+		console.log(`Linking customer ID ${session.customer} to userID ${metadata.userID}`);
+		const cmd = new UpdateCommand({
+			TableName: "users",
+			Key: { userID: metadata.userID },
+			UpdateExpression: `SET stripeCustomerID = :stripeCustomerID`,
+			ExpressionAttributeValues: {
+				":stripeCustomerID": session.customer,
+			},
+		});
+		await ddb.send(cmd);
+	}
 }

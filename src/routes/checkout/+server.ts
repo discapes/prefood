@@ -23,9 +23,9 @@ export const POST: RequestHandler = async ({ url, request, locals: { userID, ses
 	const line_items = getLineItems(restaurantName, menuItems, url.href);
 
 	const metadata: SessionMetadata = {
-		itemsJSON: JSON.stringify(menuItems),
 		userID: userData.userID,
 		restaurantName,
+		linkedCID: userData.stripeCustomerID ?? "",
 	};
 
 	const session = await stripe.checkout.sessions.create({
@@ -34,10 +34,13 @@ export const POST: RequestHandler = async ({ url, request, locals: { userID, ses
 		success_url: `${url.origin}/orders`,
 		cancel_url: `${url.origin}/restaurants/${restaurantName}`,
 		allow_promotion_codes: true,
-		customer_creation: "always",
+		customer: userData.stripeCustomerID,
+		customer_email: userData.stripeCustomerID ? undefined : userData.email,
+		customer_creation: userData.stripeCustomerID ? undefined : "always",
 		payment_intent_data: {
 			statement_descriptor: restaurantName,
 			statement_descriptor_suffix: `- ${restaurantName}`,
+			setup_future_usage: "on_session",
 		},
 		metadata,
 	});
@@ -70,7 +73,8 @@ function getLineItems(restaurantName: string, menuItems: MenuItem[], url: string
 				currency: "eur",
 				unit_amount: item.price_cents,
 				product_data: {
-					name: item.name + " - " + restaurantName,
+					name: item.name,
+					description: restaurantName,
 					images: [new URL(item.image, url).href],
 				},
 			},
