@@ -9,7 +9,7 @@
 		client_id: PUBLIC_GOOGLE_CLIENT_ID,
 		response_type: "code",
 		redirect_uri: `${$page.url.origin}/account/login/google`,
-		scope: "profile",
+		scope: "openid profile email",
 		state: JSON.stringify({
 			referer: $page.url.href,
 			opts,
@@ -43,5 +43,5 @@
 			</g>
 		</svg>
 	</div>
-	<div class="p-3">Sign in with Google</div>
+	<div class="p-3">{"text" in opts ? opts.text : "Sign in with Google"}</div>
 </a>

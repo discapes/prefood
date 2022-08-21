@@ -6,7 +6,7 @@ import type { Order, SessionMetadata } from "src/types/types";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
 import * as nodemailer from "nodemailer";
-import { SMTP_SERVER, SMTP_USER, SMTP_PASSWORD } from "$env/static/private";
+import { SMTP_SERVER, SMTP_USER, SMTP_PASSWORD, MAIL_FROM_DOMAIN } from "$env/static/private";
 import { getSlugFromOrder } from "$lib/util";
 import { v4 as uuidv4 } from "uuid";
 
@@ -96,7 +96,7 @@ async function sendReceipt(recipient: string | null | undefined, order: Order, u
 
 	// send mail with defined transport object
 	let info = await transporter.sendMail({
-		from: `"${new URL(url).hostname}" <no-reply@${new URL(url).hostname}>`, // sender address
+		from: `"${order.restaurantName}" <no-reply@${MAIL_FROM_DOMAIN}>`, // sender address
 		to: recipient, // list of receivers
 		subject: "Receipt for " + order.restaurantName, // Subject line
 		text: `You can view the order at ${new URL("/orders/" + getSlugFromOrder(order), url).href}

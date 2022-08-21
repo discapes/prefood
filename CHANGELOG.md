@@ -8,6 +8,7 @@
   - [x] GitHub authentication
   - [ ] checkout state parameter and if its needed to prevent XSRF
   - [ ] allow changing profile info and authentication methods, and delete account
+  - [ ] remove google verify and other TODOs
   - [ ] cover edge cases
     - [ ] user tries to link external account thats already linked to an internal account
     - [ ] make sure email is unique key

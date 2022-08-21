@@ -48,12 +48,14 @@
 			<h2 class="mb-0">Identification methods:</h2>
 			<h2 class="mt-0 text-left font-bold">{identMethods}</h2>
 		</div>
-		{#if !userData.githubID}
-			<GithubButton opts={{}} />
-		{/if}
-		{#if !userData.googleID}
-			<GoogleButton opts={{}} />
-		{/if}
-		<button class="cont w-60" on:click={signOut}>Sign out</button>
+		<div class="flex gap-5">
+			{#if !userData.githubID}
+				<GithubButton opts={{ text: "Link Github" }} />
+			{/if}
+			{#if !userData.googleID}
+				<GoogleButton opts={{ text: "Link Google" }} />
+			{/if}
+			<button class="cont w-60" on:click={signOut}>Sign out</button>
+		</div>
 	</div>
 {/if}

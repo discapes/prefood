@@ -52,4 +52,6 @@ export type SignInButtonOptions = {
 	rememberMe: boolean;
 };
 
-export type LinkAccountButtonOptions = {};
+export type LinkAccountButtonOptions = {
+	text: string;
+};
