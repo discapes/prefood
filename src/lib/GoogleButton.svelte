@@ -19,7 +19,7 @@
 
 <a
 	href="https://accounts.google.com/o/oauth2/v2/auth?{params}"
-	class="nolink cont loginbtn flex justify-center items-center dark:bg-[#4285F4] dark:hover:bg-[#4a8cf7] dark:hover:brightness-[103%]"
+	class="nolink cont p-[2px] flex justify-center items-center dark:bg-[#4285F4] dark:hover:bg-[#4a8cf7] dark:hover:brightness-[103%]"
 >
 	<div class="bg-white flex justify-center items-center h-12 w-12 rounded">
 		<svg viewBox="0 0 24 24" width="24" height="24" xmlns="http://www.w3.org/2000/svg">
@@ -45,9 +45,3 @@
 	</div>
 	<div class="p-3">Sign in with Google</div>
 </a>
-
-<style>
-	.loginbtn {
-		padding: 2px !important;
-	}
-</style>
