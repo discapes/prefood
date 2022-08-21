@@ -2,6 +2,7 @@ import { QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import type { TokenPayload } from "google-auth-library";
 import type { UnserializableUser, User } from "src/types/types";
 import ddb, { getItem } from "./ddb";
+import { ALLOWED_LOGINS } from "$env/static/private";
 import { v4 as uuidv4 } from "uuid";
 
 type IdentificationKeyName = "githubID" | "googleID";
@@ -106,8 +107,12 @@ export async function addNewSessionID({ userID }: { userID: string }) {
 		ExpressionAttributeValues: {
 			[":newSessionIDs"]: new Set([newSessionID]),
 		},
+		ReturnValues: "UPDATED_NEW",
 	});
-	await ddb.send(cmd);
+	const res = await ddb.send(cmd);
+	if (res?.Attributes?.sessionIDs.size > ALLOWED_LOGINS) {
+		removeSessionID({ sessionID: res!.Attributes!.sessionIDs.values().next().value, userID });
+	}
 	return newSessionID;
 }
 

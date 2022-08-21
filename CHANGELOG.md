@@ -4,32 +4,28 @@
 
 - [ ] more authentication options
   - [ ] show linked identifications on account page
-  - [ ] add email authentication
-    - [ ] email as index key
-    - [ ] verify email
-  - [ ] add GitHub authentication
-    - [ ] githubid as index key
-  - [ ] email as index key, link all identification methods
-- [ ] limit sessionIDs
-- [x] describe database schema somewhere
-- [ ] stripe webhook
-  - [x] send receipt
-  - [x] create tracking page
-  - [ ] anonymous accounts
-  - [x] save customerID
-  - [x] create order from line_items
+  - [ ] email authentication
+  - [ ] GitHub authentication
+- [ ] add titles for each page
 - [ ] serviceworker
   - [ ] on update popup changelog, reload on close
   - [ ] ssr pages: networkfirst, cache on client for an hour
 - [ ] info page with link to my website
 - [ ] add short cache on cdn (return cache headers on load())
+- [x] limit sessionIDs for user
 - [x] add Dependabot with pnpm lockfile updater
-  - [x] re-trigger lockfile updater
 - [x] open repo to public
   - [x] squash commits
   - [x] add tags
   - [x] add readme
   - [x] add license and copyright
+- [x] describe database schema in SCHEMA.md
+- [x] stripe webhook
+  - [x] send receipt
+  - [x] create tracking page
+  - [x] anonymous accounts
+  - [x] save customerID
+  - [x] create order from line_items
 
 ## [0.0.6] 2022-08-10
 

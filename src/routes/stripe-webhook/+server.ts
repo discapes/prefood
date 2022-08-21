@@ -6,7 +6,7 @@ import type { Order, SessionMetadata } from "src/types/types";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
 import * as nodemailer from "nodemailer";
-import { SMTP_API_KEY, SMTP_API_SECRET } from "$env/static/private";
+import { SMTP_SERVER, SMTP_USER, SMTP_PASSWORD } from "$env/static/private";
 import { getSlugFromOrder } from "$lib/util";
 import { v4 as uuidv4 } from "uuid";
 
@@ -86,11 +86,11 @@ async function sendReceipt(recipient: string | null | undefined, order: Order, u
 	if (!recipient) throw error(500, "email is undefined");
 
 	let transporter = nodemailer.createTransport({
-		host: "in-v3.mailjet.com",
+		host: SMTP_SERVER,
 		port: 587,
 		auth: {
-			user: SMTP_API_KEY,
-			pass: SMTP_API_SECRET,
+			user: SMTP_USER,
+			pass: SMTP_PASSWORD,
 		},
 	});
 
