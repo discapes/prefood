@@ -5,9 +5,13 @@
 - [ ] more authentication options
   - [ ] show linked identifications on account page
   - [ ] email authentication
-  - [ ] GitHub authentication
+  - [x] GitHub authentication
 - [ ] add titles for each page
+- [ ] view where restaurant owners can change status of orders
 - [ ] serviceworker
+  - [ ] Web push API
+    - [ ] notifications and page update when order status change for user
+    - [ ] notifications and page update when order created for owner
   - [ ] on update popup changelog, reload on close
   - [ ] ssr pages: networkfirst, cache on client for an hour
 - [ ] info page with link to my website

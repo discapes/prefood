@@ -1,52 +1,55 @@
 import type { RequestHandler } from "./$types";
 import { OAuth2Client } from "google-auth-library";
 import { PUBLIC_GOOGLE_CLIENT_ID } from "$env/static/public";
-import { SESSION_MAXAGE_HOURS } from "$env/static/private";
-import * as cookie from "cookie";
-import { createAccountFromGooglePayload, getUserID, addNewSessionID } from "$lib/authentication";
+import { loginWithExternalIdentity } from "$lib/authentication";
 import { error } from "@sveltejs/kit";
+import { GOOGLE_CLIENT_SECRET } from "$env/static/private";
 
-export const POST: RequestHandler = async ({ request, url }) => {
-	const { tokenID, rememberMe } = Object.fromEntries(await request.formData());
-	if (!tokenID) throw error(400, "tokenID not specified.");
-	if (!rememberMe) throw error(400, "rememberMe not specified.");
+export const GET: RequestHandler = async ({ url }) => {
+	const requestParams = new URL(url).searchParams;
+	const code = <string>requestParams.get("code");
+	const state = JSON.parse(<string>requestParams.get("state") ?? "");
+	if (!code || !state) throw error(400, `invalid request: ${JSON.stringify({ code, state })}`);
 
-	const { googleID, payload: g_payload } = await verify(<string>tokenID);
-
-	let userID = await getUserID({ idFieldName: "googleID", idValue: googleID });
-	let newSessionID: string;
-	if (userID) {
-		newSessionID = await addNewSessionID({ userID });
-	} else {
-		({ userID, initialSessionID: newSessionID } = await createAccountFromGooglePayload({ googleID, g_payload }));
-	}
-
-	const cookieOpts: cookie.CookieSerializeOptions = {
-		maxAge: rememberMe == "true" ? +SESSION_MAXAGE_HOURS * 60 * 60 : undefined,
-		path: "/",
-	};
-
-	const headers = new Headers({
-		location: request.headers.get("Referer") ?? url.href,
-	});
-	headers.append("set-cookie", cookie.serialize("userID", userID, cookieOpts));
-	headers.append("set-cookie", cookie.serialize("sessionID", newSessionID, cookieOpts));
-
-	return new Response(null, {
-		status: 303,
-		headers,
+	const atParams = new URLSearchParams({
+		client_id: PUBLIC_GOOGLE_CLIENT_ID,
+		client_secret: GOOGLE_CLIENT_SECRET,
+		code,
+		grant_type: "authorization_code",
+		redirect_uri: new URL("/account/login/google", url).href,
 	});
 
-	async function verify(tokenID: string) {
-		const gClient = new OAuth2Client(PUBLIC_GOOGLE_CLIENT_ID);
-		const ticket = await gClient.verifyIdToken({
-			idToken: tokenID,
-			audience: PUBLIC_GOOGLE_CLIENT_ID,
-		});
-		const payload = ticket.getPayload();
-		if (!payload) throw error(400, "payload not defined");
+	const atResponse = await fetch(`https://oauth2.googleapis.com/token?${atParams}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+		},
+	}).then((res) => res.json());
 
-		const googleID = payload["sub"];
-		return { googleID, payload };
-	}
+	const { googleID, payload: g_payload } = await verify(atResponse.id_token);
+
+	return loginWithExternalIdentity({
+		idFieldName: "googleID",
+		idValue: googleID,
+		rememberMe: state.rememberMe, //TODO
+		profileData: {
+			email: g_payload.email!,
+			name: g_payload.name!,
+			picture: g_payload.picture!,
+		},
+		redirect: state.referer,
+	});
 };
+
+async function verify(tokenID: string) {
+	const gClient = new OAuth2Client(PUBLIC_GOOGLE_CLIENT_ID);
+	const ticket = await gClient.verifyIdToken({
+		idToken: tokenID,
+		audience: PUBLIC_GOOGLE_CLIENT_ID,
+	});
+	const payload = ticket.getPayload();
+	if (!payload) throw error(400, "payload not defined");
+
+	const googleID = payload["sub"];
+	return { googleID, payload };
+}

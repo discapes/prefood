@@ -21,6 +21,27 @@ export function getSlugFromOrder(order: Order) {
 	return btoa(order.userID) + "-" + order.timestamp;
 }
 
+export function loadScript(url: string): Promise<void> {
+	return new Promise((resolve, reject) => {
+		const script = document.createElement("script");
+		script.src = url;
+		const headOrBody = document.head || document.body;
+		headOrBody.appendChild(script);
+
+		script.addEventListener("load", () => {
+			if (window.google) {
+				resolve();
+			} else {
+				reject(new Error("Script is not available"));
+			}
+		});
+
+		script.addEventListener("error", () => {
+			reject(new Error("Failed to load script"));
+		});
+	});
+}
+
 export function getDataFromOrderSlug(slug: string) {
 	return {
 		userID: atob(slug.slice(0, slug.indexOf("-"))),
