@@ -1,4 +1,4 @@
-import ddb, { getItem } from "$lib/ddb.js";
+import ddb from "$lib/ddb.js";
 import { getDataFromOrderSlug } from "$lib/util";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";

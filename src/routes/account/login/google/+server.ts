@@ -1,24 +1,21 @@
 import type { RequestHandler } from "./$types";
-import { OAuth2Client } from "google-auth-library";
+import jwtDecode from "jwt-decode";
 import { PUBLIC_GOOGLE_CLIENT_ID } from "$env/static/public";
-import { authenticate, linkAccount, loginWithExternalIdentity } from "$lib/authentication";
+import { linkExternalAccount, loginWithExternalIdentity } from "$lib/authentication";
 import { error, redirect } from "@sveltejs/kit";
 import { GOOGLE_CLIENT_SECRET } from "$env/static/private";
 import type { LinkAccountButtonOptions, SignInButtonOptions } from "src/types/types";
+import { falsePropNames, log } from "$lib/util";
 
-export const GET: RequestHandler = async ({ url, locals: { userID, sessionID } }) => {
-	const requestParams = new URL(url).searchParams;
-	const code = <string>requestParams.get("code");
-	const state = JSON.parse(<string>requestParams.get("state") ?? "");
-	const opts: SignInButtonOptions | LinkAccountButtonOptions = state.opts;
-	if (!code || !state || !state.referer || !opts) throw error(400, `invalid request: ${JSON.stringify({ code, state })}`);
+async function getPayloadFromGoogleCallback(url: URL) {
+	const code = <string>url.searchParams.get("code");
 
 	const atParams = new URLSearchParams({
 		client_id: PUBLIC_GOOGLE_CLIENT_ID,
 		client_secret: GOOGLE_CLIENT_SECRET,
 		code,
 		grant_type: "authorization_code",
-		redirect_uri: new URL("/account/login/google", url).href,
+		redirect_uri: new URL("/account/login/google", url).href, // useless
 	});
 
 	const atResponse = await fetch(`https://oauth2.googleapis.com/token?${atParams}`, {
@@ -28,40 +25,37 @@ export const GET: RequestHandler = async ({ url, locals: { userID, sessionID } }
 		},
 	}).then((res) => res.json());
 
-	const { googleID, payload: g_payload } = await verify(atResponse.id_token);
+	return jwtDecode(atResponse.id_token);
+}
 
-	if ("rememberMe" in opts) {
+export const GET: RequestHandler = async ({ url, locals: { userID, sessionID } }) => {
+	log("google callback requested");
+	type FWDData = SignInButtonOptions | LinkAccountButtonOptions;
+
+	const { sub: googleID, email, name, picture } = <any>await getPayloadFromGoogleCallback(url);
+	const { opts: forwardedData, referer }: { opts: FWDData; referer: string } = JSON.parse(<string>url.searchParams.get("state"));
+	const fpn = falsePropNames({ googleID, email, name, picture, forwardedData, referer });
+	if (fpn.length) throw error(400, `invalid request: ${fpn} are undefined`);
+	else log({ googleID, email, name, picture, forwardedData, referer });
+
+	if ("rememberMe" in forwardedData) {
 		return loginWithExternalIdentity({
 			idFieldName: "googleID",
 			idValue: googleID,
-			rememberMe: opts.rememberMe,
+			rememberMe: forwardedData.rememberMe,
 			profileData: {
-				email: g_payload.email!,
-				name: g_payload.name!,
-				picture: g_payload.picture!,
+				email,
+				name,
+				picture,
 			},
-			redirect: state.referer,
+			redirect: referer,
 		});
 	} else {
-		if (userID && (await authenticate({ sessionID: sessionID, userID: userID }))) {
-			linkAccount({ idFieldName: "googleID", idValue: googleID, userID });
-			throw redirect(303, state.referer);
+		if (userID && sessionID) {
+			linkExternalAccount({ idFieldName: "googleID", idValue: googleID, userID, sessionID });
+			throw redirect(303, referer);
 		} else {
-			throw error(400, `couldn't authenticate ${JSON.stringify({ sessionID: sessionID, userID: userID })}`);
+			throw error(500, `userID or sessionID is undefined: ${JSON.stringify({ sessionID: sessionID, userID: userID })}`);
 		}
 	}
 };
-
-async function verify(tokenID: string) {
-	//TODO replace with light jwt library
-	const gClient = new OAuth2Client(PUBLIC_GOOGLE_CLIENT_ID);
-	const ticket = await gClient.verifyIdToken({
-		idToken: tokenID,
-		audience: PUBLIC_GOOGLE_CLIENT_ID,
-	});
-	const payload = ticket.getPayload();
-	if (!payload) throw error(400, "payload not defined");
-
-	const googleID = payload["sub"];
-	return { googleID, payload };
-}

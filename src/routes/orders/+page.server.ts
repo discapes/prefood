@@ -1,4 +1,4 @@
-import { authenticate } from "$lib/authentication";
+import { getUserData } from "$lib/authentication";
 import ddb from "$lib/ddb";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
@@ -10,7 +10,7 @@ export const prerender = false;
 export const load: PageServerLoad = async ({ locals: { userID, sessionID } }) => {
 	if (userID) {
 		let orderDataPromise = getOrdersForUser(userID);
-		const userData = await authenticate({ sessionID, userID });
+		const userData = await getUserData({ sessionID, userID });
 
 		if (userData) {
 			const orderData = await orderDataPromise;

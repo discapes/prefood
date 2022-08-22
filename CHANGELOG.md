@@ -4,15 +4,16 @@
 
 - [ ] more authentication options
   - [x] show linked identifications on account page
-  - [ ] email authentication
+  - [x] email authentication
   - [x] GitHub authentication
+  - [ ] create account with email
   - [ ] checkout state parameter and if its needed to prevent XSRF
   - [ ] allow changing profile info and authentication methods, and delete account
-  - [ ] remove google verify and other TODOs
-  - [ ] cover edge cases
-    - [ ] user tries to link external account thats already linked to an internal account
-    - [ ] make sure email is unique key
-    - [ ] can't create account with email x if email x is already a key
+  - [x] remove google verify and other TODOs
+  - [x] cover edge cases
+    - [x] user tries to link external account thats already linked to an internal account
+    - [x] make sure email is unique key
+    - [x] can't create account with email x if email x is already a key
 - [ ] add titles for each page
 - [ ] human readable receipt
 - [ ] don't leak stripe data

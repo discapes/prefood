@@ -21,6 +21,15 @@ export function getSlugFromOrder(order: Order) {
 	return btoa(order.userID) + "-" + order.timestamp;
 }
 
+export function log(message: any) {
+	console.log(message);
+}
+
+export function error(message: string) {
+	console.error(message);
+	throw new Error(message);
+}
+
 export function loadScript(url: string): Promise<void> {
 	return new Promise((resolve, reject) => {
 		const script = document.createElement("script");
@@ -40,6 +49,11 @@ export function loadScript(url: string): Promise<void> {
 			reject(new Error("Failed to load script"));
 		});
 	});
+}
+
+export function falsePropNames(obj: any) {
+	const undef = Object.keys(obj).filter((k) => !obj[k]);
+	return undef;
 }
 
 export function getCookie(name: string) {

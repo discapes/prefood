@@ -1,20 +1,15 @@
 import { GITHUB_CLIENT_SECRET } from "$env/static/private";
 import { PUBLIC_GITHUB_CLIENT_ID } from "$env/static/public";
-import { authenticate, linkAccount, loginWithExternalIdentity } from "$lib/authentication";
+import { linkExternalAccount, loginWithExternalIdentity } from "$lib/authentication";
+import { falsePropNames, log } from "$lib/util";
 import { error, redirect } from "@sveltejs/kit";
 import type { LinkAccountButtonOptions, SignInButtonOptions } from "src/types/types";
 import type { RequestHandler } from "./$types";
 
 export const prerender = false;
 
-export const GET: RequestHandler = async ({ url, locals: { userID, sessionID } }) => {
-	const requestParams = new URL(url).searchParams;
-	const code = <string>requestParams.get("code");
-
-	const options = JSON.parse(<string>requestParams.get("options"));
-	const referer: string = options.referer;
-	const opts: SignInButtonOptions | LinkAccountButtonOptions = options.opts;
-	if (!code || !referer || !opts) throw error(400, `invalid request: ${JSON.stringify({ code, referer, opts })}`);
+async function getProfileFromGithubCallback(url: URL) {
+	const code = <string>url.searchParams.get("code");
 
 	const atParams = new URLSearchParams({
 		client_id: PUBLIC_GITHUB_CLIENT_ID,
@@ -33,24 +28,42 @@ export const GET: RequestHandler = async ({ url, locals: { userID, sessionID } }
 
 	const res = await fetch("https://api.github.com/user", { headers: { Authorization: `token ${access_token}` } }).then((res) => res.json());
 
-	if ("rememberMe" in opts) {
+	return {
+		email: res.email,
+		name: res.name,
+		picture: res.avatar_url,
+		githubID: res.id.toString(),
+	};
+}
+
+export const GET: RequestHandler = async ({ url, locals: { userID, sessionID } }) => {
+	log("github callback requested");
+	type FWDData = SignInButtonOptions | LinkAccountButtonOptions;
+
+	const { email, picture, name, githubID } = await getProfileFromGithubCallback(url);
+	const { referer, opts: forwardedData }: { opts: FWDData; referer: string } = JSON.parse(<string>url.searchParams.get("options"));
+	const fpn = falsePropNames({ githubID, email, name, picture, forwardedData, referer });
+	if (fpn.length) throw error(400, `invalid request: ${fpn} are undefined`);
+	else log({ githubID, email, name, picture, forwardedData, referer });
+
+	if ("rememberMe" in forwardedData) {
 		return loginWithExternalIdentity({
 			idFieldName: "githubID",
-			idValue: res.id.toString(),
-			rememberMe: opts.rememberMe,
+			idValue: githubID,
+			rememberMe: forwardedData.rememberMe,
 			profileData: {
-				email: res.email,
-				name: res.name,
-				picture: res.avatar_url,
+				email,
+				name,
+				picture,
 			},
 			redirect: referer,
 		});
 	} else {
-		if (userID && (await authenticate({ sessionID: sessionID, userID: userID }))) {
-			linkAccount({ idFieldName: "githubID", idValue: res.id.toString(), userID: userID });
+		if (userID && sessionID) {
+			await linkExternalAccount({ idFieldName: "githubID", idValue: githubID, userID, sessionID });
 			throw redirect(303, referer);
 		} else {
-			throw error(400, `couldn't authenticate ${JSON.stringify({ sessionID: sessionID, userID: userID })}`);
+			throw error(500, `userID or sessionID is undefined: ${JSON.stringify({ sessionID: sessionID, userID: userID })}`);
 		}
 	}
 };

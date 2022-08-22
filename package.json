@@ -42,7 +42,7 @@
 		"@stripe/stripe-js": "^1.35.0",
 		"@types/nodemailer": "^6.4.5",
 		"cookie": "^0.5.0",
-		"google-auth-library": "^8.3.0",
+		"jwt-decode": "^3.1.2",
 		"nodemailer": "^6.7.8",
 		"postgres": "^3.2.4",
 		"prettier-plugin-svelte": "^2.7.0",

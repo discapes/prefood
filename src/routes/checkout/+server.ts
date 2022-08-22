@@ -5,10 +5,10 @@ import { TAX_RATE_ID } from "$env/static/private";
 import type Stripe from "stripe";
 import type { MenuItem, Restaurant, SessionMetadata } from "src/types/types";
 import { error } from "@sveltejs/kit";
-import { authenticate } from "$lib/authentication";
+import { getUserData } from "$lib/authentication";
 
 export const POST: RequestHandler = async ({ url, request, locals: { userID, sessionID } }) => {
-	const userDataP = authenticate({ sessionID, userID });
+	const userDataP = getUserData({ sessionID, userID });
 	const stripe = getSecretStripe();
 	const formData = await request.formData();
 

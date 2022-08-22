@@ -30,6 +30,12 @@
 		}
 	}
 }
+
+input.cont:hover {
+	filter: none;
+	cursor: text;
+}
+
 .scale {
 	transition: all 0.2s ease-in-out;
 	&:hover {

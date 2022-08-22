@@ -5,10 +5,10 @@ import ddb, { putItem } from "$lib/ddb";
 import type { Order, SessionMetadata } from "src/types/types";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
-import * as nodemailer from "nodemailer";
-import { SMTP_SERVER, SMTP_USER, SMTP_PASSWORD, MAIL_FROM_DOMAIN } from "$env/static/private";
+import { MAIL_FROM_DOMAIN } from "$env/static/private";
 import { getSlugFromOrder } from "$lib/util";
 import { v4 as uuidv4 } from "uuid";
+import { sendMail } from "$lib/mail";
 
 const endpointSecret = "whsec_7875c134218714a9d36bb383f34e1e0ac2fb5199d8d8cbabc1a757b8098fbf26";
 const stripe = getSecretStripe();
@@ -82,30 +82,14 @@ async function fulfillOrder(session: Stripe.Checkout.Session, url: string) {
 }
 
 async function sendReceipt(recipient: string | null | undefined, order: Order, url: string) {
-	console.log(`sending email to ${recipient}`);
-	if (!recipient) throw error(500, "email is undefined");
-
-	let transporter = nodemailer.createTransport({
-		host: SMTP_SERVER,
-		port: 587,
-		auth: {
-			user: SMTP_USER,
-			pass: SMTP_PASSWORD,
-		},
-	});
-
-	// send mail with defined transport object
-	let info = await transporter.sendMail({
+	sendMail({
 		from: `"${order.restaurantName}" <no-reply@${MAIL_FROM_DOMAIN}>`, // sender address
-		to: recipient, // list of receivers
+		to: <string>recipient, // list of receivers
 		subject: "Receipt for " + order.restaurantName, // Subject line
 		text: `You can view the order at ${new URL("/orders/" + getSlugFromOrder(order), url).href}
 ${JSON.stringify(order, null, 2)}`, // plain text body
 		// html: "<b>Hello world?</b>", // html body
 	});
-
-	console.log("Message sent: %s", info.messageId);
-	// Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
 }
 
 async function linkCID(userID: string, stripeCustomerID: string) {
