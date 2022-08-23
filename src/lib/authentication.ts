@@ -4,7 +4,7 @@ import ddb, { getItem } from "./ddb";
 import { ALLOWED_LOGINS, MAIL_FROM_DOMAIN, SESSION_MAXAGE_HOURS } from "$env/static/private";
 import { v4 as uuidv4 } from "uuid";
 import * as cookie from "cookie";
-import { error, log } from "./util";
+import { encodeB64URL, error, log } from "./util";
 import { sendMail } from "./mail";
 import { encrypt, hash } from "./crypto";
 
@@ -73,18 +73,8 @@ export async function loginWithExternalIdentity({
 	});
 }
 
-export async function loginWithEmail({
-	email,
-	rememberMe,
-	endpoint,
-	referer,
-}: {
-	email: string;
-	rememberMe: boolean;
-	endpoint: string;
-	referer: string;
-}) {
-	log(`logging in with ${JSON.stringify({ email, rememberMe, redirect: endpoint, referer })}`);
+export async function loginWithEmail({ email, rememberMe, referer, url }: { email: string; rememberMe: boolean; referer: string; url: string }) {
+	log(`logging in with ${JSON.stringify({ email, rememberMe, url, referer })}`);
 
 	let userID = await getUserIDFromIndexedAttr_unsafe({ idFieldName: "email", idValue: email });
 	let newSessionID: string;
@@ -101,6 +91,8 @@ export async function loginWithEmail({
 			})
 		);
 
+		const endpoint = new URL("/account/login/email/logincb", url).href;
+
 		sendMail({
 			from: `"${MAIL_FROM_DOMAIN}" <no-reply@${MAIL_FROM_DOMAIN}>`, // sender address
 			to: <string>email, // list of receivers
@@ -110,18 +102,25 @@ export async function loginWithEmail({
 	} else {
 		log(`userID for email ${email} not found, sending link to create account`);
 
-		const options = encrypt(
+		const token = encrypt(
 			JSON.stringify({
-				referer,
-				rememberMe: rememberMe.toString(),
 				email,
 			})
 		);
 
+		const options = encodeB64URL(
+			JSON.stringify({
+				token,
+				email,
+			})
+		);
+
+		const endpoint = new URL("/account/login/email/signupcb", url).href;
+
 		sendMail({
 			from: `"${MAIL_FROM_DOMAIN}" <no-reply@${MAIL_FROM_DOMAIN}>`, // sender address
 			to: <string>email, // list of receivers
-			subject: `Login link for ${MAIL_FROM_DOMAIN}`, // Subject line
+			subject: `Sign-up link for ${MAIL_FROM_DOMAIN}`, // Subject line
 			text: `You can create an account at ${endpoint}?o=${options}`,
 		});
 	}

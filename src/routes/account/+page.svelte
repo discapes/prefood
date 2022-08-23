@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { PageData } from "./$types";
+	import { page } from "$app/stores";
 	import Login from "$lib/Login.svelte";
 	import type { User } from "src/types/types";
 	import GithubButton from "$lib/GithubButton.svelte";
@@ -50,10 +51,10 @@
 		</div>
 		<div class="flex gap-5">
 			{#if !userData.githubID}
-				<GithubButton opts={{ text: "Link Github" }} />
+				<GithubButton text="Link Github" opts={{ referer: $page.url.pathname }} />
 			{/if}
 			{#if !userData.googleID}
-				<GoogleButton opts={{ text: "Link Google" }} />
+				<GoogleButton text="Link Google" opts={{ referer: $page.url.pathname }} />
 			{/if}
 			<button class="cont w-60" on:click={signOut}>Sign out</button>
 		</div>

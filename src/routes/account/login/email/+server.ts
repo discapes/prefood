@@ -19,7 +19,7 @@ export const GET: RequestHandler = async ({ url, locals: { userID, sessionID } }
 				email: options.email,
 				rememberMe: options.rememberMe,
 				referer: new URL(options.referer, url).href,
-				endpoint: new URL("/account/login/email/link", url).href,
+				url: url.href,
 			})
 		);
 	} else {

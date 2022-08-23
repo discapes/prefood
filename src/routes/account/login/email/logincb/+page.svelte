@@ -2,6 +2,8 @@
 	import type { PageData } from "./$types";
 
 	export let data: PageData;
+
+	// if yes then set cookies
 </script>
 
 <svelte:head>
@@ -9,5 +11,5 @@
 </svelte:head>
 
 <section class="flex justify-center p-10">
-	{data.text}
+	Are you sure you want to login as {data.userData.name}?
 </section>

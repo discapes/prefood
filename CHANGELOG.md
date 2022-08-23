@@ -5,9 +5,9 @@
 - [ ] more authentication options
   - [x] hash sessionIDs
   - [x] show linked identifications on account page
-  - [x] email authentication
   - [x] GitHub authentication
   - [ ] create account with email
+  - [ ] email sign in
   - [ ] checkout state parameter and if its needed to prevent XSRF
   - [ ] allow changing profile info and authentication methods, and delete account
   - [x] referer injection impossible, form for creating account is confirmed to belong to email
@@ -16,6 +16,8 @@
     - [x] user tries to link external account thats already linked to an internal account
     - [x] make sure email is unique key
     - [x] can't create account with email x if email x is already a key
+- [ ] cookie security (SameSite, Secure)
+- [ ] other security vulns
 - [ ] add titles for each page
 - [ ] human readable receipt
 - [ ] don't leak stripe data
