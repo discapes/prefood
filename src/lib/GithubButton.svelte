@@ -2,16 +2,15 @@
 	import { page } from "$app/stores";
 	import { PUBLIC_GITHUB_CLIENT_ID } from "$env/static/public";
 	import type { LinkAccountButtonOptions, SignInButtonOptions } from "src/types/types";
+	import { encodeB64URL } from "./util";
 
 	export let opts: SignInButtonOptions | LinkAccountButtonOptions;
+	export let text: string | undefined;
 
-	$: forward_options = JSON.stringify({
-		referer: $page.url.href,
-		opts,
-	});
 	$: params = new URLSearchParams({
 		client_id: PUBLIC_GITHUB_CLIENT_ID,
-		redirect_uri: `${$page.url.origin}/account/login/github?options=${forward_options}`,
+		redirect_uri: `${$page.url.origin}/account/login/github`,
+		state: encodeB64URL(JSON.stringify(opts)),
 		scope: "user:email",
 	});
 </script>
@@ -27,5 +26,5 @@
 			fill-rule="nonzero"
 		/>
 	</svg>
-	{"text" in opts ? opts.text : "Sign in with Github"}
+	{text ?? "Sign in with Github"}
 </a>

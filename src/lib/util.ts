@@ -17,6 +17,15 @@ export function shuffle<T>(array: T[]) {
 	return array;
 }
 
+export function encodeB64URL(str: string) {
+	return btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/\=+$/, "");
+}
+
+export function decodeB64URL(str: string) {
+	str = (str + "===").slice(0, str.length + (str.length % 4));
+	return atob(str.replace(/-/g, "+").replace(/_/g, "/"));
+}
+
 export function getSlugFromOrder(order: Order) {
 	return btoa(order.userID) + "-" + order.timestamp;
 }

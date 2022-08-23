@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import * as cookie from "cookie";
 import { error, log } from "./util";
 import { sendMail } from "./mail";
+import { encrypt, hash } from "./crypto";
 
 type IdentificationKeyName = "githubID" | "googleID" | "email";
 
@@ -13,7 +14,7 @@ export async function getUserData({ sessionID, userID }: { sessionID?: string; u
 	log(`Getting user data with userID ${userID} with sessionID ${sessionID}`);
 	if (sessionID && userID) {
 		const userData = <UnserializableUser>await getItem("users", { userID });
-		if (userData && userData.sessionIDs?.has(sessionID)) {
+		if (userData && userData.sessionIDs?.has(hash(sessionID))) {
 			log(`user data found`);
 			return { ...userData, sessionIDs: [...userData.sessionIDs] } as User;
 		} else {
@@ -91,33 +92,37 @@ export async function loginWithEmail({
 		log(`userID ${userID} found, adding new session id to user, sending sessionid to email`);
 		newSessionID = await addNewSessionID_unsafe({ userID });
 
-		const params = new URLSearchParams({
-			referer,
-			rememberMe: rememberMe.toString(),
-			userID,
-			sessionID: newSessionID,
-		});
+		const options = encrypt(
+			JSON.stringify({
+				referer,
+				rememberMe: rememberMe.toString(),
+				userID,
+				sessionID: newSessionID,
+			})
+		);
 
 		sendMail({
 			from: `"${MAIL_FROM_DOMAIN}" <no-reply@${MAIL_FROM_DOMAIN}>`, // sender address
 			to: <string>email, // list of receivers
 			subject: `Login link for ${MAIL_FROM_DOMAIN}`, // Subject line
-			text: `You can login at ${endpoint}?${params}`,
+			text: `You can login at ${endpoint}?o=${options}`,
 		});
 	} else {
 		log(`userID for email ${email} not found, sending link to create account`);
 
-		const params = new URLSearchParams({
-			referer,
-			rememberMe: rememberMe.toString(),
-			email,
-		});
+		const options = encrypt(
+			JSON.stringify({
+				referer,
+				rememberMe: rememberMe.toString(),
+				email,
+			})
+		);
 
 		sendMail({
 			from: `"${MAIL_FROM_DOMAIN}" <no-reply@${MAIL_FROM_DOMAIN}>`, // sender address
 			to: <string>email, // list of receivers
 			subject: `Login link for ${MAIL_FROM_DOMAIN}`, // Subject line
-			text: `You can create an account at ${endpoint}?${params}`,
+			text: `You can create an account at ${endpoint}?o=${options}`,
 		});
 	}
 
@@ -151,7 +156,7 @@ async function createAccount_unsafe({
 			"#name": "name",
 		},
 		ExpressionAttributeValues: {
-			":newSessionIDs": new Set([initialSessionID]),
+			":newSessionIDs": new Set([hash(initialSessionID)]),
 			":idValue": idValue,
 			":email": profileData.email,
 			":name": profileData.name,
@@ -189,7 +194,7 @@ export async function linkExternalAccount({
 			UpdateExpression: `SET ${idFieldName} = :idValue`,
 			ExpressionAttributeValues: {
 				":idValue": idValue,
-				":sessionID": sessionID,
+				":sessionID": hash(sessionID),
 			},
 			ConditionExpression: `contains(sessionIDs, :sessionID)`,
 			ReturnValues: "UPDATED_NEW",
@@ -234,7 +239,7 @@ async function addNewSessionID_unsafe({ userID }: { userID: string }) {
 		Key: { userID },
 		UpdateExpression: `ADD sessionIDs :newSessionIDs`,
 		ExpressionAttributeValues: {
-			[":newSessionIDs"]: new Set([newSessionID]),
+			[":newSessionIDs"]: new Set([hash(newSessionID)]),
 		},
 		ReturnValues: "UPDATED_NEW",
 	});
@@ -260,7 +265,7 @@ export async function removeSessionID({ sessionID, userID }: { sessionID: string
 		Key: { userID },
 		UpdateExpression: `DELETE sessionIDs :delSessionID`,
 		ExpressionAttributeValues: {
-			":delSessionID": new Set([sessionID]),
+			":delSessionID": new Set([hash(sessionID)]),
 		},
 	});
 	await ddb.send(cmd);

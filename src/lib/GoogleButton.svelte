@@ -2,18 +2,17 @@
 	import { PUBLIC_GOOGLE_CLIENT_ID } from "$env/static/public";
 	import { page } from "$app/stores";
 	import type { LinkAccountButtonOptions, SignInButtonOptions } from "src/types/types";
+	import { encodeB64URL } from "./util";
 
 	export let opts: SignInButtonOptions | LinkAccountButtonOptions;
+	export let text: string | undefined;
 
 	$: params = new URLSearchParams({
 		client_id: PUBLIC_GOOGLE_CLIENT_ID,
 		response_type: "code",
 		redirect_uri: `${$page.url.origin}/account/login/google`,
 		scope: "openid profile email",
-		state: JSON.stringify({
-			referer: $page.url.href,
-			opts,
-		}),
+		state: encodeB64URL(JSON.stringify(opts)),
 	});
 </script>
 
@@ -43,5 +42,5 @@
 			</g>
 		</svg>
 	</div>
-	<div class="p-3 whitespace-nowrap">{"text" in opts ? opts.text : "Sign in with Google"}</div>
+	<div class="p-3 whitespace-nowrap">{text || "Sign in with Google"}</div>
 </a>

@@ -50,8 +50,13 @@ export type SessionMetadata = {
 
 export type SignInButtonOptions = {
 	rememberMe: boolean;
+	referer: string;
+};
+
+export type EmailSignInButtonOptions = SignInButtonOptions & {
+	email: string;
 };
 
 export type LinkAccountButtonOptions = {
-	text: string;
+	referer: string;
 };

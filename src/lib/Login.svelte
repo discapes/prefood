@@ -2,6 +2,8 @@
 	import GoogleButton from "./GoogleButton.svelte";
 	import GithubButton from "./GithubButton.svelte";
 	import { page } from "$app/stores";
+	import { encodeB64URL } from "./util";
+	import type { EmailSignInButtonOptions } from "src/types/types";
 
 	let rememberMe = true;
 
@@ -11,11 +13,16 @@
 		const email = new FormData(e.target as HTMLFormElement).get("email");
 		(<HTMLFormElement>e.target).reset();
 
-		const emailLoginURL = `${$page.url.origin}/account/login/email?email=${email}&options=${JSON.stringify({
-			opts: { rememberMe },
-			referer: $page.url.href,
-		})}`;
-		await fetch(emailLoginURL).then(async (res) => {
+		const options = encodeB64URL(
+			JSON.stringify({
+				rememberMe,
+				referer: $page.url.pathname,
+				email,
+			} as EmailSignInButtonOptions)
+		);
+
+		const emailSenderURL = `${$page.url.origin}/account/login/email?state=${options}`;
+		await fetch(emailSenderURL).then(async (res) => {
 			if (res.ok) {
 				emailLoginReply = await res.text();
 			} else {
@@ -33,8 +40,8 @@
 	<h1 class="mb-0">Sign in</h1>
 
 	<div class="flex gap-3 font-['Roboto'] justify-center flex-wrap">
-		<GoogleButton opts={{ rememberMe }} />
-		<GithubButton opts={{ rememberMe }} />
+		<GoogleButton text={undefined} opts={{ rememberMe, referer: $page.url.pathname }} />
+		<GithubButton text={undefined} opts={{ rememberMe, referer: $page.url.pathname }} />
 	</div>
 
 	<form class="flex gap-3 justify-center w-full" on:submit|preventDefault={emailLogin}>

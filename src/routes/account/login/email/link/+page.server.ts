@@ -4,17 +4,18 @@ export const prerender = false;
 import * as cookie from "cookie";
 import { SESSION_MAXAGE_HOURS } from "$env/static/private";
 import { falsePropNames, log } from "$lib/util";
+import { decrypt } from "$lib/crypto";
 
 export const load: PageServerLoad = async ({ url, setHeaders }) => {
-	log("email callback requested");
-	const { referer, userID, sessionID, email, rememberMe } = Object.fromEntries(url.searchParams.entries());
+	log(`email callback requested (${url})`);
+	const { referer, userID, sessionID, email, rememberMe } = JSON.parse(decrypt(url.searchParams.get("o")!));
 	const fpn = falsePropNames({ referer });
 	if (fpn.length) throw error(400, `invalid request: ${fpn} are undefined`);
-	else log({ referer, userID, sessionID, email });
+	else log({ referer, userID, sessionID, email, rememberMe });
 
 	if (email) {
 		return {
-			text: "<form for creating account>",
+			text: `<form for creating account> ${email}`,
 		};
 	} else {
 		const cookieOpts: cookie.CookieSerializeOptions = {

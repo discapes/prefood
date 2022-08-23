@@ -3,12 +3,14 @@
 ## TODO
 
 - [ ] more authentication options
+  - [x] hash sessionIDs
   - [x] show linked identifications on account page
   - [x] email authentication
   - [x] GitHub authentication
   - [ ] create account with email
   - [ ] checkout state parameter and if its needed to prevent XSRF
   - [ ] allow changing profile info and authentication methods, and delete account
+  - [x] referer injection impossible, form for creating account is confirmed to belong to email
   - [x] remove google verify and other TODOs
   - [x] cover edge cases
     - [x] user tries to link external account thats already linked to an internal account

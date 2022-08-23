@@ -5,7 +5,8 @@ import { linkExternalAccount, loginWithExternalIdentity } from "$lib/authenticat
 import { error, redirect } from "@sveltejs/kit";
 import { GOOGLE_CLIENT_SECRET } from "$env/static/private";
 import type { LinkAccountButtonOptions, SignInButtonOptions } from "src/types/types";
-import { falsePropNames, log } from "$lib/util";
+import { decodeB64URL, falsePropNames, log } from "$lib/util";
+import { decrypt } from "$lib/crypto";
 
 async function getPayloadFromGoogleCallback(url: URL) {
 	const code = <string>url.searchParams.get("code");
@@ -33,27 +34,27 @@ export const GET: RequestHandler = async ({ url, locals: { userID, sessionID } }
 	type FWDData = SignInButtonOptions | LinkAccountButtonOptions;
 
 	const { sub: googleID, email, name, picture } = <any>await getPayloadFromGoogleCallback(url);
-	const { opts: forwardedData, referer }: { opts: FWDData; referer: string } = JSON.parse(<string>url.searchParams.get("state"));
-	const fpn = falsePropNames({ googleID, email, name, picture, forwardedData, referer });
+	const options: FWDData = JSON.parse(decodeB64URL(<string>url.searchParams.get("state")!));
+	const fpn = falsePropNames({ googleID, email, name, picture, options });
 	if (fpn.length) throw error(400, `invalid request: ${fpn} are undefined`);
-	else log({ googleID, email, name, picture, forwardedData, referer });
+	else log({ googleID, email, name, picture, options });
 
-	if ("rememberMe" in forwardedData) {
+	if ("rememberMe" in options) {
 		return loginWithExternalIdentity({
 			idFieldName: "googleID",
 			idValue: googleID,
-			rememberMe: forwardedData.rememberMe,
+			rememberMe: options.rememberMe,
 			profileData: {
 				email,
 				name,
 				picture,
 			},
-			redirect: referer,
+			redirect: new URL(options.referer, url).href,
 		});
 	} else {
 		if (userID && sessionID) {
 			linkExternalAccount({ idFieldName: "googleID", idValue: googleID, userID, sessionID });
-			throw redirect(303, referer);
+			throw redirect(303, options.referer);
 		} else {
 			throw error(500, `userID or sessionID is undefined: ${JSON.stringify({ sessionID: sessionID, userID: userID })}`);
 		}

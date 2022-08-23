@@ -1,28 +1,25 @@
 import { loginWithEmail } from "$lib/authentication";
-import { falsePropNames, log } from "$lib/util";
+import { decodeB64URL, falsePropNames, log } from "$lib/util";
 import { error } from "@sveltejs/kit";
-import type { LinkAccountButtonOptions, SignInButtonOptions } from "src/types/types";
+import type { EmailSignInButtonOptions, LinkAccountButtonOptions, SignInButtonOptions } from "src/types/types";
 import type { RequestHandler } from "./$types";
 
 export const prerender = false;
 
 export const GET: RequestHandler = async ({ url, locals: { userID, sessionID } }) => {
-	log("email login requested");
-	type FWDData = SignInButtonOptions | LinkAccountButtonOptions;
+	log(`email login requested (${url})`);
+	type FWDData = EmailSignInButtonOptions | LinkAccountButtonOptions;
 
-	const email = <string>url.searchParams.get("email");
-	const { referer, opts: forwardedData }: { opts: FWDData; referer: string } = JSON.parse(<string>url.searchParams.get("options"));
-	const fpn = falsePropNames({ email, forwardedData, referer });
-	if (fpn.length) throw error(400, `invalid request: ${fpn} are undefined`);
-	else log({ email, forwardedData, referer });
+	const options: FWDData = JSON.parse(decodeB64URL(<string>url.searchParams.get("state")!));
+	if (!options) throw error(400, `invalid request: options are undefined`);
 
-	if ("rememberMe" in forwardedData) {
+	if ("rememberMe" in options) {
 		return new Response(
 			await loginWithEmail({
-				email,
-				rememberMe: forwardedData.rememberMe,
-				referer,
-				endpoint: new URL("/account/login/email/link", referer).href,
+				email: options.email,
+				rememberMe: options.rememberMe,
+				referer: new URL(options.referer, url).href,
+				endpoint: new URL("/account/login/email/link", url).href,
 			})
 		);
 	} else {
