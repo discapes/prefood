@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Restaurant } from "src/types/types";
+	import type { Restaurant } from "../../types/types";
 	import { fly } from "svelte/transition";
 	import type { PageData } from "./$types";
 

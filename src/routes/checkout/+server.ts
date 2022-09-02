@@ -3,12 +3,12 @@ import { getSecretStripe } from "$lib/stripe";
 import { getItem } from "$lib/ddb.js";
 import { TAX_RATE_ID } from "$env/static/private";
 import type Stripe from "stripe";
-import type { MenuItem, Restaurant, SessionMetadata } from "src/types/types";
+import type { MenuItem, Restaurant, SessionMetadata } from "../../types/types";
 import { error } from "@sveltejs/kit";
-import { getUserData } from "$lib/authentication";
+import { getUserData } from "src/routes/account/common";
 
-export const POST: RequestHandler = async ({ url, request, locals: { userID, sessionID } }) => {
-	const userDataP = getUserData({ sessionID, userID });
+export const POST: RequestHandler = async ({ url, request, locals: { userID, sessionToken } }) => {
+	const userDataP = getUserData({ sessionToken, userID });
 	const stripe = getSecretStripe();
 	const formData = await request.formData();
 

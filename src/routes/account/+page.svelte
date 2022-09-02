@@ -1,18 +1,14 @@
 <script lang="ts">
 	import type { PageData } from "./$types";
-	import { page } from "$app/stores";
-	import Login from "$lib/Login.svelte";
-	import type { User } from "src/types/types";
-	import GithubButton from "$lib/GithubButton.svelte";
-	import GoogleButton from "$lib/GoogleButton.svelte";
+	import Login from "./Login.svelte";
+	import type { User } from "../../types/types";
+	import { URLS } from "$lib/addresses";
 
 	export let data: PageData;
 	let userData: User | undefined = data.userData;
 
 	async function signOut() {
-		await fetch("/account/logout", { method: "POST" });
-		document.cookie = "sessionID=; Max-Age=0;";
-		document.cookie = "userID=; Max-Age=0;";
+		fetch(URLS.ACCOUNT, { method: "POST" });
 		location.reload();
 	}
 
@@ -51,10 +47,10 @@
 		</div>
 		<div class="flex gap-5">
 			{#if !userData.githubID}
-				<GithubButton text="Link Github" opts={{ referer: $page.url.pathname }} />
+				<!-- <GithubButton text="Link Github" opts={{ referer: $page.url.pathname }} /> -->
 			{/if}
 			{#if !userData.googleID}
-				<GoogleButton text="Link Google" opts={{ referer: $page.url.pathname }} />
+				<!-- <GoogleButton text="Link Google" opts={{ referer: $page.url.pathname }} /> -->
 			{/if}
 			<button class="cont w-60" on:click={signOut}>Sign out</button>
 		</div>

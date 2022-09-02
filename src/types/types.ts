@@ -28,7 +28,7 @@ export type User = {
 	email: string;
 	picture: string;
 	stripeCustomerID?: string;
-	sessionIDs?: string[];
+	sessionTokens?: string[];
 };
 
 export type UnserializableUser = {
@@ -39,7 +39,7 @@ export type UnserializableUser = {
 	email: string;
 	picture: string;
 	stripeCustomerID?: string;
-	sessionIDs?: Set<string>;
+	sessionTokens?: Set<string>;
 };
 
 export type SessionMetadata = {
@@ -50,13 +50,5 @@ export type SessionMetadata = {
 
 export type SignInButtonOptions = {
 	rememberMe: boolean;
-	referer: string;
-};
-
-export type EmailSignInButtonOptions = SignInButtonOptions & {
-	email: string;
-};
-
-export type LinkAccountButtonOptions = {
 	referer: string;
 };

@@ -1,16 +1,24 @@
 <script lang="ts">
 	import { page } from "$app/stores";
 	import { PUBLIC_GITHUB_CLIENT_ID } from "$env/static/public";
-	import type { LinkAccountButtonOptions, SignInButtonOptions } from "src/types/types";
-	import { encodeB64URL } from "./util";
+	import type { SignInButtonOptions } from "../../types/types";
+	import { URLS } from "$lib/addresses";
+	import { getEncoder } from "./common";
+	import { PassedSignInState } from "./login/+server";
 
-	export let opts: SignInButtonOptions | LinkAccountButtonOptions;
+	export let opts: SignInButtonOptions;
 	export let text: string | undefined;
+	export let stateToken: string;
 
 	$: params = new URLSearchParams({
 		client_id: PUBLIC_GITHUB_CLIENT_ID,
-		redirect_uri: `${$page.url.origin}/account/login/github`,
-		state: encodeB64URL(JSON.stringify(opts)),
+		redirect_uri: `${$page.url.origin}${URLS.LOGIN}`,
+		state: getEncoder(PassedSignInState).encode({
+			state: stateToken,
+			rememberMe: opts.rememberMe,
+			referer: opts.referer,
+			method: "githubID",
+		}),
 		scope: "user:email",
 	});
 </script>

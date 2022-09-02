@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { inputValidator, numberValidator } from "$lib/util";
 
-	import type { MenuItem, Restaurant } from "src/types/types";
+	import type { MenuItem, Restaurant } from "../../types/types";
 	import { fly } from "svelte/transition";
 
 	let name: string | undefined;

@@ -2,7 +2,7 @@ import { getSecretStripe } from "$lib/stripe";
 import type Stripe from "stripe";
 import type { RequestHandler } from "./$types";
 import ddb, { putItem } from "$lib/ddb";
-import type { Order, SessionMetadata } from "src/types/types";
+import type { Order, SessionMetadata } from "../../types/types";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
 import { MAIL_FROM_DOMAIN } from "$env/static/private";

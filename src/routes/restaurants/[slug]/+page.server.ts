@@ -1,6 +1,6 @@
 import { getItem } from "$lib/ddb.js";
 import { error } from "@sveltejs/kit";
-import type { Restaurant } from "src/types/types";
+import type { Restaurant } from "../../types/types";
 import type { PageServerLoad } from "./$types";
 
 export const prerender = false;

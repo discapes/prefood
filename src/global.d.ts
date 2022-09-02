@@ -12,8 +12,9 @@ declare global {
 		// and what to do when importing types
 
 		interface Locals {
-			sessionID?: string;
+			sessionToken?: string;
 			userID?: string;
+			state?: string;
 		}
 
 		// interface Platform {}

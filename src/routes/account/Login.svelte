@@ -2,33 +2,27 @@
 	import GoogleButton from "./GoogleButton.svelte";
 	import GithubButton from "./GithubButton.svelte";
 	import { page } from "$app/stores";
-	import { encodeB64URL } from "./util";
-	import type { EmailSignInButtonOptions } from "src/types/types";
+	import { v4 as uuidv4 } from "uuid";
+	import { URLS } from "../../lib./../lib/addresses";
+	import { goto } from "$app/navigation";
+	import { getEncoder } from "./common";
+	import { EmailEndpointOptions } from "./emailendpoint/+page.server";
 
 	let rememberMe = true;
-
 	let emailLoginReply = "";
+	const stateToken = uuidv4();
 
 	async function emailLogin(e: SubmitEvent) {
 		const email = new FormData(e.target as HTMLFormElement).get("email");
+		if (!(typeof email === "string")) return;
 		(<HTMLFormElement>e.target).reset();
 
-		const options = encodeB64URL(
-			JSON.stringify({
-				rememberMe,
-				referer: $page.url.pathname,
-				email,
-			} as EmailSignInButtonOptions)
-		);
-
-		const emailSenderURL = `${$page.url.origin}/account/login/email?state=${options}`;
-		await fetch(emailSenderURL).then(async (res) => {
-			if (res.ok) {
-				emailLoginReply = await res.text();
-			} else {
-				emailLoginReply = `${res.status} - ${await res.text()}!`;
-			}
+		const options = getEncoder(EmailEndpointOptions).encode({
+			rememberMe,
+			referer: $page.url.pathname,
+			email,
 		});
+		goto(URLS.EMAILENDPOINT + "?options=" + options);
 	}
 </script>
 
@@ -40,8 +34,8 @@
 	<h1 class="mb-0">Sign in</h1>
 
 	<div class="flex gap-3 font-['Roboto'] justify-center flex-wrap">
-		<GoogleButton text={undefined} opts={{ rememberMe, referer: $page.url.pathname }} />
-		<GithubButton text={undefined} opts={{ rememberMe, referer: $page.url.pathname }} />
+		<GoogleButton {stateToken} text={undefined} opts={{ rememberMe, referer: $page.url.pathname }} />
+		<GithubButton {stateToken} text={undefined} opts={{ rememberMe, referer: $page.url.pathname }} />
 	</div>
 
 	<form class="flex gap-3 justify-center w-full" on:submit|preventDefault={emailLogin}>

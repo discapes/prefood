@@ -8,7 +8,6 @@
   - [x] GitHub authentication
   - [ ] create account with email
   - [ ] email sign in
-  - [ ] checkout state parameter and if its needed to prevent XSRF
   - [ ] allow changing profile info and authentication methods, and delete account
   - [x] referer injection impossible, form for creating account is confirmed to belong to email
   - [x] remove google verify and other TODOs
@@ -16,11 +15,15 @@
     - [x] user tries to link external account thats already linked to an internal account
     - [x] make sure email is unique key
     - [x] can't create account with email x if email x is already a key
-- [ ] cookie security (SameSite, Secure)
-- [ ] other security vulns
+- [ ] security
+  - [x] additional cookie security (SameSite, Secure, HttpOnly)
+  - [x] make sure all sensitive endpoints POST
+    - SOP and SvelteKit prevent CSRF
+  - [x] prevent login csrf with double-submit cookie + state
+  - [x] prevent XSS by not using @html
+- [ ] don't leak internal database data to even authenticated users
 - [ ] add titles for each page
 - [ ] human readable receipt
-- [ ] don't leak stripe data
 - [ ] view where restaurant owners can change status of orders
 - [ ] serviceworker
   - [ ] Web push API

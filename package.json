@@ -18,26 +18,26 @@
 		"@types/google.accounts": "^0.0.2",
 		"@types/serviceworker": "^0.0.51",
 		"@types/uuid": "^8.3.4",
-		"@typescript-eslint/eslint-plugin": "^5.33.1",
-		"@typescript-eslint/parser": "^5.33.1",
+		"@typescript-eslint/eslint-plugin": "^5.36.1",
+		"@typescript-eslint/parser": "^5.36.1",
 		"autoprefixer": "^10.4.8",
-		"eslint": "^8.22.0",
+		"eslint": "^8.23.0",
 		"eslint-config-prettier": "^8.5.0",
 		"eslint-plugin-svelte3": "^4.0.0",
 		"postcss": "^8.4.16",
 		"prettier": "^2.7.1",
-		"svelte": "^3.49.0",
-		"svelte-check": "^2.8.1",
+		"svelte": "^3.50.0",
+		"svelte-check": "^2.9.0",
 		"svelte-preprocess": "^4.10.7",
 		"tailwindcss": "^3.1.8",
 		"tslib": "^2.4.0",
-		"typescript": "^4.7.4",
-		"vite": "^3.0.9"
+		"typescript": "^4.8.2",
+		"vite": "beta"
 	},
 	"type": "module",
 	"dependencies": {
-		"@aws-sdk/client-dynamodb": "^3.154.0",
-		"@aws-sdk/lib-dynamodb": "^3.154.0",
+		"@aws-sdk/client-dynamodb": "^3.163.0",
+		"@aws-sdk/lib-dynamodb": "^3.163.0",
 		"@fontsource/fira-mono": "^4.5.9",
 		"@stripe/stripe-js": "^1.35.0",
 		"@types/nodemailer": "^6.4.5",
@@ -46,8 +46,9 @@
 		"nodemailer": "^6.7.8",
 		"postgres": "^3.2.4",
 		"prettier-plugin-svelte": "^2.7.0",
-		"sass": "^1.54.5",
-		"stripe": "^10.3.0",
-		"uuid": "^8.3.2"
+		"sass": "^1.54.8",
+		"stripe": "^10.7.0",
+		"uuid": "^8.3.2",
+		"zod": "^3.18.0"
 	}
 }

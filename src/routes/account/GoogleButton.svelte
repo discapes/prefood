@@ -1,18 +1,26 @@
 <script lang="ts">
 	import { PUBLIC_GOOGLE_CLIENT_ID } from "$env/static/public";
 	import { page } from "$app/stores";
-	import type { LinkAccountButtonOptions, SignInButtonOptions } from "src/types/types";
-	import { encodeB64URL } from "./util";
+	import type { SignInButtonOptions } from "../../types/types";
+	import { URLS } from "$lib/addresses";
+	import { getEncoder } from "./common";
+	import { PassedSignInState } from "./login/+server";
 
-	export let opts: SignInButtonOptions | LinkAccountButtonOptions;
+	export let opts: SignInButtonOptions;
 	export let text: string | undefined;
+	export let stateToken: string;
 
 	$: params = new URLSearchParams({
 		client_id: PUBLIC_GOOGLE_CLIENT_ID,
 		response_type: "code",
-		redirect_uri: `${$page.url.origin}/account/login/google`,
+		redirect_uri: `${$page.url.origin}${URLS.LOGIN}`,
 		scope: "openid profile email",
-		state: encodeB64URL(JSON.stringify(opts)),
+		state: getEncoder(PassedSignInState).encode({
+			state: stateToken,
+			rememberMe: opts.rememberMe,
+			referer: opts.referer,
+			method: "googleID",
+		}),
 	});
 </script>
 

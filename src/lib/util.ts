@@ -1,4 +1,4 @@
-import type { Order } from "src/types/types";
+import type { Order } from "../types/types";
 
 export function shuffle<T>(array: T[]) {
 	let currentIndex = array.length,
@@ -45,7 +45,7 @@ export function log(message: any) {
 	console.log(message);
 }
 
-export function error(message: string) {
+export function cerror(message: string) {
 	console.error(message);
 	throw new Error(message);
 }

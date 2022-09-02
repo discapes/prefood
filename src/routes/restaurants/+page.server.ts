@@ -2,7 +2,7 @@ import ddb from "$lib/ddb.js";
 import type { PageServerLoad } from "./$types";
 import { ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
-import type { Restaurant } from "src/types/types";
+import type { Restaurant } from "../../types/types";
 
 // return {
 // 	cahce: "no cache, invalidate this manually and refresh? or do swr?"??;
