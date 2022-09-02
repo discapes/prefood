@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Order } from "../../types/types";
+	import type { Order } from "$lib/types";
 	import { fly } from "svelte/transition";
 	import type { PageData } from "./$types";
 
@@ -39,7 +39,7 @@
 </section>
 
 <style>
-	@import "../../../spinner.module.css";
+	@import "../../../styles/spinner.module.css";
 
 	/* :global(pre) {
 		background-color: rgba(150, 150, 150, 0.1);

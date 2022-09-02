@@ -1,16 +1,4 @@
-import type { PageServerLoad } from "./$types";
-import { z } from "zod";
-import { getDecoder, getUserData, getUserIDFromIndexedAttr_unsafe } from "../common";
-import { log } from "$lib/util";
-import { sendMail } from "$lib/mail";
-import { MAIL_FROM_DOMAIN } from "$env/static/private";
 export {};
-
-export const EmailEndpointOptions = z.object({
-	rememberMe: z.boolean(),
-	referer: z.string(),
-	email: z.string(),
-});
 
 // export const load: PageServerLoad = async ({ url }) => {
 // 	const { rememberMe, referer, email } = getDecoder(EmailEndpointOptions).parse(url.searchParams.get("options"));

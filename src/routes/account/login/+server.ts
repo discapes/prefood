@@ -1,19 +1,10 @@
 import { SESSION_MAXAGE_HOURS } from "$env/static/private";
-import { decodeB64URL } from "$lib/util";
+import { PassedSignInState } from "$lib/types";
+import { getDecoder } from "$lib/util";
 import { error, type RequestHandler } from "@sveltejs/kit";
 import cookie from "cookie";
-import { z } from "zod";
-import { loginOrCreateAccount } from "./common";
-import { getIdentityFromURL, getEncoder, getDecoder } from "../common";
-import { identMethods } from "../identMethods";
-
-export const PassedSignInState = z.object({
-	state: z.string(),
-	rememberMe: z.boolean(),
-	referer: z.string(),
-	method: identMethods,
-});
-export type PassedSignInState = z.infer<typeof PassedSignInState>;
+import { getIdentityFromURL } from "../lib";
+import { loginOrCreateAccount } from "./lib";
 
 export const GET: RequestHandler = async ({ url, locals: { state } }) => {
 	const options = getDecoder(PassedSignInState).parse(url.searchParams.get("state"));

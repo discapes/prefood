@@ -1,9 +1,10 @@
 import type { PageServerLoad } from "./$types";
-import { getUserData, removeSessionToken } from "src/routes/account/common";
-import type { User } from "../../types/types";
 import { error, type RequestHandler } from "@sveltejs/kit";
 import cookie from "cookie";
 import { record, z } from "zod";
+import { getUserData } from "$lib/server/auth";
+import type { User } from "$lib/types";
+import { removeSessionToken } from "./lib";
 
 export const prerender = false;
 type AuthPair = { sessionToken: string; userID: string };

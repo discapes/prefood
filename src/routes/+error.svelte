@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/stores";
-	import Banner from "$lib/Banner.svelte";
+	import Banner from "$lib/components/Banner.svelte";
 </script>
 
 <svelte:head>

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import Header from "$lib/header/Header.svelte";
+	import Header from "$lib/components/header/Header.svelte";
 	import { setContext } from "svelte";
 	import { writable } from "svelte/store";
 	import type { Writable } from "svelte/store";
-	import "../theme.css";
-	import "../classes.scss";
+	import "../styles/theme.css";
+	import "../styles/classes.scss";
 
 	let darkmode: Writable<boolean | null> = writable(null);
 	setContext("darkmode", darkmode);

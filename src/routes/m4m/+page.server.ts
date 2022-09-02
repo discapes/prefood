@@ -1,6 +1,6 @@
-import type { PageServerLoad, Action } from "./$types";
-import { getSecretStripe } from "$lib/stripe";
+import { getSecretStripe } from "$lib/server/stripe";
 import { error } from "@sveltejs/kit";
+import type { Action, PageServerLoad } from "./$types";
 
 export const prerender = false;
 

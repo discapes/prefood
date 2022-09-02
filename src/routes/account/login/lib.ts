@@ -1,10 +1,11 @@
-import { log, cerror } from "$lib/util";
-import { v4 as uuidv4 } from "uuid";
-import { hash } from "$lib/crypto";
-import ddb from "$lib/ddb";
-import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { ALLOWED_LOGINS } from "$env/static/private";
-import { type Identity, getUserIDFromIndexedAttr_unsafe, removeSessionToken } from "../common";
+import { hash } from "$lib/server/crypto";
+import ddb from "$lib/server/ddb";
+import type { Identity } from "$lib/types";
+import { cerror, log } from "$lib/util";
+import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
+import { v4 as uuidv4 } from "uuid";
+import { getUserIDFromIndexedAttr_unsafe, removeSessionToken } from "../lib";
 
 export async function loginOrCreateAccount(acd: Identity) {
 	log({ acd });

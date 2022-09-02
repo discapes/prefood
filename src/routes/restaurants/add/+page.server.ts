@@ -1,5 +1,5 @@
 import type { Action } from "@sveltejs/kit";
-import { putItem, deleteItem } from "$lib/ddb";
+import { putItem, deleteItem } from "$lib/server/ddb";
 
 export const prerender = false;
 

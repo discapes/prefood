@@ -2,13 +2,13 @@
 	import type { PageData } from "./$types";
 	export let data: PageData;
 
-	import { PUBLIC_STRIPE_KEY } from "$env/static/public";
-	import { getContext, onMount } from "svelte";
-	import { fade } from "svelte/transition";
-	import type { Unsubscriber, Writable } from "svelte/store";
-	import Slider from "$lib/Slider.svelte";
 	import { beforeNavigate } from "$app/navigation";
+	import { PUBLIC_STRIPE_KEY } from "$env/static/public";
+	import Slider from "$lib/components/Slider.svelte";
 	import { loadStripe, type Stripe, type StripeElements, type StripePaymentElement } from "@stripe/stripe-js";
+	import { getContext, onMount } from "svelte";
+	import type { Unsubscriber, Writable } from "svelte/store";
+	import { fade } from "svelte/transition";
 
 	const darkmode: Writable<boolean> = getContext("darkmode");
 
@@ -117,7 +117,7 @@
 </div>
 
 <style>
-	@import "../../spinner.module.css";
+	@import "../../styles/spinner.module.css";
 	button {
 		background: #5469d4;
 		font-family: Arial, sans-serif;

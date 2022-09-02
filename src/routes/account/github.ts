@@ -1,10 +1,10 @@
 import { GITHUB_CLIENT_SECRET } from "$env/static/private";
 import { PUBLIC_GITHUB_CLIENT_ID } from "$env/static/public";
+import { Identity } from "$lib/types";
 import { error } from "@sveltejs/kit";
 import { z } from "zod";
-import { Identity } from "./common";
 
-export async function getIdentityInfoGithub(url: URL): Identity {
+export async function getIdentityInfoGithub(url: URL): Promise<Identity> {
 	const code = url.searchParams.get("code");
 	if (typeof code !== "string") throw error(400, "code is undefined");
 

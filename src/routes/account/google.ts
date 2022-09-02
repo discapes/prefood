@@ -1,8 +1,8 @@
-import jwtDecode from "jwt-decode";
-import { PUBLIC_GOOGLE_CLIENT_ID } from "$env/static/public";
-import { error } from "@sveltejs/kit";
 import { GOOGLE_CLIENT_SECRET } from "$env/static/private";
-import { Identity } from "./common";
+import { PUBLIC_GOOGLE_CLIENT_ID } from "$env/static/public";
+import { Identity } from "$lib/types";
+import { error } from "@sveltejs/kit";
+import jwtDecode from "jwt-decode";
 
 export async function getIdentityInfoGoogle(url: URL) {
 	const code = url.searchParams.get("code");

@@ -1,13 +1,14 @@
 import { URLS } from "$lib/addresses";
+import { IdentificationKeyName } from "$lib/types";
+import { getDecoder } from "$lib/util";
 import { error, type RequestHandler } from "@sveltejs/kit";
-import { getDecoder, getIdentityFromURL, identMethods } from "../common";
-import { z } from "zod";
-import { decodeB64URL } from "$lib/util";
-import { linkExternalAccount } from "./common";
 import cookie from "cookie";
+import { z } from "zod";
+import { getIdentityFromURL } from "../lib";
+import { linkExternalAccount } from "./lib";
 
 export const PassedLinkState = z.object({
-	method: identMethods,
+	method: IdentificationKeyName,
 	state: z.string(),
 });
 export type PassedLinkState = z.infer<typeof PassedLinkState>;

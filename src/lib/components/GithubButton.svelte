@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { page } from "$app/stores";
 	import { PUBLIC_GITHUB_CLIENT_ID } from "$env/static/public";
-	import type { SignInButtonOptions } from "../../types/types";
 	import { URLS } from "$lib/addresses";
-	import { getEncoder } from "./common";
-	import { PassedSignInState } from "./login/+server";
+	import { PassedSignInState, type SignInButtonOptions } from "$lib/types";
+	import { getEncoder } from "$lib/util";
 
 	export let opts: SignInButtonOptions;
 	export let text: string | undefined;

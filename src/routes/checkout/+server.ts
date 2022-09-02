@@ -1,11 +1,11 @@
 import type { RequestHandler } from "./$types";
-import { getSecretStripe } from "$lib/stripe";
-import { getItem } from "$lib/ddb.js";
+import { getSecretStripe } from "$lib/server/stripe";
+import { getItem } from "$lib/server/ddb.js";
 import { TAX_RATE_ID } from "$env/static/private";
 import type Stripe from "stripe";
-import type { MenuItem, Restaurant, SessionMetadata } from "../../types/types";
+import type { MenuItem, Restaurant, SessionMetadata } from "$lib/types";
 import { error } from "@sveltejs/kit";
-import { getUserData } from "src/routes/account/common";
+import { getUserData } from "$lib/server/auth";
 
 export const POST: RequestHandler = async ({ url, request, locals: { userID, sessionToken } }) => {
 	const userDataP = getUserData({ sessionToken, userID });

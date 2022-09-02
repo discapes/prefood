@@ -1,9 +1,10 @@
 <script lang="ts">
-	import type { PageData } from "./$types";
-	import type { Order, User } from "../../types/types";
-	import { fly } from "svelte/transition";
+	import Login from "$lib/components/Login.svelte";
+
+	import type { Order, User } from "$lib/types";
 	import { getSlugFromOrder } from "$lib/util";
-	import Login from "../account/Login.svelte";
+	import { fly } from "svelte/transition";
+	import type { PageData } from "./$types";
 
 	export let data: PageData;
 	let userData: User | undefined = data.userData;

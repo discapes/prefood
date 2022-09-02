@@ -1,8 +1,8 @@
-import { getUserData } from "src/routes/account/common";
-import ddb from "$lib/ddb";
+import { getUserData } from "$lib/server/auth";
+import ddb from "$lib/server/ddb";
+import type { Order, User } from "$lib/types";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
-import type { Order, User } from "../../types/types";
 import type { PageServerLoad } from "./$types";
 
 export const prerender = false;

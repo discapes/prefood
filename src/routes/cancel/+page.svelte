@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Banner from "$lib/Banner.svelte";
+	import Banner from "$lib/components/Banner.svelte";
 
 	let title: string = "CANCEL";
 	let subtitle: string = "didn't work, try again";

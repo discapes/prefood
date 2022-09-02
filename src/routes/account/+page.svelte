@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { PageData } from "./$types";
-	import Login from "./Login.svelte";
-	import type { User } from "../../types/types";
 	import { URLS } from "$lib/addresses";
+	import type { User } from "$lib/types";
+	import Login from "$lib/components/Login.svelte";
 
 	export let data: PageData;
 	let userData: User | undefined = data.userData;

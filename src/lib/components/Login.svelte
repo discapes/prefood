@@ -5,8 +5,8 @@
 	import { v4 as uuidv4 } from "uuid";
 	import { URLS } from "../../lib./../lib/addresses";
 	import { goto } from "$app/navigation";
-	import { getEncoder } from "./common";
-	import { EmailEndpointOptions } from "./emailendpoint/+page.server";
+	import { EmailEndpointOptions } from "$lib/types";
+	import { getEncoder } from "$lib/util";
 
 	let rememberMe = true;
 	let emailLoginReply = "";

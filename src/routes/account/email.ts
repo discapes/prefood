@@ -1,13 +1,6 @@
+import { getDecoderCrypt } from "$lib/server/crypto";
+import { EmailCode, type Identity } from "$lib/types";
 import { error } from "@sveltejs/kit";
-import { z } from "zod";
-import { getDecoderCrypt, Identity } from "./common";
-
-const EmailCode = z.object({
-	timestamp: z.number(),
-	email: z.string(),
-	name: z.string(),
-	picture: z.string(),
-});
 
 export async function getIdentityInfoEmail(url: URL): Promise<Identity> {
 	const { timestamp, email, name, picture } = getDecoderCrypt(EmailCode).parse(url.searchParams.get("code"));

@@ -1,4 +1,16 @@
-import type { Order } from "../types/types";
+import type { Order } from "./types";
+import { z } from "zod";
+
+export function getDecoder<T extends z.ZodTypeAny>(Type: T) {
+	return z.preprocess((a: unknown) => typeof a === "string" && JSON.parse(decodeB64URL(a)), Type);
+}
+export function getEncoder<T extends z.ZodTypeAny>(Type: T) {
+	return {
+		encode(a: z.infer<typeof Type>) {
+			return encodeB64URL(JSON.stringify(a));
+		},
+	};
+}
 
 export function shuffle<T>(array: T[]) {
 	let currentIndex = array.length,

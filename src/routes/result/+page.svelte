@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Banner from "$lib/Banner.svelte";
+	import Banner from "$lib/components/Banner.svelte";
 	import { PUBLIC_STRIPE_KEY } from "$env/static/public";
 	import { onMount } from "svelte";
 	import { loadStripe } from "@stripe/stripe-js";

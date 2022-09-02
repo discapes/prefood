@@ -1,14 +1,14 @@
-import { getSecretStripe } from "$lib/stripe";
-import type Stripe from "stripe";
-import type { RequestHandler } from "./$types";
-import ddb, { putItem } from "$lib/ddb";
-import type { Order, SessionMetadata } from "../../types/types";
+import { MAIL_FROM_DOMAIN } from "$env/static/private";
+import ddb, { putItem } from "$lib/server/ddb";
+import { sendMail } from "$lib/server/mail";
+import { getSecretStripe } from "$lib/server/stripe";
+import type { Order, SessionMetadata } from "$lib/types";
+import { getSlugFromOrder } from "$lib/util";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
-import { MAIL_FROM_DOMAIN } from "$env/static/private";
-import { getSlugFromOrder } from "$lib/util";
+import type Stripe from "stripe";
 import { v4 as uuidv4 } from "uuid";
-import { sendMail } from "$lib/mail";
+import type { RequestHandler } from "./$types";
 
 const endpointSecret = "whsec_7875c134218714a9d36bb383f34e1e0ac2fb5199d8d8cbabc1a757b8098fbf26";
 const stripe = getSecretStripe();

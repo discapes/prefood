@@ -1,7 +1,7 @@
 import { SMTP_PASSWORD, SMTP_SERVER, SMTP_USER } from "$env/static/private";
 import * as nodemailer from "nodemailer";
 import type Mail from "nodemailer/lib/mailer";
-import { cerror, log } from "./util";
+import { cerror, log } from "../util";
 
 export async function sendMail(options: Mail.Options) {
 	log(`sending email to ${options.to}`);

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { Restaurant } from "../../types/types";
+	import type { Restaurant } from "$lib/types";
 	import { fly } from "svelte/transition";
 	import type { PageData } from "./$types";
 
@@ -48,7 +48,7 @@
 </section>
 
 <style>
-	@import "../../../spinner.module.css";
+	@import "../../../styles/spinner.module.css";
 
 	pre {
 		background-color: rgba(150, 150, 150, 0.1);

@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { PUBLIC_GOOGLE_CLIENT_ID } from "$env/static/public";
 	import { page } from "$app/stores";
-	import type { SignInButtonOptions } from "../../types/types";
+	import { PassedSignInState, type SignInButtonOptions } from "$lib/types";
 	import { URLS } from "$lib/addresses";
-	import { getEncoder } from "./common";
-	import { PassedSignInState } from "./login/+server";
+	import { getEncoder } from "$lib/util";
 
 	export let opts: SignInButtonOptions;
 	export let text: string | undefined;

@@ -1,5 +1,6 @@
 import { ENCRYPTION_KEY_HEX_32 } from "$env/static/private";
 import { createCipheriv, randomBytes, createDecipheriv, createHash } from "crypto";
+import { z } from "zod";
 
 const key = Buffer.from(ENCRYPTION_KEY_HEX_32, "hex");
 const alg = "aes256";
@@ -19,4 +20,15 @@ export function decrypt(msg: string) {
 
 export function hash(str: string) {
 	return createHash("sha256").update(str).digest("hex");
+}
+
+export function getDecoderCrypt<T extends z.ZodTypeAny>(Type: T) {
+	return z.preprocess((a: unknown) => typeof a === "string" && JSON.parse(decrypt(a)), Type);
+}
+export function getEncoderCrypt<T extends z.ZodTypeAny>(Type: T) {
+	return {
+		encode(a: z.infer<typeof Type>) {
+			return encrypt(JSON.stringify(a));
+		},
+	};
 }
