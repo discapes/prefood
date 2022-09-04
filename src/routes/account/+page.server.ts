@@ -1,10 +1,11 @@
 import { getUserData } from "$lib/server/auth";
-import { error } from "@sveltejs/kit";
+import { error, redirect } from "@sveltejs/kit";
 import { z } from "zod";
 import type { PageServerLoad, Actions } from "./$types";
 import { removeSessionToken } from "./lib";
 import cookie from "cookie";
 import { log } from "$lib/util";
+import { URLS } from "$lib/addresses";
 
 export const prerender = false;
 
@@ -17,6 +18,7 @@ export const load: PageServerLoad = async ({ locals: { userID, sessionToken } })
 export const Edits = z
 	.object({
 		name: z.string(),
+		bio: z.string(),
 		picture: z.string(),
 	})
 	.partial();
@@ -34,6 +36,18 @@ export const actions: Actions = {
 	editprofile: async ({ url, fields, locals: { sessionToken, userID } }) => {
 		const edits = Edits.parse(Object.fromEntries(fields.entries()));
 		log(url.pathname, { edits });
+		throw error(500, "TODO");
+	},
+	deleteaccount: async ({ locals: { sessionToken, userID } }) => {
+		log("deleteaccount");
+		throw error(500, "TODO");
+	},
+	revoke: async ({ locals: { sessionToken, userID } }) => {
+		log("revoke");
+		throw error(500, "TODO");
+	},
+	unlink: async ({ locals: { sessionToken, userID } }) => {
+		log("revoke");
 		throw error(500, "TODO");
 	},
 };

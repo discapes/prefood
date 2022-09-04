@@ -65,6 +65,7 @@ export type User = {
 	userID: string;
 	googleID?: string;
 	githubID?: string;
+	bio?: string;
 	name: string;
 	email: string;
 	picture: string;

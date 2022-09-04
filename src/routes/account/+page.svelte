@@ -18,6 +18,7 @@
 	const stateToken: Writable<string> = getContext("stateToken");
 	const { userData } = data;
 
+	let imgUpload: HTMLInputElement;
 	let editMode = false;
 
 	let params: Omit<LinkParameters, "method">;
@@ -36,41 +37,46 @@
 	<Login />
 {:else}
 	<div class="flex flex-col gap-3 items-center m-10">
-		<img alt="profile" class="object-cover h-40 w-40 rounded-full border-8 border-white dark:border-neutral-700	" src={userData.picture} />
+		<input type="file" bind:this={imgUpload} class="hidden" />
+		<img
+			on:click={() => editMode && imgUpload.click()}
+			alt="profile"
+			class:cursor-pointer={editMode}
+			class="object-cover h-40 w-40 rounded-full border-8 border-white dark:border-neutral-700	"
+			src={userData.picture}
+		/>
 
-		<div class="hidden sm:flex">
-			<div class="flex flex-col ml-4 mr-20">
-				<h2>Name:</h2>
-				<h2>Email:</h2>
-			</div>
-			<div class="flex flex-col">
-				{#if !editMode}
-					<div>
-						<h2 class="text-left font-bold inline">{userData.name}</h2>
-						<img on:click={() => (editMode = true)} class="cursor-pointer h-6 w-6 inline align-baseline ml-3" src={pen} />
-					</div>
-					<div>
-						<h2 class="text-left font-bold inline">{userData.email}</h2>
-						<img on:click={() => (editMode = true)} class="cursor-pointer h-6 w-6 inline align-baseline ml-3" src={pen} />
-					</div>
-				{:else}
-					<form class="contents" id="editform" use:enhance={enhanceProps} method="POST" action="?/editprofile">
-						<input name="name" class="h-full text-2xl bg-transparent border-b font-bold text-left w-80" value={userData.name} />
-						<input name="email" class="h-full text-2xl bg-transparent border-b font-bold text-left w-80" value={userData.email} />
-						<button type="submit" class="cont w-60 mt-5" form="editform">Save</button>
-					</form>
-				{/if}
-			</div>
-		</div>
-		<div class="flex flex-col items-center sm:hidden">
-			<h2 class="mb-0">Name:</h2>
-			<h2 class="my-0 text-left font-bold">{userData.name}</h2>
-			<h2 class="mb-0">Email:</h2>
-			<h2 class="mt-0 text-left font-bold">{userData.email}</h2>
+		<div class="grid grid-cols-[auto_auto] gap-x-3">
+			<h2 class="text-right">Name:</h2>
+			{#if !editMode}
+				<div>
+					<h2 class="text-left font-bold inline">{userData.name}</h2>
+					<img on:click={() => (editMode = true)} class="dark:invert cursor-pointer h-6 w-6 inline align-baseline ml-3" src={pen} />
+				</div>
+			{:else}
+				<input form="editform" name="name" class="h-full text-2xl bg-transparent border-b font-bold text-left w-80" value={userData.name} />
+			{/if}
+			<h2 class="text-right">Bio:</h2>
+			{#if !editMode}
+				<div>
+					<h2 class="text-left font-bold inline">{userData.bio ?? ""}</h2>
+					<img on:click={() => (editMode = true)} class="dark:invert cursor-pointer h-6 w-6 inline align-baseline ml-3" src={pen} />
+				</div>
+			{:else}
+				<input form="editform" name="email" class="h-full text-2xl bg-transparent border-b font-bold text-left w-80" value={userData.bio ?? ""} />
+			{/if}
+			<h2 class="text-right">Email:</h2>
+			<h2 class="font-bold text-left">{userData.email}</h2>
+			{#if editMode}
+				<div />
+				<form class="contents" id="editform" use:enhance={enhanceProps} method="POST" action="?/editprofile">
+					<button type="submit" class="cont w-60 mt-3" form="editform">Save</button>
+				</form>
+			{/if}
 		</div>
 
 		<h2>Identification methods</h2>
-		<div class="grid grid-cols-2 gap-5">
+		<div class="grid grid-cols-2 gap-y-2 gap-x-6">
 			<div class="bg-lime-300/50 rounded px-1 w-full h-full flex items-center">
 				<span class="text-xl">Email</span>
 			</div>
@@ -79,7 +85,9 @@
 				<span class="text-xl">Github</span>
 			</div>
 			{#if userData.githubID}
-				<button class="cont w-full h-full">Unlink</button>
+				<form method="POST" use:enhance={enhanceProps} action="?/unlink">
+					<button type="submit" name="method" value="githubID" class="cont w-full h-full">Unlink</button>
+				</form>
 			{:else}
 				<GithubButton
 					text="Link Github"
@@ -91,7 +99,9 @@
 				<span class="text-xl">Google</span>
 			</div>
 			{#if userData.googleID}
-				<button class="cont w-full h-full">Unlink</button>
+				<form method="POST" use:enhance={enhanceProps} action="?/unlink">
+					<button type="submit" name="method" value="googleID" class="cont w-full h-full">Unlink</button>
+				</form>
 			{:else}
 				<GoogleButton
 					text="Link Google"
@@ -101,10 +111,11 @@
 			{/if}
 		</div>
 		<div class="h-10" />
-		<form use:enhance={enhanceProps} method="POST" action="?/logout">
-			<button type="submit" class="cont w-60">Sign out</button>
+		<form method="POST" class="contents">
+			<button formaction="?/revoke" type="submit" class="cont w-60">Revoke logins</button>
+			<button formaction="?/logout" type="submit" class="cont w-60">Sign out</button>
 		</form>
-		<form use:enhance={enhanceProps} method="POST" on:submit={() => confirm("Delete account")} action="?/deleteaccount">
+		<form method="POST" on:submit={() => confirm("Delete account")} action="?/deleteaccount">
 			<button type="submit" class="cont w-60">Delete account</button>
 		</form>
 	</div>
