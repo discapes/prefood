@@ -5,11 +5,12 @@
 
 	export let passState: string;
 	export let text = "Sign in with Google";
+	export let redirect_uri = "";
 
 	$: params = new URLSearchParams({
 		client_id: PUBLIC_GOOGLE_CLIENT_ID,
 		response_type: "code",
-		redirect_uri: `${$page.url.origin}${URLS.LOGIN}`,
+		redirect_uri: redirect_uri || `${$page.url.origin}${URLS.LOGIN}`,
 		scope: "openid profile email",
 		state: passState,
 	});

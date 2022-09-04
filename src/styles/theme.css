@@ -11,6 +11,11 @@
 
 * {
 	transition: color 0.1s linear;
+	border-color: black;
+}
+
+.dark * {
+	border-color: white;
 }
 
 body {

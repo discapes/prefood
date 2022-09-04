@@ -4,6 +4,12 @@ import { z } from "zod";
 export const IdentificationMethod = z.union([z.literal("githubID"), z.literal("googleID"), z.literal("email")]);
 export type IdentificationMethod = z.infer<typeof IdentificationMethod>;
 
+export const LinkParameters = z.object({
+	method: IdentificationMethod,
+	stateToken: z.string(),
+});
+export type LinkParameters = z.infer<typeof LinkParameters>;
+
 export const LoginParameters = z.object({
 	stateToken: z.string(),
 	rememberMe: z.boolean(),

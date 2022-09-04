@@ -1,29 +1,21 @@
 <script lang="ts">
-	import GoogleButton from "./GoogleButton.svelte";
-	import GithubButton from "./GithubButton.svelte";
 	import { page } from "$app/stores";
-	import { v4 as uuidv4 } from "uuid";
 	import { URLS } from "$lib/addresses";
-	import { onMount } from "svelte";
 	import { LoginParameters } from "$lib/types";
 	import { getEncoder } from "$lib/util";
-	import cookie from "cookie";
+	import { getContext } from "svelte";
+	import type { Writable } from "svelte/store";
+	import GithubButton from "./GithubButton.svelte";
+	import GoogleButton from "./GoogleButton.svelte";
 
+	let stateToken: Writable<string> = getContext("stateToken");
 	let rememberMe = true;
-	let stateToken: string;
-	onMount(() => {
-		stateToken = cookie.parse(document.cookie).state;
-		if (!stateToken) {
-			stateToken = uuidv4();
-			document.cookie = `state=${stateToken}; Path=/`;
-		}
-	});
 
 	let params: Omit<LoginParameters, "method">;
 	$: params = {
 		rememberMe,
 		referer: $page.url.pathname,
-		stateToken,
+		stateToken: $stateToken,
 	};
 </script>
 

@@ -1,17 +1,11 @@
 import { URLS } from "$lib/addresses";
-import { IdentificationMethod } from "$lib/types";
+import { IdentificationMethod, LinkParameters } from "$lib/types";
 import { getDecoder } from "$lib/util";
 import { error, type RequestHandler } from "@sveltejs/kit";
 import cookie from "cookie";
 import { z } from "zod";
 import { getTrustedIdentity } from "../lib";
 import { linkExternalAccount } from "./lib";
-
-export const LinkParameters = z.object({
-	method: IdentificationMethod,
-	stateToken: z.string(),
-});
-export type LinkParameters = z.infer<typeof LinkParameters>;
 
 // we don't need to verify state because this requires login details already
 export const GET: RequestHandler = async ({ url, locals: { sessionToken, userID, state } }) => {

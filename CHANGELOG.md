@@ -2,6 +2,8 @@
 
 ## TODO
 
+- [ ] database validation with zod
+- [ ] bio as a new profile field
 - [ ] allow changing profile info and authentication methods, and delete account
 - [ ] view where restaurant owners can see new orders and change their status
 - [ ] secure restaurant add page

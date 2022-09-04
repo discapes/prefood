@@ -5,6 +5,9 @@
 	import type { Writable } from "svelte/store";
 	import "../styles/theme.css";
 	import "../styles/classes.scss";
+	import cookie from "cookie";
+	import { onMount } from "svelte";
+	import { v4 as uuidv4 } from "uuid";
 
 	let darkmode: Writable<boolean | null> = writable(null);
 	setContext("darkmode", darkmode);
@@ -14,6 +17,16 @@
 		$darkmode = document.body.classList.contains("dark");
 		localStorage.setItem("darkmode", $darkmode.toString());
 	}
+
+	let stateToken: Writable<string | null> = writable(null);
+	setContext("stateToken", stateToken);
+	onMount(() => {
+		$stateToken = cookie.parse(document.cookie).state;
+		if (!$stateToken) {
+			$stateToken = uuidv4();
+			document.cookie = `state=${$stateToken}; Path=/`;
+		}
+	});
 </script>
 
 <div class="flex flex-col min-h-[100vh]">
