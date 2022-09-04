@@ -1,11 +1,14 @@
 import { GOOGLE_CLIENT_SECRET } from "$env/static/private";
 import { PUBLIC_GOOGLE_CLIENT_ID } from "$env/static/public";
-import { Identity } from "$lib/types";
+import { URLS } from "$lib/addresses";
+import { AccountCreationData, TrustedIdentity } from "$lib/types";
 import { error } from "@sveltejs/kit";
 import jwtDecode from "jwt-decode";
+import { log } from "$lib/util";
 
-export async function getIdentityInfoGoogle(url: URL) {
+export async function verifySenderGoogle(url: URL): Promise<{ i: TrustedIdentity; getACD: () => Promise<AccountCreationData> }> {
 	const code = url.searchParams.get("code");
+	log("verifySenderGoogle", { code });
 	if (typeof code !== "string") throw error(400, "code is undefined");
 
 	const atParams = new URLSearchParams({
@@ -13,10 +16,10 @@ export async function getIdentityInfoGoogle(url: URL) {
 		client_secret: GOOGLE_CLIENT_SECRET,
 		code,
 		grant_type: "authorization_code",
-		// redirect_uri: new URL("/account/login/google", url).href, // useless
+		redirect_uri: new URL(URLS.LOGIN, url).href, // useless
 	});
 
-	const profileData = await fetch(`https://oauth2.googleapis.com/token?${atParams}`, {
+	const acd = await fetch(`https://oauth2.googleapis.com/token?${atParams}`, {
 		method: "POST",
 		headers: {
 			Accept: "application/json",
@@ -25,7 +28,7 @@ export async function getIdentityInfoGoogle(url: URL) {
 		.then((res) => res.json())
 		.then((o) => jwtDecode(o.id_token)) // we can use any below as optional chaining is safe
 		.then((payload: any) =>
-			Identity.parse({
+			AccountCreationData.parse({
 				name: payload?.name,
 				email: payload?.email,
 				picture: payload?.picture,
@@ -33,6 +36,10 @@ export async function getIdentityInfoGoogle(url: URL) {
 				methodName: "googleID",
 			})
 		);
+	log("got access token and profile info");
 
-	return profileData;
+	return {
+		i: acd,
+		getACD: async () => acd,
+	};
 }

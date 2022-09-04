@@ -3,27 +3,28 @@
 	import GithubButton from "./GithubButton.svelte";
 	import { page } from "$app/stores";
 	import { v4 as uuidv4 } from "uuid";
-	import { URLS } from "../../lib./../lib/addresses";
-	import { goto } from "$app/navigation";
-	import { EmailEndpointOptions } from "$lib/types";
+	import { URLS } from "$lib/addresses";
+	import { onMount } from "svelte";
+	import { LoginParameters } from "$lib/types";
 	import { getEncoder } from "$lib/util";
+	import cookie from "cookie";
 
 	let rememberMe = true;
-	let emailLoginReply = "";
-	const stateToken = uuidv4();
+	let stateToken: string;
+	onMount(() => {
+		stateToken = cookie.parse(document.cookie).state;
+		if (!stateToken) {
+			stateToken = uuidv4();
+			document.cookie = `state=${stateToken}; Path=/`;
+		}
+	});
 
-	async function emailLogin(e: SubmitEvent) {
-		const email = new FormData(e.target as HTMLFormElement).get("email");
-		if (!(typeof email === "string")) return;
-		(<HTMLFormElement>e.target).reset();
-
-		const options = getEncoder(EmailEndpointOptions).encode({
-			rememberMe,
-			referer: $page.url.pathname,
-			email,
-		});
-		goto(URLS.EMAILENDPOINT + "?options=" + options);
-	}
+	let params: Omit<LoginParameters, "method">;
+	$: params = {
+		rememberMe,
+		referer: $page.url.pathname,
+		stateToken,
+	};
 </script>
 
 <svelte:head>
@@ -34,15 +35,15 @@
 	<h1 class="mb-0">Sign in</h1>
 
 	<div class="flex gap-3 font-['Roboto'] justify-center flex-wrap">
-		<GoogleButton {stateToken} text={undefined} opts={{ rememberMe, referer: $page.url.pathname }} />
-		<GithubButton {stateToken} text={undefined} opts={{ rememberMe, referer: $page.url.pathname }} />
+		<GoogleButton passState={getEncoder(LoginParameters).encode({ ...params, method: "googleID" })} />
+		<GithubButton passState={getEncoder(LoginParameters).encode({ ...params, method: "githubID" })} />
 	</div>
 
-	<form class="flex gap-3 justify-center w-full" on:submit|preventDefault={emailLogin}>
+	<form method="POST" class="flex gap-3 justify-center w-full" action={URLS.EMAILENDPOINT}>
 		<input name="email" class="cont w-full" placeholder="user@example.com" />
+		<input class="hidden" name="passState" value={getEncoder(LoginParameters).encode({ ...params, method: "email" })} />
 		<button type="submit" class="cont w-full basis-0 whitespace-nowrap"> Sign in with email </button>
 	</form>
-	{emailLoginReply}
 
 	<div class="flex gap-3 items-stretch">
 		<label for="rememberMe">Remember me:</label>

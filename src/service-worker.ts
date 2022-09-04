@@ -3,7 +3,7 @@ import { build, files, prerendered, version } from "$service-worker";
 const IMMUTABLE_CACHE = `immutable`;
 const PRERENDER_CACHE_PREFIX = `prerendered`;
 const PRERENDER_CACHE = `${PRERENDER_CACHE_PREFIX}-${version}`;
-const RUNTIME_CACHE = `runtime`;
+// const RUNTIME_CACHE = `runtime`;
 
 self.addEventListener("install", () =>
 	/*e.waitUntil*/ Promise.all([
@@ -48,9 +48,9 @@ self.addEventListener("install", () =>
 	])
 );
 
-function matchCaches(cacheNames: string[], url: string) {
-	return Promise.any(cacheNames.map((c) => resolveIfTruthy(caches.open(c).then((cache) => cache.match(url)))));
-}
+// function matchCaches(cacheNames: string[], url: string) {
+// 	return Promise.any(cacheNames.map((c) => resolveIfTruthy(caches.open(c).then((cache) => cache.match(url)))));
+// }
 
 function resolveIfTruthy<T>(promise: Promise<T>): Promise<T> {
 	return new Promise((resolve) => {

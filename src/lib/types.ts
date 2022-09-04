@@ -1,39 +1,39 @@
 import type Stripe from "stripe";
 import { z } from "zod";
 
-export type PassedSignInState = z.infer<typeof PassedSignInState>;
+export const IdentificationMethod = z.union([z.literal("githubID"), z.literal("googleID"), z.literal("email")]);
+export type IdentificationMethod = z.infer<typeof IdentificationMethod>;
 
-export const EmailEndpointOptions = z.object({
+export const LoginParameters = z.object({
+	stateToken: z.string(),
 	rememberMe: z.boolean(),
 	referer: z.string(),
-	email: z.string(),
+	method: IdentificationMethod,
 });
+export type LoginParameters = z.infer<typeof LoginParameters>;
 
-export const IdentificationKeyName = z.union([z.literal("githubID"), z.literal("googleID"), z.literal("email")]);
-export type IdentificationKeyName = z.infer<typeof IdentificationKeyName>;
-
-export const PassedSignInState = z.object({
-	state: z.string(),
-	rememberMe: z.boolean(),
-	referer: z.string(),
-	method: IdentificationKeyName,
-});
-
-export const Identity = z.object({
-	email: z.string(),
-	name: z.string(),
+export const TrustedIdentity = z.object({
 	methodValue: z.string(),
-	methodName: IdentificationKeyName,
-	picture: z.string(),
+	methodName: IdentificationMethod,
 });
-export type Identity = z.infer<typeof Identity>;
+export type TrustedIdentity = z.infer<typeof TrustedIdentity>;
 
-export const EmailCode = z.object({
+export const AccountCreationData = TrustedIdentity.and(
+	z.object({
+		email: z.string(),
+		name: z.string(),
+		picture: z.string(),
+	})
+);
+export type AccountCreationData = z.infer<typeof AccountCreationData>;
+
+export const EmailLoginCode = z.object({
 	timestamp: z.number(),
 	email: z.string(),
-	name: z.string(),
-	picture: z.string(),
+	name: z.string().optional(),
+	picture: z.string().optional(),
 });
+export type EmailLoginCode = z.infer<typeof EmailLoginCode>;
 
 export type MenuItem = {
 	name: string;
@@ -81,9 +81,4 @@ export type SessionMetadata = {
 	linkedCID: string;
 	userID: string;
 	restaurantName: string;
-};
-
-export type SignInButtonOptions = {
-	rememberMe: boolean;
-	referer: string;
 };

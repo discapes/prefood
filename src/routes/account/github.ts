@@ -1,11 +1,13 @@
 import { GITHUB_CLIENT_SECRET } from "$env/static/private";
 import { PUBLIC_GITHUB_CLIENT_ID } from "$env/static/public";
-import { Identity } from "$lib/types";
+import { AccountCreationData, TrustedIdentity } from "$lib/types";
 import { error } from "@sveltejs/kit";
 import { z } from "zod";
+import { log } from "$lib/util";
 
-export async function getIdentityInfoGithub(url: URL): Promise<Identity> {
+export async function verifySenderGithub(url: URL): Promise<{ i: TrustedIdentity; getACD: () => Promise<AccountCreationData> }> {
 	const code = url.searchParams.get("code");
+	log("verifySenderGithub", { code });
 	if (typeof code !== "string") throw error(400, "code is undefined");
 
 	const atParams = new URLSearchParams({
@@ -27,7 +29,7 @@ export async function getIdentityInfoGithub(url: URL): Promise<Identity> {
 	const acd = await fetch("https://api.github.com/user", { headers: { Authorization: `token ${access_token}` } })
 		.then((res) => res.json())
 		.then((o) =>
-			Identity.parse({
+			AccountCreationData.parse({
 				email: o?.email,
 				name: o?.name,
 				picture: o?.avatar_url,
@@ -36,5 +38,8 @@ export async function getIdentityInfoGithub(url: URL): Promise<Identity> {
 			})
 		);
 
-	return acd;
+	return {
+		i: acd,
+		getACD: async () => acd,
+	};
 }

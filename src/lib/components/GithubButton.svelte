@@ -2,22 +2,14 @@
 	import { page } from "$app/stores";
 	import { PUBLIC_GITHUB_CLIENT_ID } from "$env/static/public";
 	import { URLS } from "$lib/addresses";
-	import { PassedSignInState, type SignInButtonOptions } from "$lib/types";
-	import { getEncoder } from "$lib/util";
 
-	export let opts: SignInButtonOptions;
-	export let text: string | undefined;
-	export let stateToken: string;
+	export let passState: string;
+	export let text = "Sign in with Github";
 
 	$: params = new URLSearchParams({
 		client_id: PUBLIC_GITHUB_CLIENT_ID,
 		redirect_uri: `${$page.url.origin}${URLS.LOGIN}`,
-		state: getEncoder(PassedSignInState).encode({
-			state: stateToken,
-			rememberMe: opts.rememberMe,
-			referer: opts.referer,
-			method: "githubID",
-		}),
+		state: passState,
 		scope: "user:email",
 	});
 </script>
@@ -33,5 +25,5 @@
 			fill-rule="nonzero"
 		/>
 	</svg>
-	{text ?? "Sign in with Github"}
+	{text}
 </a>

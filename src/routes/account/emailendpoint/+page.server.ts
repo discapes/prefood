@@ -1,64 +1,77 @@
-export {};
+import { MAIL_FROM_DOMAIN } from "$env/static/private";
+import { URLS } from "$lib/addresses";
+import { getEncoderCrypt } from "$lib/server/crypto";
+import { sendMail } from "$lib/server/mail";
+import { EmailLoginCode } from "$lib/types";
+import { log } from "$lib/util";
+import { error, redirect } from "@sveltejs/kit";
+import { getUserIDFromIndexedAttr_unsafe } from "../lib";
+import type { Actions, PageServerLoad } from "./$types";
 
-// export const load: PageServerLoad = async ({ url }) => {
-// 	const { rememberMe, referer, email } = getDecoder(EmailEndpointOptions).parse(url.searchParams.get("options"));
+export const prerender = false;
 
-// 	if (await getUserIDFromIndexedAttr_unsafe({ idFieldName: "email", idValue: email })) {
-// 		const userData = await getUserData({});
-// 	}
-// };
+type EmailMeSuccess = {
+	sent: true;
+};
 
-// async function sendLoginEmail({ email, rememberMe, referer, url }: { email: string; rememberMe: boolean; referer: string; url: string }) {
-// 	log(`logging in with ${JSON.stringify({ email, rememberMe, url, referer })}`);
+type EmailMeFailure = {
+	sent: false;
+	email: string;
+	passState: string;
+};
 
-// 	let userID = await getUserIDFromIndexedAttr_unsafe({ idFieldName: "email", idValue: email });
-// 	let newSessionToken: string;
-// 	if (userID) {
-// 		log(`userID ${userID} found, adding new session id to user, sending sessionToken to email`);
-// 		newSessionToken = await addNewSessionToken_unsafe({ userID });
+type EmailMeResult = EmailMeSuccess | EmailMeFailure;
 
-// 		const options = encrypt(
-// 			JSON.stringify({
-// 				referer,
-// 				rememberMe: rememberMe.toString(),
-// 				userID,
-// 				sessionToken: newSessionToken,
-// 			})
-// 		);
+export const load: PageServerLoad = async ({ request }) => {
+	if (!(request.method === "POST")) throw redirect(303, ".");
+};
 
-// 		const endpoint = new URL("/account/login/email/logincb", url).href;
+export const actions: Actions = {
+	default: async ({ url, fields }): Promise<EmailMeResult> => {
+		const { email, passState } = Object.fromEntries(fields.entries());
+		log(url.pathname, { email, passState });
+		if (typeof email !== "string" || typeof passState !== "string") throw error(400, "invalid");
 
-// 		sendMail({
-// 			from: `"${MAIL_FROM_DOMAIN}" <no-reply@${MAIL_FROM_DOMAIN}>`, // sender address
-// 			to: <string>email, // list of receivers
-// 			subject: `Login link for ${MAIL_FROM_DOMAIN}`, // Subject line
-// 			text: `You can login at ${endpoint}?o=${options}`,
-// 		});
-// 	} else {
-// 		log(`userID for email ${email} not found, sending link to create account`);
-
-// 		const token = encrypt(
-// 			JSON.stringify({
-// 				email,
-// 			})
-// 		);
-
-// 		const options = encodeB64URL(
-// 			JSON.stringify({
-// 				token,
-// 				email,
-// 			})
-// 		);
-
-// 		const endpoint = new URL("/account/login/email/signupcb", url).href;
-
-// 		sendMail({
-// 			from: `"${MAIL_FROM_DOMAIN}" <no-reply@${MAIL_FROM_DOMAIN}>`, // sender address
-// 			to: <string>email, // list of receivers
-// 			subject: `Sign-up link for ${MAIL_FROM_DOMAIN}`, // Subject line
-// 			text: `You can create an account at ${endpoint}?o=${options}`,
-// 		});
-// 	}
-
-// 	return "Check your email.";
-// }
+		if (await getUserIDFromIndexedAttr_unsafe({ idFieldName: "email", idValue: email })) {
+			const code = getEncoderCrypt(EmailLoginCode).encode({
+				timestamp: Date.now(),
+				email,
+			});
+			await sendMail({
+				from: `"${MAIL_FROM_DOMAIN}" <no-reply@${MAIL_FROM_DOMAIN}>`, // sender address
+				to: <string>email, // list of receivers
+				subject: `Login link for ${MAIL_FROM_DOMAIN}`, // Subject line
+				text: `You can login at ${new URL(URLS.LOGIN, url)}?state=${passState}&code=${code}`,
+			});
+			return {
+				sent: true,
+			};
+		} else {
+			return {
+				sent: false,
+				email,
+				passState,
+			};
+		}
+	},
+	newuser: async ({ url, fields }): Promise<EmailMeSuccess> => {
+		const { email, name, picture, passState } = Object.fromEntries(fields.entries());
+		log(url.pathname, { email, passState, name, picture });
+		// needs to be encrypted so we know receiver actually has email
+		const code = getEncoderCrypt(EmailLoginCode).encode({
+			timestamp: Date.now(),
+			email,
+			picture,
+			name,
+		});
+		await sendMail({
+			from: `"${MAIL_FROM_DOMAIN}" <no-reply@${MAIL_FROM_DOMAIN}>`, // sender address
+			to: <string>email, // list of receivers
+			subject: `Account creation link for ${MAIL_FROM_DOMAIN}`, // Subject line
+			text: `You can verify at ${new URL(URLS.LOGIN, url)}?state=${passState}&code=${code}`,
+		});
+		return {
+			sent: true,
+		};
+	},
+};

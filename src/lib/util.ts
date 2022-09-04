@@ -53,8 +53,8 @@ export function getSlugFromOrder(order: Order) {
 	return btoa(order.userID) + "-" + order.timestamp;
 }
 
-export function log(message: any) {
-	console.log(message);
+export function log(message: unknown, obj?: unknown) {
+	console.log(message + (obj !== undefined ? " - " + JSON.stringify(obj) : ""));
 }
 
 export function cerror(message: string) {

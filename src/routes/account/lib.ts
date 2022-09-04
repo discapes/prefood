@@ -1,24 +1,28 @@
-import type { IdentificationKeyName, Identity } from "$lib/types";
+import type { TrustedIdentity, AccountCreationData, IdentificationMethod } from "$lib/types";
 import { QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
-import { hash } from "../../lib/server/crypto";
-import ddb from "../../lib/server/ddb";
-import { log } from "../../lib/util";
-import { getIdentityInfoEmail } from "./email";
-import { getIdentityInfoGithub } from "./github";
-import { getIdentityInfoGoogle } from "./google";
+import { hash } from "$lib/server/crypto";
+import ddb from "$lib/server/ddb";
+import { log } from "$lib/util";
+import { verifySenderEmail } from "./email";
+import { verifySenderGithub } from "./github";
+import { verifySenderGoogle } from "./google";
 
-export function getIdentityFromURL(url: URL, method: string): Promise<Identity> {
-	switch (method) {
-		case "githubID":
-			return getIdentityInfoGithub(url);
-		case "googleID":
-			return getIdentityInfoGoogle(url);
-		case "email":
-			return getIdentityInfoEmail(url);
-		default:
-			throw error(400, "invalid method");
-	}
+export async function getTrustedIdentity(url: URL, method: string): Promise<{ i: TrustedIdentity; getACD: () => Promise<AccountCreationData> }> {
+	const res = await (() => {
+		switch (method) {
+			case "githubID":
+				return verifySenderGithub(url);
+			case "googleID":
+				return verifySenderGoogle(url);
+			case "email":
+				return verifySenderEmail(url);
+			default:
+				throw error(400, "invalid method");
+		}
+	})();
+	log("got verified identity", res);
+	return res;
 }
 
 /*
@@ -31,7 +35,7 @@ export function getIdentityFromURL(url: URL, method: string): Promise<Identity> 
 	sure i could verify it, but id need to type the schema twice.
 	*/
 
-export async function getUserIDFromIndexedAttr_unsafe({ idFieldName, idValue }: { idFieldName: IdentificationKeyName; idValue: string }) {
+export async function getUserIDFromIndexedAttr_unsafe({ idFieldName, idValue }: { idFieldName: IdentificationMethod; idValue: string }) {
 	log(`Getting userID for ${idFieldName} ${idValue}`);
 	const cmd = new QueryCommand({
 		TableName: "users",

@@ -1,6 +1,6 @@
 import { getSecretStripe } from "$lib/server/stripe";
 import { error } from "@sveltejs/kit";
-import type { Action, PageServerLoad } from "./$types";
+import type { Actions, PageServerLoad } from "./$types";
 
 export const prerender = false;
 
@@ -20,10 +20,12 @@ export const load: PageServerLoad = async () => {
 	};
 };
 
-export const POST: Action = async ({ request: req }) => {
-	const stripe = getSecretStripe();
+// export const actions: Actions = {
+// 	default: async ({ request: req }) => {
+// 		const stripe = getSecretStripe();
 
-	const { paymentIntentID, euros } = await req.json();
+// 		const { paymentIntentID, euros } = await req.json();
 
-	await stripe.paymentIntents.update(paymentIntentID, { amount: euros * 100 });
-};
+// 		await stripe.paymentIntents.update(paymentIntentID, { amount: euros * 100 });
+// 	},
+// };

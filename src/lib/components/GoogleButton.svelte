@@ -1,25 +1,17 @@
 <script lang="ts">
 	import { PUBLIC_GOOGLE_CLIENT_ID } from "$env/static/public";
 	import { page } from "$app/stores";
-	import { PassedSignInState, type SignInButtonOptions } from "$lib/types";
 	import { URLS } from "$lib/addresses";
-	import { getEncoder } from "$lib/util";
 
-	export let opts: SignInButtonOptions;
-	export let text: string | undefined;
-	export let stateToken: string;
+	export let passState: string;
+	export let text = "Sign in with Google";
 
 	$: params = new URLSearchParams({
 		client_id: PUBLIC_GOOGLE_CLIENT_ID,
 		response_type: "code",
 		redirect_uri: `${$page.url.origin}${URLS.LOGIN}`,
 		scope: "openid profile email",
-		state: getEncoder(PassedSignInState).encode({
-			state: stateToken,
-			rememberMe: opts.rememberMe,
-			referer: opts.referer,
-			method: "googleID",
-		}),
+		state: passState,
 	});
 </script>
 
@@ -49,5 +41,5 @@
 			</g>
 		</svg>
 	</div>
-	<div class="p-3 whitespace-nowrap">{text || "Sign in with Google"}</div>
+	<div class="p-3 whitespace-nowrap">{text}</div>
 </a>

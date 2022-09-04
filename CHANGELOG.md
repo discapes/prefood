@@ -2,37 +2,39 @@
 
 ## TODO
 
-- [ ] more authentication options
-  - [x] hash sessionIDs
+- [ ] allow changing profile info and authentication methods, and delete account
+- [ ] view where restaurant owners can see new orders and change their status
+- [ ] secure restaurant add page
+- [ ] serviceworker
+  - [ ] web push API
+    - [ ] notifications and page update on order status change for user
+    - [ ] notifications and page update on new order for restaurant
+  - [ ] on major update popup changelog, reload on close
+    - [ ] on minor update reload on next visit
+      - [ ] same thing with menu updates
+  - [ ] server cache menu pages
+- low priority
+  - [ ] don't leak internal database data to even authenticated users
+  - [ ] add titles for each page
+  - [ ] human readable receipt
+  - [ ] info page with link to my website
+- [x] more authentication options
   - [x] show linked identifications on account page
   - [x] GitHub authentication
-  - [ ] create account with email
-  - [ ] email sign in
-  - [ ] allow changing profile info and authentication methods, and delete account
+  - [x] create account with email
+  - [x] email sign in
   - [x] referer injection impossible, form for creating account is confirmed to belong to email
-  - [x] remove google verify and other TODOs
+  - [x] remove google verify as request already comes from google
   - [x] cover edge cases
-    - [x] user tries to link external account thats already linked to an internal account
-    - [x] make sure email is unique key
-    - [x] can't create account with email x if email x is already a key
-- [ ] security
+    - [x] can't link id method thats already linked to another account
+      - [x] can't implicitly create account that would have an email already in use
+- [x] security
+  - [x] hash sessionTokens
   - [x] additional cookie security (SameSite, Secure, HttpOnly)
-  - [x] make sure all sensitive endpoints POST
+  - [x] make sure all sensitive endpoints POST if possible
     - SOP and SvelteKit prevent CSRF
-  - [x] prevent login csrf with double-submit cookie + state
+  - [x] prevent login CSRF with double-submit cookie + state
   - [x] prevent XSS by not using @html
-- [ ] don't leak internal database data to even authenticated users
-- [ ] add titles for each page
-- [ ] human readable receipt
-- [ ] view where restaurant owners can change status of orders
-- [ ] serviceworker
-  - [ ] Web push API
-    - [ ] notifications and page update when order status change for user
-    - [ ] notifications and page update when order created for owner
-  - [ ] on update popup changelog, reload on close
-  - [ ] ssr pages: networkfirst, cache on client for an hour
-- [ ] info page with link to my website
-- [ ] add short cache on cdn (return cache headers on load())
 - [x] limit sessionIDs for user
 - [x] add Dependabot with pnpm lockfile updater
 - [x] open repo to public

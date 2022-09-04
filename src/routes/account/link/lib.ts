@@ -1,6 +1,6 @@
 import { hash } from "$lib/server/crypto";
 import ddb from "$lib/server/ddb";
-import type { IdentificationKeyName } from "$lib/types";
+import type { IdentificationMethod } from "$lib/types";
 import { cerror, log } from "$lib/util";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { getUserIDFromIndexedAttr_unsafe } from "../lib";
@@ -11,7 +11,7 @@ export async function linkExternalAccount({
 	userID,
 	sessionToken,
 }: {
-	idFieldName: IdentificationKeyName;
+	idFieldName: IdentificationMethod;
 	idValue: string;
 	userID: string;
 	sessionToken: string;

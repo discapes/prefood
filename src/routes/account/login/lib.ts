@@ -1,21 +1,23 @@
 import { ALLOWED_LOGINS } from "$env/static/private";
 import { hash } from "$lib/server/crypto";
 import ddb from "$lib/server/ddb";
-import type { Identity } from "$lib/types";
+import type { AccountCreationData, TrustedIdentity } from "$lib/types";
 import { cerror, log } from "$lib/util";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { v4 as uuidv4 } from "uuid";
 import { getUserIDFromIndexedAttr_unsafe, removeSessionToken } from "../lib";
 
-export async function loginOrCreateAccount(acd: Identity) {
-	log({ acd });
+export async function loginOrCreateAccount(ti: TrustedIdentity, getACD: () => Promise<AccountCreationData>) {
+	log("loginOrCreateAccount", { ti });
 
-	let userID = await getUserIDFromIndexedAttr_unsafe({ idFieldName: acd.methodName, idValue: acd.methodValue });
+	let userID = await getUserIDFromIndexedAttr_unsafe({ idFieldName: ti.methodName, idValue: ti.methodValue });
 	let newSessionToken: string;
 	if (userID) {
 		log(`userID ${userID} found, adding new session id to user`);
 		newSessionToken = await addNewSessionToken_unsafe({ userID });
 	} else {
+		const acd = await getACD();
+		console.log({ acd });
 		log(`userID not found, checking if email ${acd.email} is unique`);
 		const userIDWithSameEmail = await getUserIDFromIndexedAttr_unsafe({ idFieldName: "email", idValue: acd.email });
 		if (userIDWithSameEmail) {
@@ -30,7 +32,7 @@ export async function loginOrCreateAccount(acd: Identity) {
 }
 
 // doesn't check for duplicate emails
-async function createAccount_unsafe(acd: Identity) {
+async function createAccount_unsafe(acd: AccountCreationData) {
 	const userID = uuidv4();
 	const initialSessionToken = uuidv4();
 	log(`Creating account with ${JSON.stringify({ userID, acd, initialSessionToken })}`);
