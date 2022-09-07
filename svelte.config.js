@@ -17,6 +17,13 @@ const config = {
 	kit: {
 		adapter: adapter(),
 	},
+	onwarn: (warning, handler) => {
+		const suppress = ["a11y-", "css-", "unused-"];
+		if (suppress.some((s) => warning.code.startsWith(s))) {
+			return;
+		}
+		handler(warning);
+	},
 };
 
 export default config;

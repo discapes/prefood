@@ -1,16 +1,14 @@
-import { getUserData } from "$lib/server/auth";
-import { error, redirect } from "@sveltejs/kit";
-import { z } from "zod";
-import type { PageServerLoad, Actions } from "./$types";
-import { removeSessionToken } from "./lib";
-import cookie from "cookie";
-import { formEntries, log, trueStrings } from "$lib/util";
-import { URLS } from "$lib/addresses";
-import sharp from "sharp";
 import { MAIL_FROM_DOMAIN } from "$env/static/private";
+import { URLS } from "$lib/addresses";
 import { getEncoderCrypt } from "$lib/server/crypto";
 import { sendMail } from "$lib/server/mail";
 import { EmailLoginCode } from "$lib/types";
+import { formEntries, log, trueStrings } from "$lib/util";
+import { error } from "@sveltejs/kit";
+import sharp from "sharp";
+import { z } from "zod";
+import type { Actions } from "./$types";
+import { removeSessionToken } from "./lib";
 
 export const Edits = z
 	.object({

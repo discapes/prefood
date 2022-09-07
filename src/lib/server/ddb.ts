@@ -24,7 +24,7 @@ const unmarshallOptions = {
 	wrapNumbers: false, // false, by default.
 };
 
-const ddb = DynamoDBDocumentClient.from(ddbClient, { unmarshallOptions, marshallOptions });
+export const ddb = DynamoDBDocumentClient.from(ddbClient, { unmarshallOptions, marshallOptions });
 const send = ddb.send.bind(ddb);
 ddb.send = async function (...args: Array<any>) {
 	// @ts-expect-error
@@ -91,7 +91,7 @@ export class Table<T extends {}> {
 			ProjectionExpression: this.#project,
 		});
 		const res = await ddb.send(cmd);
-		return <T>res.Item;
+		return <T | undefined>res.Item;
 	}
 	async put(item: T) {
 		const cmd = new PutCommand({

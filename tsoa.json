@@ -1,0 +1,31 @@
+{
+	"tsoaOptions": {
+		"noImplicitAdditionalProperties": "throw-on-extras",
+		"controllerPathGlobs": ["src/**/+server.ts"],
+		"outputDirectory": "static",
+		"specVersion": 3
+	},
+	"compilerOptions": {
+		"baseUrl": ".",
+		"paths": {
+			"$lib": ["src/lib"],
+			"$lib/*": ["src/lib/*"]
+		},
+		"rootDirs": ["."],
+		"importsNotUsedAsValues": "error",
+		"isolatedModules": true,
+		"preserveValueImports": true,
+		"lib": ["esnext", "DOM", "DOM.Iterable"],
+		"module": "esnext",
+		"target": "esnext",
+		"experimentalDecorators": true,
+		"allowJs": true,
+		"checkJs": true,
+		"esModuleInterop": true,
+		"forceConsistentCasingInFileNames": true,
+		"resolveJsonModule": true,
+		"skipLibCheck": true,
+		"sourceMap": true,
+		"strict": true
+	}
+}

@@ -1,5 +1,5 @@
 import { sveltekit } from "@sveltejs/kit/vite";
-import build_oas from "./swagger";
+import build_oas from "./tsoa";
 import path from "path";
 
 /** @type {import('vite').UserConfig} */
@@ -7,7 +7,7 @@ const config = {
 	plugins: [
 		sveltekit(),
 		{
-			name: "swagger-jsdoc",
+			name: "tsoa",
 			buildStart: build_oas,
 		},
 	],

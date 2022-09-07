@@ -1,8 +1,7 @@
 import { URLS } from "$lib/addresses";
-import { IdentificationMethod, LinkParameters } from "$lib/types";
+import { LinkParameters } from "$lib/types";
 import { getDecoder } from "$lib/util";
 import { error, redirect, type RequestHandler } from "@sveltejs/kit";
-import cookie from "cookie";
 import { z } from "zod";
 import { getTrustedIdentity } from "../lib";
 import { linkExternalAccount } from "./lib";

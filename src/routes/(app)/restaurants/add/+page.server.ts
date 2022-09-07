@@ -1,17 +1,18 @@
+import { Table } from "$lib/server/ddb";
+import type { Restaurant } from "$lib/types";
 import type { Action } from "@sveltejs/kit";
-import { putItem, deleteItem } from "$lib/server/ddb";
-
 export const prerender = false;
 
 export const POST: Action = async ({ request: req }) => {
 	const json = await req.json();
+	const table = new Table<Restaurant>("restaurants").key("name");
 
 	switch (json.action) {
 		case "set":
-			await putItem("restaurants", json.restaurant);
+			await table.put(json.restaurant);
 			break;
 		case "delete":
-			await deleteItem("restaurants", { name: json.name });
+			await table.delete(json.name);
 			break;
 	}
 };

@@ -1,86 +1,155 @@
 {
-	"openapi": "3.0.0",
-	"info": {
-		"title": "Pizzapp",
-		"version": "next",
-		"description": "API for the pizzapp service.",
-		"contact": {
-			"email": "support@pizzapp.miikat.dev"
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"MenuItem": {
+				"properties": {
+					"image": {
+						"type": "string"
+					},
+					"price_cents": {
+						"type": "number",
+						"format": "double"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"image",
+					"price_cents",
+					"name"
+				],
+				"type": "object"
+			},
+			"Restaurant": {
+				"properties": {
+					"reviews": {
+						"type": "number",
+						"format": "double"
+					},
+					"stars": {
+						"type": "number",
+						"format": "double"
+					},
+					"menu": {
+						"items": {
+							"$ref": "#/components/schemas/MenuItem"
+						},
+						"type": "array"
+					},
+					"name": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"reviews",
+					"stars",
+					"menu",
+					"name"
+				],
+				"type": "object"
+			}
 		},
-		"license": {
-			"name": "GNU Affero General Public License",
-			"url": "https://www.gnu.org/licenses/agpl-3.0.en.html"
+		"securitySchemes": {}
+	},
+	"info": {
+		"title": ""
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/restaurants": {
+			"get": {
+				"operationId": "GetAll",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"items": {
+										"$ref": "#/components/schemas/Restaurant"
+									},
+									"type": "array"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/restaurants/{slug}": {
+			"get": {
+				"operationId": "Get",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Restaurant"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "slug",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
 		}
 	},
 	"servers": [
 		{
-			"url": "http://localhost:5173/api"
+			"url": "/undefined"
 		}
 	],
-	"tags": [
-		{
-			"name": "users",
-			"description": "Get information about any user"
-		},
-		{
-			"name": "account",
-			"description": "View and change account data"
-		},
-		{
-			"name": "restaurants",
-			"description": "Get information about restaurants"
-		}
-	],
-	"paths": {
-		"/": {
-			"get": {
-				"summary": "test endpoint",
-				"responses": {
-					"200": {
-						"description": "hello world message",
-						"content": {
-							"text/plain": {
-								"schema": {
-									"$ref": "#/components/schemas/HelloWorld"
-								}
-							},
-							"application/json": {
-								"schema": {
-									"$ref": "#/components/schemas/HelloWorld"
-								}
-							}
-						}
-					}
-				}
+	"spec": {
+		"openapi": "3.0.0",
+		"info": {
+			"title": "Pizzapp",
+			"version": "next",
+			"description": "API for the pizzapp service.",
+			"contact": {
+				"email": "support@pizzapp.miikat.dev"
+			},
+			"license": {
+				"name": "GNU Affero General Public License",
+				"url": "https://www.gnu.org/licenses/agpl-3.0.en.html"
 			}
 		},
-		"/restaurants": {
-			"get": {
-				"description": "get restaurant data",
-				"responses": {
-					"200": {
-						"description": "restaurant found",
-						"content": {
-							"application/json": {
-								"schema": {
-									"name": "Restaurant"
-								}
-							}
-						}
-					},
-					"404": {
-						"description": "restaurant not found"
-					}
-				}
+		"servers": [
+			{
+				"url": "http://localhost:5173/api"
 			}
-		}
-	},
-	"components": {
-		"schemas": {
-			"HelloWorld": {
-				"type": "string",
-				"example": "hello world"
+		],
+		"tags": [
+			{
+				"name": "users",
+				"description": "Get information about any user"
+			},
+			{
+				"name": "account",
+				"description": "View and change account data"
+			},
+			{
+				"name": "restaurants",
+				"description": "Get information about restaurants"
 			}
-		}
+		]
 	}
 }

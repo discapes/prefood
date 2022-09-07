@@ -2,7 +2,7 @@ import { SESSION_MAXAGE_HOURS } from "$env/static/private";
 import { LoginParameters } from "$lib/types";
 import { getDecoder, log } from "$lib/util";
 import { error, redirect, type RequestHandler } from "@sveltejs/kit";
-import cookie from "cookie";
+import type cookie from "cookie";
 import { getTrustedIdentity } from "../lib";
 import { loginOrCreateAccount } from "./lib";
 
@@ -23,7 +23,7 @@ export const GET: RequestHandler = async ({ url, locals: { state }, cookies }) =
 
 	cookies.set("userID", userID, cookieOpts);
 	cookies.set("sessionToken", newSessionToken, cookieOpts);
-	cookies.delete("state", "", { maxAge: 0 });
+	cookies.delete("state");
 	log(url.pathname, "success, set cookies");
 	throw redirect(300, new URL(options.referer, url).href);
 };

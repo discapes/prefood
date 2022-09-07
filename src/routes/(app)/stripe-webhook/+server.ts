@@ -1,5 +1,5 @@
 import { MAIL_FROM_DOMAIN } from "$env/static/private";
-import ddb, { putItem } from "$lib/server/ddb";
+import { ddb, Table } from "$lib/server/ddb";
 import { sendMail } from "$lib/server/mail";
 import { getSecretStripe } from "$lib/server/stripe";
 import type { Order, SessionMetadata } from "$lib/types";
@@ -75,7 +75,7 @@ async function fulfillOrder(session: Stripe.Checkout.Session, url: string) {
 	};
 
 	console.log(`Creating order for ${metadata.restaurantName}`);
-	operations.push(putItem("orders", order));
+	operations.push(new Table("orders").put(order));
 	operations.push(sendReceipt(session.customer_details?.email, order, url));
 
 	await Promise.all(operations);

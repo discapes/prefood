@@ -1,11 +1,9 @@
-import ddb from "$lib/server/ddb.js";
+import { ddb } from "$lib/server/ddb.js";
 import type { Order } from "$lib/types";
 import { getDataFromOrderSlug } from "$lib/util";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
-
-export const prerender = false;
 
 export const load: PageServerLoad = async ({ params }) => {
 	const { userID, timestamp } = getDataFromOrderSlug(params.slug);

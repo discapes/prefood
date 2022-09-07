@@ -1,11 +1,11 @@
-import type { RequestHandler } from "./$types";
-import { getSecretStripe } from "$lib/server/stripe";
-import { getItem } from "$lib/server/ddb.js";
 import { TAX_RATE_ID } from "$env/static/private";
-import type Stripe from "stripe";
-import type { MenuItem, Restaurant, SessionMetadata } from "$lib/types";
-import { error } from "@sveltejs/kit";
+import { RestaurantsController } from "$lib/controllers/RestaurantsController";
 import { getUserData } from "$lib/server/auth";
+import { getSecretStripe } from "$lib/server/stripe";
+import type { MenuItem, SessionMetadata } from "$lib/types";
+import { error } from "@sveltejs/kit";
+import type Stripe from "stripe";
+import type { RequestHandler } from "./$types";
 
 export const POST: RequestHandler = async ({ url, request, locals: { userID, sessionToken } }) => {
 	const userDataP = getUserData({ sessionToken, userID });
@@ -56,9 +56,8 @@ function getItemNamesFromFormData(formData: FormData) {
 }
 
 async function getMenuItems(restaurantName: string, itemNames: string[]) {
-	const restaurant = <Restaurant | undefined>await getItem("restaurants", { name: restaurantName });
+	const restaurant = await RestaurantsController.get(restaurantName);
 	if (!restaurant) throw error(500, `restaurant ${restaurantName} does not exist!`);
-
 	const filtered = restaurant.menu.filter((mi) => itemNames.includes(mi.name));
 	if (filtered.length !== itemNames.length) throw error(400, `incorrect items specified: ${itemNames}`);
 	return filtered;

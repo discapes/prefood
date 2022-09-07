@@ -2,7 +2,7 @@ import type { TrustedIdentity, AccountCreationData, IdentificationMethod } from 
 import { QueryCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
 import { hash } from "$lib/server/crypto";
-import ddb from "$lib/server/ddb";
+import { ddb } from "$lib/server/ddb";
 import { log } from "$lib/util";
 import { verifySenderEmail } from "./email";
 import { verifySenderGithub } from "./github";

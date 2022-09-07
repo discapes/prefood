@@ -1,5 +1,5 @@
 import { hash } from "$lib/server/crypto";
-import ddb from "$lib/server/ddb";
+import { ddb } from "$lib/server/ddb";
 import type { IdentificationMethod } from "$lib/types";
 import { cerror, log } from "$lib/util";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";

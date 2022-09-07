@@ -1,16 +1,14 @@
 import { getUserData } from "$lib/server/auth";
-import ddb from "$lib/server/ddb";
+import { ddb } from "$lib/server/ddb";
 import type { Order, User } from "$lib/types";
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
-export const prerender = false;
-
-export const load: PageServerLoad = async ({ locals: { userID, sessionToken } }) => {
+export const load: PageServerLoad = async ({ locals: { userID, sessionToken }, parent }) => {
 	if (userID) {
 		let orderDataPromise = getOrdersForUser(userID);
-		const userData = await getUserData({ sessionToken, userID });
+		const { userData } = await parent();
 
 		if (userData) {
 			const orderData = await orderDataPromise;
