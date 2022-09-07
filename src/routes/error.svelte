@@ -7,4 +7,4 @@
 	<title>{$page.status} - pizzapp</title>
 </svelte:head>
 
-<Banner title={$page.status.toString()} subtitle={$page.error?.message ?? "Unexpected error"} />
+<Banner title={$page.status?.toString?.()} subtitle={$page.error?.message ?? "Unexpected error"} />

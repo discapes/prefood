@@ -1,7 +1,7 @@
 {
 	"tsoaOptions": {
 		"noImplicitAdditionalProperties": "throw-on-extras",
-		"controllerPathGlobs": ["src/**/+server.ts"],
+		"controllerPathGlobs": ["src/lib/controllers/**/*.ts", "src/routes/api/**/*.ts"],
 		"outputDirectory": "static",
 		"specVersion": 3
 	},

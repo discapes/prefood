@@ -2,7 +2,7 @@ import { watch } from "chokidar";
 import { readFile } from "fs/promises";
 import globAsync from "glob";
 import { load as parseYAML } from "js-yaml";
-import { generateSpec, getSwaggerOutputPath } from "tsoa";
+import { generateSpec } from "tsoa";
 import { fileURLToPath } from "url";
 import { promisify } from "util";
 const glob = promisify(globAsync);
@@ -15,7 +15,7 @@ let [spec, config] = await Promise.all([readFile(specFile).then((f) => parseYAML
 export default async function build_oas() {
 	try {
 		console.log("building swagger.json...");
-		await generateSpec({ ...config.tsoaOptions, spec: { spec } }, config.compilerOptions);
+		await generateSpec({ ...config.tsoaOptions, spec }, config.compilerOptions);
 		console.log("built!");
 	} catch (e) {
 		console.error(e);

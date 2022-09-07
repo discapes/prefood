@@ -9,3 +9,4 @@
 .output
 *.secret
 node_modules
+static/swagger.json

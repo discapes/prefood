@@ -1,39 +1,29 @@
 import { negotiate } from "$lib/api";
 import type { RequestHandler } from "@sveltejs/kit";
+import { Example, Get, Produces, Route } from "tsoa";
 
-function getMessage() {
-	return "hello world";
+@Route("/")
+class HelloController {
+	/**
+	 * @summary Test the API
+	 */
+	@Produces("application/json")
+	@Produces("text/plain")
+	@Example("hello world")
+	@Get()
+	static async getMessage() {
+		debugger;
+		return "hello world";
+	}
 }
-
-/**
- * @openapi
- * /:
- *  get:
- *    summary: test endpoint
- *    responses:
- *      200:
- *        description: hello world message
- *        content:
- *          text/plain:
- *            schema:
- *              $ref: '#/components/schemas/HelloWorld'
- *          application/json:
- *            schema:
- *              $ref: '#/components/schemas/HelloWorld'
- * components:
- *  schemas:
- *    HelloWorld:
- *      type: string
- *      example: hello world
- */
 
 export const GET: RequestHandler = async ({ request: { headers } }) => {
 	const handlers: Record<string, () => Promise<Response>> = {
 		async "application/json"() {
-			return new Response(JSON.stringify(getMessage()));
+			return new Response(JSON.stringify(await HelloController.getMessage()));
 		},
 		async "text/plain"() {
-			return new Response(getMessage());
+			return new Response(await HelloController.getMessage());
 		},
 	};
 	return await negotiate(handlers, headers.get("Accept"));

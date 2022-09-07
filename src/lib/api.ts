@@ -15,3 +15,14 @@ export async function negotiate(handlers: Record<string, () => Promise<Response>
 		return new Response(Object.keys(handlers).join(","), { status: 406 });
 	}
 }
+
+export function jsonResponse(o: unknown, accept: string | null) {
+	return negotiate(
+		{
+			async "application/json"() {
+				return new Response(JSON.stringify(o));
+			},
+		},
+		accept
+	);
+}

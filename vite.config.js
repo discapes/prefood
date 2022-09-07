@@ -11,6 +11,9 @@ const config = {
 			buildStart: build_oas,
 		},
 	],
+	build: {
+		sourcemap: "inline",
+	},
 	server: {
 		fs: {
 			allow: [path.resolve("../kit/packages/kit/src")],
