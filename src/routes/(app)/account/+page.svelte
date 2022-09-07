@@ -99,7 +99,7 @@
 				<span class="text-xl">Email</span>
 			</div>
 			<button on:click={changeEmail} class="cont w-full h-full">Change</button>
-			<div class="{userData.githubID ? 'bg-lime-300/50' : ''} rounded px-1 w-full h-full flex items-center">
+			<div class="{userData.githubID ? 'bg-lime-300/50' : 'bg-rose-300/50'} rounded px-1 w-full h-full flex items-center">
 				<span class="text-xl">Github</span>
 			</div>
 			{#if userData.githubID}
@@ -113,7 +113,7 @@
 					passState={getEncoder(LinkParameters).encode({ ...params, method: "githubID" })}
 				/>
 			{/if}
-			<div class="{userData.googleID ? 'bg-lime-300/50' : ''} rounded px-1 w-full h-full flex items-center">
+			<div class="{userData.googleID ? 'bg-lime-300/50' : 'bg-rose-300/50'} rounded px-1 w-full h-full flex items-center">
 				<span class="text-xl">Google</span>
 			</div>
 			{#if userData.googleID}

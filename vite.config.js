@@ -1,26 +1,16 @@
 import { sveltekit } from "@sveltejs/kit/vite";
-import { writeFile } from "fs/promises";
+import build_oas from "./swagger";
 import path from "path";
-import swaggerJSDoc from "swagger-jsdoc";
-import openapiConfig from "./openapi.config.js";
-
-function swagger(options) {
-	const { output, pretty } = options;
-	delete options.output;
-	delete options.pretty;
-	return {
-		name: "swagger-jsdoc",
-		buildStart: function () {
-			const swaggerSpec = swaggerJSDoc(options);
-			const swaggerJson = pretty ? JSON.stringify(swaggerSpec, null, "\t") : JSON.stringify(swaggerSpec);
-			return writeFile(output, swaggerJson);
-		},
-	};
-}
 
 /** @type {import('vite').UserConfig} */
 const config = {
-	plugins: [sveltekit(), swagger(openapiConfig)],
+	plugins: [
+		sveltekit(),
+		{
+			name: "swagger-jsdoc",
+			buildStart: build_oas,
+		},
+	],
 	server: {
 		fs: {
 			allow: [path.resolve("../kit/packages/kit/src")],

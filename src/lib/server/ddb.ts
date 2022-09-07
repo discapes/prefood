@@ -1,6 +1,6 @@
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DDB_REGION, DDB_ACCESS_ID, DDB_ACCESS_KEY } from "$env/static/private";
-import { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand } from "@aws-sdk/lib-dynamodb";
+import { DynamoDBDocumentClient, PutCommand, GetCommand, DeleteCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 
 const ddbClient = new DynamoDBClient({
 	region: DDB_REGION,
@@ -33,40 +33,80 @@ ddb.send = async function (...args: Array<any>) {
 	return res;
 };
 
-export default ddb;
-
 type PrimaryKey = string | number | Uint8Array;
 
-export async function getItem(table: string, key: Record<string, PrimaryKey>, proj?: string): Promise<Record<string, unknown> | undefined> {
-	const cmd = new GetCommand({
-		TableName: table,
-		Key: key,
-		ProjectionExpression: proj,
-	});
+export class Condition {
+	str: string;
 
-	const res = await ddb.send(cmd);
-	return res.Item;
+	constructor(str: string) {
+		this.str = str;
+	}
+
+	toString() {
+		return `( ${this.str} )`;
+	}
+
+	or(c: Condition) {
+		this.str += " OR " + c;
+	}
+	and(c: Condition) {
+		this.str += " AND " + c;
+	}
+	not() {
+		this.str = "NOT " + this.str;
+	}
 }
 
-export async function putItem(table: string, item: Record<string, unknown>, condition?: string): Promise<Record<string, unknown> | undefined> {
-	const cmd = new PutCommand({
-		TableName: table,
-		Item: item,
-		ReturnValues: "ALL_OLD",
-		ConditionExpression: condition,
-	});
+export class Table<T extends {}> {
+	#table: string;
+	#condition?: Condition;
+	#key?: string;
+	#project?: string;
 
-	const oldItem = await ddb.send(cmd);
-	return oldItem.Attributes;
-}
-
-export async function deleteItem(table: string, key: Record<string, PrimaryKey>): Promise<Record<string, unknown> | undefined> {
-	const cmd = new DeleteCommand({
-		TableName: table,
-		Key: key,
-		ReturnValues: "ALL_OLD",
-	});
-
-	const res = await ddb.send(cmd);
-	return res.Attributes;
+	constructor(name: string) {
+		this.#table = name;
+	}
+	key(keyName: string) {
+		this.#key = keyName;
+		return this;
+	}
+	condition(condition: Condition) {
+		this.#condition = condition;
+		return this;
+	}
+	async scan(): Promise<T[]> {
+		const command = new ScanCommand({ TableName: "restaurants" });
+		const res = await ddb.send(command);
+		if (!res.Items) throw new Error("Items not found");
+		return <T[]>res.Items;
+	}
+	project(attributes: string[]) {
+		this.#project = attributes.join(",");
+	}
+	async get(keyValue: string) {
+		if (!this.#key) throw new Error("key not specified");
+		const cmd = new GetCommand({
+			TableName: this.#table,
+			Key: { [this.#key]: keyValue },
+			ProjectionExpression: this.#project,
+		});
+		const res = await ddb.send(cmd);
+		return <T>res.Item;
+	}
+	async put(item: T) {
+		const cmd = new PutCommand({
+			TableName: this.#table,
+			Item: item,
+			ConditionExpression: this.#condition?.toString(),
+		});
+		const res = await ddb.send(cmd);
+	}
+	async delete(keyValue: string) {
+		if (!this.#key) throw new Error("key not specified");
+		const cmd = new DeleteCommand({
+			TableName: this.#table,
+			Key: { [this.#key]: keyValue },
+		});
+		const res = await ddb.send(cmd);
+	}
 }

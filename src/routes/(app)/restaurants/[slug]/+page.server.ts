@@ -1,4 +1,4 @@
-import { getItem } from "$lib/server/ddb.js";
+import { Table } from "$lib/server/ddb.js";
 import { error } from "@sveltejs/kit";
 import type { Restaurant } from "$lib/types";
 import type { PageServerLoad } from "./$types";
@@ -6,11 +6,13 @@ import type { PageServerLoad } from "./$types";
 export const prerender = false;
 
 export const load: PageServerLoad = async ({ params }) => {
-	const res = <Restaurant | undefined>await getItem("restaurants", { name: params.slug });
+	try {
+		const res = await new Table<Restaurant>("restaurants").key("name").get(params.slug);
 
-	if (!res) throw error(404, `Restaurant ${params.slug} not found.`);
-
-	return {
-		restaurant: res,
-	};
+		return {
+			restaurant: res,
+		};
+	} catch (e) {
+		throw error(404, "Restaurant not found");
+	}
 };

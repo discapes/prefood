@@ -1,21 +1,86 @@
 {
 	"openapi": "3.0.0",
 	"info": {
-		"title": "Hello Worlds",
-		"version": "1.0.0"
+		"title": "Pizzapp",
+		"version": "next",
+		"description": "API for the pizzapp service.",
+		"contact": {
+			"email": "support@pizzapp.miikat.dev"
+		},
+		"license": {
+			"name": "GNU Affero General Public License",
+			"url": "https://www.gnu.org/licenses/agpl-3.0.en.html"
+		}
 	},
+	"servers": [
+		{
+			"url": "http://localhost:5173/api"
+		}
+	],
+	"tags": [
+		{
+			"name": "users",
+			"description": "Get information about any user"
+		},
+		{
+			"name": "account",
+			"description": "View and change account data"
+		},
+		{
+			"name": "restaurants",
+			"description": "Get information about restaurants"
+		}
+	],
 	"paths": {
-		"/restaurants": {
+		"/": {
 			"get": {
-				"description": "Get restaurants",
+				"summary": "test endpoint",
 				"responses": {
 					"200": {
-						"description": "restaurant data"
+						"description": "hello world message",
+						"content": {
+							"text/plain": {
+								"schema": {
+									"$ref": "#/components/schemas/HelloWorld"
+								}
+							},
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HelloWorld"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/restaurants": {
+			"get": {
+				"description": "get restaurant data",
+				"responses": {
+					"200": {
+						"description": "restaurant found",
+						"content": {
+							"application/json": {
+								"schema": {
+									"name": "Restaurant"
+								}
+							}
+						}
+					},
+					"404": {
+						"description": "restaurant not found"
 					}
 				}
 			}
 		}
 	},
-	"components": {},
-	"tags": []
+	"components": {
+		"schemas": {
+			"HelloWorld": {
+				"type": "string",
+				"example": "hello world"
+			}
+		}
+	}
 }

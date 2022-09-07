@@ -5,14 +5,36 @@ function getMessage() {
 	return "hello world";
 }
 
+/**
+ * @openapi
+ * /:
+ *  get:
+ *    summary: test endpoint
+ *    responses:
+ *      200:
+ *        description: hello world message
+ *        content:
+ *          text/plain:
+ *            schema:
+ *              $ref: '#/components/schemas/HelloWorld'
+ *          application/json:
+ *            schema:
+ *              $ref: '#/components/schemas/HelloWorld'
+ * components:
+ *  schemas:
+ *    HelloWorld:
+ *      type: string
+ *      example: hello world
+ */
+
 export const GET: RequestHandler = async ({ request: { headers } }) => {
-	const handlers: Record<string, () => Response> = {
-		"application/json"() {
+	const handlers: Record<string, () => Promise<Response>> = {
+		async "application/json"() {
 			return new Response(JSON.stringify(getMessage()));
 		},
-		"text/plain"() {
+		async "text/plain"() {
 			return new Response(getMessage());
 		},
 	};
-	return negotiate(handlers, headers.get("Accept"), "application/json");
+	return await negotiate(handlers, headers.get("Accept"));
 };

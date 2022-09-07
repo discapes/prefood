@@ -2,18 +2,16 @@
 
 ## TODO
 
-- [ ] separate page endpoints and server endpoints, to make an api
+- [-] allow changing profile info and authentication methods, and delete account
+- [-] separate page endpoints and server endpoints, to make an api
   - [ ] api keys for user
-  - [ ] use the passed fetch function
-  - [ ] generate api docs
+  - [-] use the passed fetch function
+  - [-] generate api docs
 - [ ] username field
 - [ ] link for each profile
-- [ ] oispaeliitti integration
-- [x] load user data in layout
-- [x] svelte new cookies api
 - [ ] review code before update
-- [ ] database validation with zod
-- [ ] allow changing profile info and authentication methods, and delete account
+
+- [ ] oispaeliitti integration
 - [ ] view where restaurant owners can see new orders and change their status
 - [ ] secure restaurant add page
 - [ ] serviceworker
@@ -29,6 +27,9 @@
   - [ ] add titles for each page
   - [ ] human readable receipt
   - [ ] info page with link to my website
+- [x] load user data in layout
+- [x] svelte new cookies api
+- [x] custom dynamodb wrapper
 - [x] add css loadpath
 - [x] more authentication options
   - [x] show linked identifications on account page
