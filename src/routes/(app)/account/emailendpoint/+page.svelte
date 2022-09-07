@@ -1,24 +1,18 @@
 <script lang="ts">
 	import { goto } from "$app/navigation";
+	import { enhance } from "$app/forms";
 
-	import { enhance } from "@sveltejs/kit";
-
-	import type { FormData } from "./$types";
+	import type { ActionData } from "./$types";
 	/* this is comparable to the github and google endpoints,
 	only instead of redirecting to a new url we send and email
 	with the url */
-	export let form: FormData;
-	const enhanceProps: Parameters<typeof enhance>[1] = {
-		redirect: ({ location }) => goto(location),
-		result: ({ response }) => (form = <any>response),
-		invalid: ({ response }) => (form = <any>response),
-	};
+	export let form: ActionData;
 </script>
 
 {#if form.sent}
 	<h1>Check your email</h1>
 {:else}
-	<form use:enhance={enhanceProps} method="POST" action="?/newuser">
+	<form use:enhance method="POST" action="?/newuser">
 		<input class="hidden" name="passState" value={form.passState} />
 		<label for="name">Email</label>
 		<input name="email" value={form.email} />

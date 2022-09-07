@@ -3,7 +3,7 @@ import { URLS } from "$lib/addresses";
 import { getEncoderCrypt } from "$lib/server/crypto";
 import { sendMail } from "$lib/server/mail";
 import { EmailLoginCode } from "$lib/types";
-import { log } from "$lib/util";
+import { formEntries, log } from "$lib/util";
 import { error, redirect } from "@sveltejs/kit";
 import { getUserIDFromIndexedAttr_unsafe } from "../lib";
 import type { Actions, PageServerLoad } from "./$types";
@@ -27,8 +27,11 @@ export const load: PageServerLoad = async ({ request }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ url, fields }): Promise<EmailMeResult> => {
-		const { email, passState } = Object.fromEntries(fields.entries());
+	default: async ({ url, request }): Promise<EmailMeResult> => {
+		// sends login link to user
+		const {
+			fields: { email, passState },
+		} = await formEntries(request);
 		log(url.pathname, { email, passState });
 		if (typeof email !== "string" || typeof passState !== "string") throw error(400, "invalid");
 
@@ -54,8 +57,11 @@ export const actions: Actions = {
 			};
 		}
 	},
-	newuser: async ({ url, fields }): Promise<EmailMeSuccess> => {
-		const { email, name, picture, passState } = Object.fromEntries(fields.entries());
+	newuser: async ({ url, request }): Promise<EmailMeSuccess> => {
+		// sends register link to new user
+		const {
+			fields: { email, name, picture, passState },
+		} = await formEntries(request);
 		log(url.pathname, { email, passState, name, picture });
 		// needs to be encrypted so we know receiver actually has email
 		const code = getEncoderCrypt(EmailLoginCode).encode({

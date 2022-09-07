@@ -1,6 +1,31 @@
 import type { Order } from "./types";
 import { z } from "zod";
 
+export function getDataURL(file: File | undefined): Promise<string> {
+	return new Promise((res) => {
+		if (!file) return res("");
+		const fr = new FileReader();
+		fr.onload = () => {
+			res(fr.result?.toString() || "");
+		};
+		fr.readAsDataURL(file);
+	});
+}
+
+export async function formEntries(request: Request) {
+	const fields = Object.create(null);
+	const files = Object.create(null);
+
+	for (const [key, value] of await request.formData()) {
+		if (typeof value === "string") {
+			fields[key] = value;
+		} else {
+			files[key] = value;
+		}
+	}
+	return { fields, files };
+}
+
 export function getDecoder<T extends z.ZodTypeAny>(Type: T) {
 	return z.preprocess((a: unknown) => typeof a === "string" && JSON.parse(decodeB64URL(a)), Type);
 }
@@ -110,6 +135,26 @@ export function formatHHMMSS(date: Date) {
 
 export function randomElem<T>(array: T[]) {
 	return array[Math.floor(Math.random() * array.length)];
+}
+
+export function trueStrings(...args: unknown[]) {
+	return args.every((s) => s && typeof s === "string");
+}
+
+function hook(o: any, fname: string, mine: any) {
+	const og = o[fname].bind(o);
+	o[fname] = () => {
+		mine();
+		og();
+	};
+}
+
+export function formFrom(o: Record<string, string | Blob>) {
+	const fd = new FormData();
+	Object.entries(o).map(([k, v]) => {
+		fd.append(k, v);
+	});
+	return fd;
 }
 
 /**

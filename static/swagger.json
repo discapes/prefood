@@ -1,0 +1,21 @@
+{
+	"openapi": "3.0.0",
+	"info": {
+		"title": "Hello Worlds",
+		"version": "1.0.0"
+	},
+	"paths": {
+		"/restaurants": {
+			"get": {
+				"description": "Get restaurants",
+				"responses": {
+					"200": {
+						"description": "restaurant data"
+					}
+				}
+			}
+		}
+	},
+	"components": {},
+	"tags": []
+}

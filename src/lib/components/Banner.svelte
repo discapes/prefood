@@ -9,6 +9,6 @@
 	<p class="subtitle">{subtitle}</p>
 </div>
 
-<style lang="scss">
-	@import "../../styles/banner.module.scss";
+<style>
+	@use "banner.module.scss";
 </style>

@@ -1,6 +1,7 @@
 declare global {
 	// const Stripe: stripe.Stripe;
 	// put variables here to access them as globals
+	const __openapi__: any;
 
 	interface Window {
 		// put variables here to access them through .window

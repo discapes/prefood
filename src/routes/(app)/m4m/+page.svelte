@@ -117,7 +117,7 @@
 </div>
 
 <style>
-	@import "../../styles/spinner.module.css";
+	@use "spinner.module.css";
 	button {
 		background: #5469d4;
 		font-family: Arial, sans-serif;

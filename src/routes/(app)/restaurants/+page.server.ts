@@ -10,6 +10,15 @@ import type { Restaurant } from "$lib/types";
 
 export const prerender = false;
 
+/**
+ * @openapi
+ * /restaurants:
+ *  get:
+ *    description: Get restaurants
+ *    responses:
+ *      200:
+ *        description: restaurant data
+ */
 export const load: PageServerLoad = async () => {
 	const command = new ScanCommand({ TableName: "restaurants" });
 	const res = await ddb.send(command);

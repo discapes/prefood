@@ -39,7 +39,7 @@
 </section>
 
 <style>
-	@import "../../../styles/spinner.module.css";
+	@use "spinner.module.css";
 
 	/* :global(pre) {
 		background-color: rgba(150, 150, 150, 0.1);
