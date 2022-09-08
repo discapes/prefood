@@ -5,7 +5,9 @@ import { error } from "@sveltejs/kit";
 import { z } from "zod";
 import { log } from "$lib/util";
 
-export async function verifySenderGithub(url: URL): Promise<{ i: TrustedIdentity; getACD: () => Promise<AccountCreationData> }> {
+export async function verifyGithubIdentity(
+	url: URL
+): Promise<{ i: TrustedIdentity; getACD: () => Promise<AccountCreationData> }> {
 	const code = url.searchParams.get("code");
 	log("verifySenderGithub", { code });
 	if (typeof code !== "string") throw error(400, "code is undefined");
@@ -16,17 +18,22 @@ export async function verifySenderGithub(url: URL): Promise<{ i: TrustedIdentity
 		code,
 	});
 
-	const { access_token } = await fetch(`https://github.com/login/oauth/access_token?${atParams}`, {
-		method: "POST",
-		headers: {
-			Accept: "application/json",
-		},
-	}).then((res) => res.json());
+	const { access_token } = await fetch(
+		`https://github.com/login/oauth/access_token?${atParams}`,
+		{
+			method: "POST",
+			headers: {
+				Accept: "application/json",
+			},
+		}
+	).then((res) => res.json());
 
 	console.log(`got access token ${access_token}, getting profile info`);
 
 	const castToString = z.preprocess((val) => String(val), z.string());
-	const acd = await fetch("https://api.github.com/user", { headers: { Authorization: `token ${access_token}` } })
+	const acd = await fetch("https://api.github.com/user", {
+		headers: { Authorization: `token ${access_token}` },
+	})
 		.then((res) => res.json())
 		.then((o) =>
 			AccountCreationData.parse({

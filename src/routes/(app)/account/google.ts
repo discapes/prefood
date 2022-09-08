@@ -6,7 +6,9 @@ import { error } from "@sveltejs/kit";
 import jwtDecode from "jwt-decode";
 import { log } from "$lib/util";
 
-export async function verifySenderGoogle(url: URL): Promise<{ i: TrustedIdentity; getACD: () => Promise<AccountCreationData> }> {
+export async function verifyGoogleIdentity(
+	url: URL
+): Promise<{ i: TrustedIdentity; getACD: () => Promise<AccountCreationData> }> {
 	const code = url.searchParams.get("code");
 	log("verifySenderGoogle", { code });
 	if (typeof code !== "string") throw error(400, "code is undefined");

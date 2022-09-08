@@ -4,3 +4,8 @@ export const URLS = {
 	LINK: "/account/link",
 	EMAILENDPOINT: "/account/emailendpoint",
 };
+
+export const API = {
+	ACCOUNT: "account",
+	RESTAURANTS: "restaurants",
+};

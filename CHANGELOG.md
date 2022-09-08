@@ -11,6 +11,7 @@
 - [ ] link for each profile
 - [ ] review code before update
 
+- [ ] expiring session tokens
 - [ ] oispaeliitti integration
 - [ ] view where restaurant owners can see new orders and change their status
 - [ ] secure restaurant add page

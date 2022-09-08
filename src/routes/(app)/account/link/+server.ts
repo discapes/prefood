@@ -1,20 +1,25 @@
 import { URLS } from "$lib/addresses";
+import AccountService from "$lib/services/AccountService";
 import { LinkParameters } from "$lib/types";
 import { getDecoder } from "$lib/util";
 import { error, redirect, type RequestHandler } from "@sveltejs/kit";
 import { z } from "zod";
-import { getTrustedIdentity } from "../lib";
-import { linkExternalAccount } from "./lib";
+import { verifyIdentity } from "../common";
 
 // we don't need to verify state because this requires login details already
-export const GET: RequestHandler = async ({ url, locals: { sessionToken, userID, state }, cookies }) => {
+export const GET: RequestHandler = async ({
+	url,
+	locals: { sessionToken, userID, state },
+	cookies,
+}) => {
 	const options = getDecoder(LinkParameters).parse(url.searchParams.get("state"));
 	if (!state || options.stateToken !== state) throw error(400, "invalid state");
-	const { i } = await getTrustedIdentity(url, options.method);
+	const { i } = await verifyIdentity(url, options.method);
 
-	await linkExternalAccount({
-		idFieldName: i.methodName,
-		idValue: i.methodValue,
+	if (await AccountService.existsTI(i)) throw error(400, "Method álready linked");
+	await AccountService.setAttribute({
+		attribute: i.methodName,
+		value: i.methodValue,
 		userID: z.string().parse(userID),
 		sessionToken: z.string().parse(sessionToken),
 	});

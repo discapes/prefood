@@ -1,13 +1,11 @@
-import { getUserData } from "$lib/server/auth";
-import { ddb } from "$lib/server/ddb";
-import type { Order, User } from "$lib/types";
-import { QueryCommand } from "@aws-sdk/lib-dynamodb";
+import OrderService from "$lib/services/OrderService";
+import type { User } from "$lib/types";
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({ locals: { userID, sessionToken }, parent }) => {
 	if (userID) {
-		let orderDataPromise = getOrdersForUser(userID);
+		let orderDataPromise = OrderService.forUser(userID);
 		const { userData } = await parent();
 
 		if (userData) {
@@ -18,18 +16,5 @@ export const load: PageServerLoad = async ({ locals: { userID, sessionToken }, p
 				orders: orderData,
 			};
 		}
-	}
-
-	async function getOrdersForUser(userID: string) {
-		const cmd = new QueryCommand({
-			TableName: "orders",
-			KeyConditionExpression: `userID = :userID`,
-			ExpressionAttributeValues: {
-				":userID": userID,
-			},
-			ScanIndexForward: false,
-		});
-		const res = await ddb.send(cmd);
-		return <Order[] | undefined>res.Items;
 	}
 };

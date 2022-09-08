@@ -2,13 +2,11 @@ import { MAIL_FROM_DOMAIN } from "$env/static/private";
 import { URLS } from "$lib/addresses";
 import { getEncoderCrypt } from "$lib/server/crypto";
 import { sendMail } from "$lib/server/mail";
+import AccountService from "$lib/services/AccountService";
 import { EmailLoginCode } from "$lib/types";
 import { formEntries, log } from "$lib/util";
 import { error, redirect } from "@sveltejs/kit";
-import { getUserIDFromIndexedAttr_unsafe } from "../lib";
 import type { Actions, PageServerLoad } from "./$types";
-
-export const prerender = false;
 
 type EmailMeSuccess = {
 	sent: true;
@@ -33,9 +31,10 @@ export const actions: Actions = {
 			fields: { email, passState },
 		} = await formEntries(request);
 		log(url.pathname, { email, passState });
-		if (typeof email !== "string" || typeof passState !== "string") throw error(400, "invalid");
+		if (typeof email !== "string" || typeof passState !== "string")
+			throw error(400, "invalid");
 
-		if (await getUserIDFromIndexedAttr_unsafe({ idFieldName: "email", idValue: email })) {
+		if (await AccountService.existsTI({ methodName: "email", methodValue: email })) {
 			const code = getEncoderCrypt(EmailLoginCode).encode({
 				timestamp: Date.now(),
 				email,

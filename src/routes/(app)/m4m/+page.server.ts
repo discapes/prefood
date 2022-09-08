@@ -2,8 +2,6 @@ import { getSecretStripe } from "$lib/server/stripe";
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
-export const prerender = false;
-
 export const load: PageServerLoad = async () => {
 	const stripe = getSecretStripe();
 	const paymentIntent = await stripe.paymentIntents.create({

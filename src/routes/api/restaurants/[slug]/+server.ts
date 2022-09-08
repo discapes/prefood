@@ -1,10 +1,45 @@
-import { RestaurantsController } from "$lib/controllers/RestaurantsController";
-import type { RequestHandler } from "./$types";
-import { error } from "@sveltejs/kit";
 import { jsonResponse } from "$lib/api";
+import type { Restaurant } from "$lib/services/Restaurant";
+import RestaurantService from "$lib/services/RestaurantService";
+import { error } from "@sveltejs/kit";
+import { Example, Get, Path } from "tsoa";
+import type { RequestHandler } from "./$types";
 
-export const GET: RequestHandler = async ({ request: { headers }, params }) => {
-	const res = await RestaurantsController.get(params.slug);
-	if (!res) throw error(404, "Restaurant not found");
-	return jsonResponse(res, headers.get("accept"));
-};
+class F {
+	/**
+	 * @summary Get information about a specific restaurant
+	 * @param slug restaurant name
+	 * @example slug "mcBurgers"
+	 *
+	 */
+	@Example<Restaurant>({
+		menu: [
+			{
+				name: "a cheese burger",
+				image: "/placeholder.jpg",
+				price_cents: 1100,
+			},
+			{
+				name: "double cheese burger",
+				image: "/placeholder.jpg",
+				price_cents: 1600,
+			},
+			{
+				name: "triple cheese burger",
+				image: "/placeholder.jpg",
+				price_cents: 1900,
+			},
+		],
+		reviews: 132,
+		name: "mcBurgers",
+		stars: 5,
+	})
+	@Get("{slug}")
+	static async GET(@Path() slug: string): Promise<Restaurant> {
+		const res = await RestaurantService.get(slug);
+		if (!res) throw error(404);
+		return res;
+	}
+}
+
+export const GET: RequestHandler = async ({ request, params }) => jsonResponse(await F.GET(params.slug), request.headers);

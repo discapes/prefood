@@ -1,7 +1,10 @@
-import type Stripe from "stripe";
 import { z } from "zod";
 
-export const IdentificationMethod = z.union([z.literal("githubID"), z.literal("googleID"), z.literal("email")]);
+export const IdentificationMethod = z.union([
+	z.literal("githubID"),
+	z.literal("googleID"),
+	z.literal("email"),
+]);
 export type IdentificationMethod = z.infer<typeof IdentificationMethod>;
 
 export const LinkParameters = z.object({
@@ -40,49 +43,6 @@ export const EmailLoginCode = z.object({
 	picture: z.string().optional(),
 });
 export type EmailLoginCode = z.infer<typeof EmailLoginCode>;
-
-export type MenuItem = {
-	name: string;
-	price_cents: number;
-	image: string;
-};
-
-export type Order = {
-	restaurantName: string;
-	userID: string;
-	items: Stripe.LineItem[];
-	timestamp: number;
-};
-
-export type Restaurant = {
-	name: string;
-	menu: MenuItem[];
-	stars: number;
-	reviews: number;
-};
-
-export type User = {
-	userID: string;
-	googleID?: string;
-	githubID?: string;
-	bio?: string;
-	name: string;
-	email: string;
-	picture: string;
-	stripeCustomerID?: string;
-	sessionTokens?: string[];
-};
-
-export type UnserializableUser = {
-	userID: string;
-	googleID?: string;
-	githubID?: string;
-	name: string;
-	email: string;
-	picture: string;
-	stripeCustomerID?: string;
-	sessionTokens?: Set<string>;
-};
 
 export type SessionMetadata = {
 	linkedCID: string;

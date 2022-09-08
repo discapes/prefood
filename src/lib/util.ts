@@ -1,5 +1,5 @@
-import type { Order } from "./types";
 import { z } from "zod";
+import type { Order } from "./services/Order";
 
 export function getDataURL(file: File | undefined): Promise<string> {
 	return new Promise((res) => {
@@ -27,7 +27,10 @@ export async function formEntries(request: Request) {
 }
 
 export function getDecoder<T extends z.ZodTypeAny>(Type: T) {
-	return z.preprocess((a: unknown) => typeof a === "string" && JSON.parse(decodeB64URL(a)), Type);
+	return z.preprocess(
+		(a: unknown) => typeof a === "string" && JSON.parse(decodeB64URL(a)),
+		Type
+	);
 }
 export function getEncoder<T extends z.ZodTypeAny>(Type: T) {
 	return {
@@ -66,7 +69,9 @@ export function decodeB64URL(input: string) {
 	var pad = input.length % 4;
 	if (pad) {
 		if (pad === 1) {
-			throw new Error("InvalidLengthError: Input base64url string is the wrong length to determine padding");
+			throw new Error(
+				"InvalidLengthError: Input base64url string is the wrong length to determine padding"
+			);
 		}
 		input += new Array(5 - pad).join("=");
 	}
@@ -141,12 +146,16 @@ export function trueStrings(...args: unknown[]) {
 	return args.every((s) => s && typeof s === "string");
 }
 
-function hook(o: any, fname: string, mine: any) {
+export function hook(o: any, fname: string, mine: any) {
 	const og = o[fname].bind(o);
 	o[fname] = () => {
 		mine();
 		og();
 	};
+}
+
+export function isObject(o: unknown) {
+	return (typeof o === "object" && o !== null) || typeof o === "function";
 }
 
 export function formFrom(o: Record<string, string | Blob>) {

@@ -3,7 +3,7 @@ import type { RequestHandler } from "@sveltejs/kit";
 import { Example, Get, Produces, Route } from "tsoa";
 
 @Route("/")
-class HelloController {
+class F {
 	/**
 	 * @summary Test the API
 	 */
@@ -11,7 +11,7 @@ class HelloController {
 	@Produces("text/plain")
 	@Example("hello world")
 	@Get()
-	static async getMessage() {
+	static async GET(): Promise<string> {
 		debugger;
 		return "hello world";
 	}
@@ -20,10 +20,10 @@ class HelloController {
 export const GET: RequestHandler = async ({ request: { headers } }) => {
 	const handlers: Record<string, () => Promise<Response>> = {
 		async "application/json"() {
-			return new Response(JSON.stringify(await HelloController.getMessage()));
+			return new Response(JSON.stringify(await F.GET()));
 		},
 		async "text/plain"() {
-			return new Response(await HelloController.getMessage());
+			return new Response(await F.GET());
 		},
 	};
 	return await negotiate(handlers, headers.get("Accept"));

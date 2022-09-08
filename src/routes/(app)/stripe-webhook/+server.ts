@@ -2,7 +2,8 @@ import { MAIL_FROM_DOMAIN } from "$env/static/private";
 import { ddb, Table } from "$lib/server/ddb";
 import { sendMail } from "$lib/server/mail";
 import { getSecretStripe } from "$lib/server/stripe";
-import type { Order, SessionMetadata } from "$lib/types";
+import type { Order } from "$lib/services/Order";
+import type { SessionMetadata } from "$lib/types";
 import { getSlugFromOrder } from "$lib/util";
 import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
@@ -10,7 +11,8 @@ import type Stripe from "stripe";
 import { v4 as uuidv4 } from "uuid";
 import type { RequestHandler } from "./$types";
 
-const endpointSecret = "whsec_7875c134218714a9d36bb383f34e1e0ac2fb5199d8d8cbabc1a757b8098fbf26";
+const endpointSecret =
+	"whsec_7875c134218714a9d36bb383f34e1e0ac2fb5199d8d8cbabc1a757b8098fbf26";
 const stripe = getSecretStripe();
 
 function toBuffer(ab: ArrayBuffer): Buffer {
@@ -63,7 +65,9 @@ async function fulfillOrder(session: Stripe.Checkout.Session, url: string) {
 		operations.push(linkCID(metadata.userID, session.customer as string));
 	}
 
-	const expanded = await stripe.checkout.sessions.retrieve(session.id, { expand: ["line_items"] });
+	const expanded = await stripe.checkout.sessions.retrieve(session.id, {
+		expand: ["line_items"],
+	});
 	const line_items = expanded.line_items?.data;
 	if (!line_items) throw error(500, `couldn't retrieve session`);
 
@@ -75,7 +79,7 @@ async function fulfillOrder(session: Stripe.Checkout.Session, url: string) {
 	};
 
 	console.log(`Creating order for ${metadata.restaurantName}`);
-	operations.push(new Table("orders").put(order));
+	operations.push(new Table("orders").putItem(order));
 	operations.push(sendReceipt(session.customer_details?.email, order, url));
 
 	await Promise.all(operations);
@@ -94,13 +98,8 @@ ${JSON.stringify(order, null, 2)}`, // plain text body
 
 async function linkCID(userID: string, stripeCustomerID: string) {
 	console.log(`Linking customer ID ${stripeCustomerID} to userID ${userID}`);
-	const cmd = new UpdateCommand({
-		TableName: "users",
-		Key: { userID },
-		UpdateExpression: `SET stripeCustomerID = :stripeCustomerID`,
-		ExpressionAttributeValues: {
-			":stripeCustomerID": stripeCustomerID,
-		},
-	});
-	await ddb.send(cmd);
+	await new Table("users")
+		.key("userID")
+		.set(ddb`stripeCustomerID = :${stripeCustomerID}`)
+		.updateItem(userID);
 }

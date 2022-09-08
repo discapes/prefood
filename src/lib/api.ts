@@ -16,7 +16,8 @@ export async function negotiate(handlers: Record<string, () => Promise<Response>
 	}
 }
 
-export function jsonResponse(o: unknown, accept: string | null) {
+export function jsonResponse(o: unknown, headers: Headers) {
+	const accept = headers.get("accept");
 	return negotiate(
 		{
 			async "application/json"() {

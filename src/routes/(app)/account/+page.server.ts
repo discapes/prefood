@@ -2,13 +2,13 @@ import { MAIL_FROM_DOMAIN } from "$env/static/private";
 import { URLS } from "$lib/addresses";
 import { getEncoderCrypt } from "$lib/server/crypto";
 import { sendMail } from "$lib/server/mail";
+import AccountService from "$lib/services/AccountService";
 import { EmailLoginCode } from "$lib/types";
 import { formEntries, log, trueStrings } from "$lib/util";
 import { error } from "@sveltejs/kit";
 import sharp from "sharp";
 import { z } from "zod";
 import type { Actions } from "./$types";
-import { removeSessionToken } from "./lib";
 
 export const Edits = z
 	.object({
@@ -17,12 +17,11 @@ export const Edits = z
 	})
 	.partial();
 
-//https://github.com/sveltejs/kit/discussions/5875
 export const actions: Actions = {
 	logout: async ({ locals: { sessionToken, userID }, cookies }) => {
 		if (!sessionToken) throw error(400, "sessionToken not specified.");
 		if (!userID) throw error(400, "userID not specified.");
-		await removeSessionToken({ userID, sessionToken });
+		await AccountService.removeSessionToken({ userID, sessionToken });
 		cookies.delete("sessionToken");
 		cookies.delete("userID");
 	},
@@ -58,7 +57,10 @@ export const actions: Actions = {
 			from: `"${MAIL_FROM_DOMAIN}" <no-reply@${MAIL_FROM_DOMAIN}>`, // sender address
 			to: <string>email, // list of receivers
 			subject: `Email change link for ${MAIL_FROM_DOMAIN}`, // Subject line
-			text: `You can link your new email at ${new URL(URLS.LINK, url)}?state=${passState}&code=${code}`,
+			text: `You can link your new email at ${new URL(
+				URLS.LINK,
+				url
+			)}?state=${passState}&code=${code}`,
 		});
 	},
 	unlink: async ({ locals: { sessionToken, userID } }) => {
