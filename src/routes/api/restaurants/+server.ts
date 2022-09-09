@@ -2,8 +2,10 @@ import { jsonResponse } from "$lib/api";
 import type { Restaurant } from "$lib/services/Restaurant";
 import RestaurantService from "$lib/services/RestaurantService";
 import type { RequestHandler } from "@sveltejs/kit";
-import { Example, Get } from "tsoa";
+import { Example, Get, Route, Tags } from "tsoa";
 
+@Route("restaurants")
+@Tags("restaurants")
 class F {
 	/**
 	 * @summary Get information about all restaurants

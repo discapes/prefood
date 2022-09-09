@@ -16,7 +16,7 @@ export async function verifyEmailIdentity(
 	if (Date.now() - timestamp > MINUTES_10) {
 		throw error(400, "link expired");
 	}
-	log("unexpired verification token still valid");
+	log("verification token valid");
 
 	return {
 		i: {

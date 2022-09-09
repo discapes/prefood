@@ -8,7 +8,9 @@ const config = {
 		sveltekit(),
 		{
 			name: "tsoa",
-			buildStart: build_oas,
+			buildStart: () => {
+				build_oas();
+			},
 		},
 	],
 	build: {

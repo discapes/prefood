@@ -1,45 +1,52 @@
 <script lang="ts">
-	// import Header from "$lib/components/header/Header.svelte";
-	// import { setContext } from "svelte";
-	// import { writable } from "svelte/store";
-	// import type { Writable } from "svelte/store";
-	// import "../styles/theme.css";
-	// import "../styles/classes.scss";
-	// import cookie from "cookie";
-	// import { onMount } from "svelte";
-	// import { v4 as uuidv4 } from "uuid";
-	// // import { PageData } from "./$types";
+	import "$lib/../styles/classes.scss";
+	import "$lib/../styles/theme.css";
+	import Header from "$lib/components/header/Header.svelte";
+	import cookie from "cookie";
+	import { page } from "$app/stores";
+	import { onMount, setContext } from "svelte";
+	import type { Writable } from "svelte/store";
+	import { writable } from "svelte/store";
+	import { v4 as uuidv4 } from "uuid";
+	import type { PageData } from "./$types";
+	import { dev } from "$app/environment";
 
-	// export let data: PageData;
+	export let data: PageData;
 
-	// let darkmode: Writable<boolean | null> = writable(null);
-	// setContext("darkmode", darkmode);
+	let darkmode: Writable<boolean | null> = writable(null);
+	setContext("darkmode", darkmode);
 
-	// function darkmodetoggle() {
-	// 	document.body.classList.toggle("dark");
-	// 	$darkmode = document.body.classList.contains("dark");
-	// 	localStorage.setItem("darkmode", $darkmode.toString());
-	// }
+	function darkmodetoggle() {
+		document.body.classList.toggle("dark");
+		$darkmode = document.body.classList.contains("dark");
+		localStorage.setItem("darkmode", $darkmode.toString());
+	}
 
-	// let stateToken: Writable<string | null> = writable(null);
-	// setContext("stateToken", stateToken);
-	// onMount(() => {
-	// 	$stateToken = cookie.parse(document.cookie).state;
-	// 	if (!$stateToken) {
-	// 		$stateToken = uuidv4();
-	// 		document.cookie = `state=${$stateToken}; Path=/`;
-	// 	}
-	// });
+	let stateToken: Writable<string | null> = writable(null);
+	setContext("stateToken", stateToken);
+	onMount(() => {
+		$stateToken = cookie.parse(document.cookie).state;
+		if (!$stateToken) {
+			$stateToken = uuidv4();
+			document.cookie = `state=${$stateToken}; Path=/`;
+		}
+		console.log({ $stateToken });
+	});
 </script>
 
+{#if dev}
+	{JSON.stringify($page.data)}
+{/if}
 <div class="flex flex-col min-h-[100vh]">
-	<!-- <script>
+	<script>
 		$darkmode = localStorage.getItem("darkmode") == "true";
 		if ($darkmode) document.body.classList.add("dark");
 		else document.body.classList.remove("dark");
 	</script>
 	<Header on:darkmodetoggle={darkmodetoggle} />
-	<img class="w-20 h-20" src={data.userData.picture} /> -->
+	<!-- {#if data.userData}
+		<img class="w-20 h-20" src={data.userData.picture} />
+	{/if} -->
 
 	<main class="grow flex flex-col items-center">
 		<slot />

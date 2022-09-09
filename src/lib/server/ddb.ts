@@ -39,8 +39,11 @@ const dynamo = DynamoDBDocumentClient.from(dynamoClient, {
 });
 const send = dynamo.send.bind(dynamo);
 dynamo.send = async function (...args: Array<any>) {
+	const name = args[0].constructor.name;
+	console.log(name, args[0]?.clientCommand?.input);
 	// @ts-expect-error
-	const res = await send(...args);
+	const res = <any>await send(...args);
+	console.log(name + " ->", res.Item || res.Items || res.$metadata);
 	if (res.$metadata.httpStatusCode !== 200) throw new Error(`Database operation failed`);
 	return res;
 };
@@ -52,9 +55,6 @@ type Expression = {
 	values: unknown[];
 	names: string[];
 };
-
-const NAMECHAR = "$";
-const VALUECHAR = "~";
 
 /* for example expression`f(#${foo}) ${"<"} :${bar}`
 	returns {
@@ -71,10 +71,10 @@ export function ddb(strs: TemplateStringsArray, ...params: unknown[]): Expressio
 				switch (s.at(-1)) {
 					case "#":
 						names.push(String(params[i]));
-						return s + NAMECHAR;
+						return s;
 					case ":":
 						values.push(params[i]);
-						return s + VALUECHAR;
+						return s;
 					default:
 						return s + (params[i] ?? "");
 				}
@@ -86,56 +86,59 @@ export function ddb(strs: TemplateStringsArray, ...params: unknown[]): Expressio
 }
 
 export class Table<T extends {}> {
-	#table: string;
-	#condition?: string;
-	#key?: string;
-	#sk?: string;
-	#project?: string;
-	#index?: string;
-	#reverse = false;
-	#names = Array<string>();
-	#values = Array<unknown>();
-	#updateExpressions = new Map<string, string[]>();
+	_table: string;
+	_condition?: string;
+	_key?: string;
+	_sk?: string;
+	_project?: string;
+	_index?: string;
+	_reverse = false;
+	_names = Array<string>();
+	_values = Array<unknown>();
+	_updateExpressions = new Map<string, string[]>();
 
 	constructor(name: string) {
-		this.#table = name;
+		this._table = name;
 	}
 	clone() {
 		return this.#clone.bind(this);
 	}
 	#clone(): Table<T> {
-		const other = new Table<T>(this.#table);
+		const other = new Table<T>(this._table);
 		for (const key in this) {
 			if (!isObject(this[key])) (<any>other)[key] = this[key];
 		}
 		return other;
 	}
 	key(keyName: string, skName?: string) {
-		this.#key = keyName;
-		this.#sk = skName;
+		this._key = keyName;
+		this._sk = skName;
 		return this;
 	}
 	#mergeExpression(e: Expression) {
 		// we could do this
-		let nNames = this.#names.length;
-		let nValues = this.#values.length;
-		e.str.replace(NAMECHAR, () => "a".repeat(++nNames));
-		e.str.replace(VALUECHAR, () => "a".repeat(++nValues));
-		this.#names.push(...e.names);
-		this.#values.push(...e.values);
-		return e.str;
+		let str = e.str;
+		let nNames = this._names.length;
+		let nValues = this._values.length;
+		str = str.replace("#", () => "#" + "a".repeat(++nNames));
+		str = str.replace(":", () => ":" + "a".repeat(++nValues));
+		this._names.push(...e.names);
+		this._values.push(...e.values);
+		return str;
 	}
 	#update(type: string, e: Expression) {
-		const arr = this.#updateExpressions.get(type) ?? [];
+		const arr = this._updateExpressions.get(type) ?? [];
 		arr.push(this.#mergeExpression(e));
-		this.#updateExpressions.set(type, arr);
+		this._updateExpressions.set(type, arr);
 		return this;
 	}
 	#getAttributeValues() {
-		return Object.fromEntries(this.#values.map((v, i) => [":" + "a".repeat(i + 1), v]));
+		if (!this._values.length) return undefined;
+		return Object.fromEntries(this._values.map((v, i) => [":" + "a".repeat(i + 1), v]));
 	}
 	#getAttributeNames() {
-		return Object.fromEntries(this.#names.map((v, i) => ["#" + "a".repeat(i + 1), v]));
+		if (!this._names.length) return undefined;
+		return Object.fromEntries(this._names.map((v, i) => ["#" + "a".repeat(i + 1), v]));
 	}
 	delete(e: Expression) {
 		return this.#update("DELETE", e);
@@ -147,19 +150,19 @@ export class Table<T extends {}> {
 		return this.#update("SET", e);
 	}
 	condition(condition: Expression) {
-		this.#condition = this.#mergeExpression(condition);
+		this._condition = this.#mergeExpression(condition);
 		return this;
 	}
 	reverse() {
-		this.#reverse = !this.#reverse;
+		this._reverse = !this._reverse;
 		return this;
 	}
 	index(name: string) {
-		this.#index = name;
+		this._index = name;
 		return this;
 	}
 	project(attributes: string[]) {
-		this.#project = attributes.join(",");
+		this._project = attributes.join(",");
 		return this;
 	}
 	async scanItems(): Promise<T[]> {
@@ -172,42 +175,44 @@ export class Table<T extends {}> {
 		if (!res.Items) throw new Error("Items not found");
 		return <T[]>res.Items;
 	}
-	async getItem(keyValue: KeyValue): Promise<T | undefined> {
-		if (!this.#key) throw new Error("key not specified");
+	async getItem(keyValue: KeyValue, skValue?: KeyValue): Promise<T | undefined> {
+		if (!this._key) throw new Error("key not specified");
+		const Key = { [this._key]: keyValue };
+		if (skValue && this._sk) Key[this._sk] = skValue;
 		const cmd = new GetCommand({
-			TableName: this.#table,
-			Key: { [this.#key]: keyValue },
-			ProjectionExpression: this.#project,
+			TableName: this._table,
+			Key,
+			ProjectionExpression: this._project,
 		});
 		const res = await dynamo.send(cmd);
 		return <T | undefined>res.Item;
 	}
 	async putItem(item: T) {
 		const cmd = new PutCommand({
-			TableName: this.#table,
+			TableName: this._table,
 			Item: item,
-			ConditionExpression: this.#condition?.toString(),
+			ConditionExpression: this._condition?.toString(),
 			ExpressionAttributeNames: this.#getAttributeNames(),
 			ExpressionAttributeValues: this.#getAttributeValues(),
 		});
 		const res = await dynamo.send(cmd);
 	}
 	async deleteItem(keyValue: KeyValue) {
-		if (!this.#key) throw new Error("key not specified");
+		if (!this._key) throw new Error("key not specified");
 		const cmd = new DeleteCommand({
-			TableName: this.#table,
-			Key: { [this.#key]: keyValue },
+			TableName: this._table,
+			Key: { [this._key]: keyValue },
 			ExpressionAttributeNames: this.#getAttributeNames(),
 			ExpressionAttributeValues: this.#getAttributeValues(),
 		});
 		const res = await dynamo.send(cmd);
 	}
 	async updateItem(keyValue: KeyValue) {
-		if (!this.#key) throw new Error("key not specified");
+		if (!this._key) throw new Error("key not specified");
 		const cmd = new UpdateCommand({
-			TableName: this.#table,
-			Key: { [this.#key]: keyValue },
-			UpdateExpression: Array(this.#updateExpressions.entries())
+			TableName: this._table,
+			Key: { [this._key]: keyValue },
+			UpdateExpression: [...this._updateExpressions.entries()]
 				.map(([type, v]) => `${type} ${v.join(", ")}`)
 				.join(" "),
 			ExpressionAttributeNames: this.#getAttributeNames(),
@@ -217,14 +222,14 @@ export class Table<T extends {}> {
 	}
 	async queryItems(keyCondition: Expression): Promise<T[]> {
 		const kc = this.#mergeExpression(keyCondition);
-		if (!this.#key) throw new Error("key not specified");
+		if (!this._key) throw new Error("key not specified");
 		const cmd = new QueryCommand({
-			TableName: this.#table,
+			TableName: this._table,
 			KeyConditionExpression: kc,
-			IndexName: this.#index,
+			IndexName: this._index,
 			ExpressionAttributeNames: this.#getAttributeNames(),
 			ExpressionAttributeValues: this.#getAttributeValues(),
-			ScanIndexForward: !this.#reverse,
+			ScanIndexForward: !this._reverse,
 		});
 		const res = await dynamo.send(cmd);
 		if (!res.Items) throw new Error("items not found");

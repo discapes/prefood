@@ -1,7 +1,5 @@
-import { ddb } from "$lib/server/ddb.js";
 import OrderService from "$lib/services/OrderService";
 import { getDataFromOrderSlug } from "$lib/util";
-import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 

@@ -1,15 +1,13 @@
 import type { AccountCreationData, TrustedIdentity } from "$lib/types";
 import { log } from "$lib/util";
+import { error } from "@sveltejs/kit";
 import { v4 as uuid, v4 as uuidv4 } from "uuid";
 import { hash } from "../server/crypto";
 import { ddb, Table } from "../server/ddb";
 import type { Account, Auth, UserAuth } from "./Account";
-import AccountService from "$lib/services/AccountService";
-import { error } from "@sveltejs/kit";
 
 class AccountsService {
-	table = new Table<Account>("users").clone();
-	uidTable = this.table().key("userID").clone();
+	table = new Table<Account>("users").key("userID").clone();
 
 	parseUIDFromAuth(auth: Auth) {
 		if ("apiKey" in auth) {
@@ -28,12 +26,12 @@ class AccountsService {
 		return undefined;
 	}
 	async fetchScopes(auth: Auth): Promise<string[] | undefined> {
-		const ud = await this.uidTable().getItem(this.parseUIDFromAuth(auth));
+		const ud = await this.table().getItem(this.parseUIDFromAuth(auth));
 		if (ud) return this.getScopes(auth, ud);
 	}
 	async fetchScopedData(auth: Auth): Promise<Partial<Account> | undefined> {
 		const userID = this.parseUIDFromAuth(auth);
-		const userData = await this.uidTable().getItem(userID);
+		const userData = await this.table().getItem(userID);
 		if (!userData) return undefined;
 		const scopes = this.getScopes(auth, userData);
 		if (!scopes) return undefined;
@@ -56,16 +54,16 @@ class AccountsService {
 		return !!(await this.fetchUIDForTI(ti));
 	}
 	async existsUID(userID: string): Promise<boolean> {
-		return !!(await this.uidTable().project(["userID"]).getItem(userID));
+		return !!(await this.table().project(["userID"]).getItem(userID));
 	}
 	async removeSessionToken({ sessionToken, userID }: UserAuth) {
-		await this.uidTable()
+		await this.table()
 			.delete(ddb`sessionTokens :${new Set([hash(sessionToken)])}`)
 			.updateItem(userID);
 	}
 	async addSessionToken({ userID }: { userID: string }) {
 		const newSessionToken = uuid();
-		await this.uidTable()
+		await this.table()
 			.add(ddb`sessionTokens :${new Set([hash(newSessionToken)])}`)
 			.updateItem(userID);
 		return newSessionToken;
@@ -83,7 +81,7 @@ class AccountsService {
 	}): Promise<boolean> {
 		if (!(await this.existsUID(userID))) return false;
 
-		await this.uidTable()
+		await this.table()
 			.condition(ddb`contains(sessionTokens, :${sessionToken})`)
 			.set(ddb`#${attribute} = :${value}`)
 			.updateItem(userID);
@@ -101,7 +99,7 @@ class AccountsService {
 		const userID = uuidv4();
 		const initialSessionToken = uuidv4();
 		log(`Creating account with ${JSON.stringify({ userID, acd, initialSessionToken })}`);
-		const oper = this.uidTable()
+		const oper = this.table()
 			.set(ddb`#${"name"} = :${acd.name}`)
 			.set(ddb`#${"email"} = :${acd.email}`)
 			.set(ddb`#${"picture"} = :${acd.picture}`);

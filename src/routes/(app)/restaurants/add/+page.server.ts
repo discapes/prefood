@@ -1,3 +1,4 @@
+export {};
 // import { Table } from "$lib/server/ddb";
 // import type { Restaurant } from "$lib/types";
 // import type { Action } from "@sveltejs/kit";

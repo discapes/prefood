@@ -12,6 +12,10 @@ export function getDataURL(file: File | undefined): Promise<string> {
 	});
 }
 
+export function assert(x: unknown): asserts x {
+	if (!x) throw new Error("AssertError");
+}
+
 export async function formEntries(request: Request) {
 	const fields = Object.create(null);
 	const files = Object.create(null);

@@ -13,7 +13,7 @@
 	<ol class="flex gap-10 flex-wrap">
 		{#each data.restaurants as res (res.name)}
 			<li class="block btn scale">
-				<a class="nolink" sveltekit:prefetch href={`restaurants/${res.name}`}>
+				<a class="nolink" data-sveltekit-prefetch href={`restaurants/${res.name}`}>
 					<div class="btn m-2">
 						<span class="text-4xl m-2">{res.name}</span>
 					</div>

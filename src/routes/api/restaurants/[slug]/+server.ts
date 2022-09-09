@@ -2,9 +2,11 @@ import { jsonResponse } from "$lib/api";
 import type { Restaurant } from "$lib/services/Restaurant";
 import RestaurantService from "$lib/services/RestaurantService";
 import { error } from "@sveltejs/kit";
-import { Example, Get, Path } from "tsoa";
+import { Example, Get, Path, Route, Tags } from "tsoa";
 import type { RequestHandler } from "./$types";
 
+@Route("restaurants")
+@Tags("restaurantss")
 class F {
 	/**
 	 * @summary Get information about a specific restaurant
@@ -42,4 +44,5 @@ class F {
 	}
 }
 
-export const GET: RequestHandler = async ({ request, params }) => jsonResponse(await F.GET(params.slug), request.headers);
+export const GET: RequestHandler = async ({ request, params }) =>
+	jsonResponse(await F.GET(params.slug), request.headers);

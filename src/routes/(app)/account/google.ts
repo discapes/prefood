@@ -38,7 +38,8 @@ export async function verifyGoogleIdentity(
 				methodName: "googleID",
 			})
 		);
-	log("got access token and profile info");
+
+	log(`got profile info `, acd);
 
 	return {
 		i: acd,

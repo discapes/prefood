@@ -12,7 +12,7 @@ class OrderService {
 	}
 	async getSpecific({ userID, timestamp }: { userID: string; timestamp: number }) {
 		const res = await this.table().queryItems(
-			ddb`#userID = :${userID} and #${"timestamp"} = :${timestamp}`
+			ddb`userID = :${userID} and #${"timestamp"} = :${timestamp}`
 		);
 		return <Order | undefined>res[0];
 	}

@@ -28,7 +28,8 @@ export async function verifyGithubIdentity(
 		}
 	).then((res) => res.json());
 
-	console.log(`got access token ${access_token}, getting profile info`);
+	if (!access_token) throw error(500, "invalid access token");
+	log(`got access token ${access_token}, getting profile info`);
 
 	const castToString = z.preprocess((val) => String(val), z.string());
 	const acd = await fetch("https://api.github.com/user", {
@@ -44,6 +45,7 @@ export async function verifyGithubIdentity(
 				methodValue: castToString.parse(o?.id),
 			})
 		);
+	log(`got profile info `, acd);
 
 	return {
 		i: acd,

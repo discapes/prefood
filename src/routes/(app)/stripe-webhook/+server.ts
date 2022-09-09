@@ -5,7 +5,6 @@ import { getSecretStripe } from "$lib/server/stripe";
 import type { Order } from "$lib/services/Order";
 import type { SessionMetadata } from "$lib/types";
 import { getSlugFromOrder } from "$lib/util";
-import { UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { error } from "@sveltejs/kit";
 import type Stripe from "stripe";
 import { v4 as uuidv4 } from "uuid";

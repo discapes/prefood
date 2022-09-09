@@ -27,7 +27,7 @@
 		<ul class="flex flex-col py-2 rounded-b-xl gap-1 sm:flex-row sm:py-0 sm:rounded-none">
 			{#each listedPages as listedPage}
 				<li class:active={$page.url.pathname === listedPage.path}>
-					<a sveltekit:prefetch href={listedPage.path}>{listedPage.name}</a>
+					<a data-sveltekit-prefetch href={listedPage.path}>{listedPage.name}</a>
 				</li>
 			{/each}
 		</ul>
@@ -37,7 +37,10 @@
 	</nav>
 
 	<div class="corner inline-flex justify-start items-end">
-		<button class="w-5/6 h-5/6 rounded-bl darkmodetoggle" on:click={() => dispatch("darkmodetoggle")} />
+		<button
+			class="w-5/6 h-5/6 rounded-bl darkmodetoggle"
+			on:click={() => dispatch("darkmodetoggle")}
+		/>
 	</div>
 </header>
 

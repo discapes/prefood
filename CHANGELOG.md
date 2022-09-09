@@ -4,13 +4,15 @@
 
 - [-] allow changing profile info and authentication methods, and delete account
 - [-] separate page endpoints and server endpoints, to make an api
-  - [ ] api keys for user
+  - [-] api keys for user
   - [-] use the passed fetch function
   - [-] generate api docs
+- [ ] dont show errors
 - [ ] username field
 - [ ] link for each profile
 - [ ] review code before update
 
+- [ ] document and publish ddb utility library
 - [ ] expiring session tokens
 - [ ] oispaeliitti integration
 - [ ] view where restaurant owners can see new orders and change their status
