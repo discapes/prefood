@@ -4,7 +4,7 @@ import { error } from "@sveltejs/kit";
 import { v4 as uuid, v4 as uuidv4 } from "uuid";
 import { hash } from "../server/crypto";
 import { ddb, Table } from "../server/ddb";
-import type { Account, Auth, UserAuth } from "./Account";
+import type { Account, Auth, Edits, UserAuth } from "./Account";
 
 class AccountsService {
 	table = new Table<Account>("users").key("userID").clone();
@@ -82,12 +82,20 @@ class AccountsService {
 		if (!(await this.existsUID(userID))) return false;
 
 		await this.table()
-			.condition(ddb`contains(sessionTokens, :${sessionToken})`)
+			.condition(ddb`contains(sessionTokens, :${hash(sessionToken)})`)
 			.set(ddb`#${attribute} = :${value}`)
 			.updateItem(userID);
 		return true;
 	}
-	/* doesn't check for duplicate emails */
+	async edit(edits: Edits, auth: UserAuth) {
+		const oper = this.table().condition(
+			ddb`contains(sessionTokens, :${hash(auth.sessionToken)})`
+		);
+		Object.entries(edits).map(([key, value]) => {
+			if (value != undefined) oper.set(ddb`#${key} = :${value}`);
+		});
+		await oper.updateItem(auth.userID);
+	}
 	async create(acd: AccountCreationData) {
 		if (
 			await this.existsTI({

@@ -4,9 +4,10 @@ export type Account = {
 	userID: string;
 	googleID?: string;
 	githubID?: string;
+	bio?: string;
 	name: string;
 	email: string;
-	picture: string;
+	picture: string | Uint8Array;
 	stripeCustomerID?: string;
 	sessionTokens?: Set<string>;
 	apiKeys?: ApiKey[];
@@ -30,3 +31,5 @@ export type OAuth = z.infer<typeof OAuth>;
 
 export const Auth = z.union([OAuth, UserAuth]);
 export type Auth = z.infer<typeof Auth>;
+
+export type Edits = Pick<Partial<Account>, "picture" | "bio" | "name">;

@@ -191,7 +191,7 @@ export class Table<T extends {}> {
 		const cmd = new PutCommand({
 			TableName: this._table,
 			Item: item,
-			ConditionExpression: this._condition?.toString(),
+			ConditionExpression: this._condition,
 			ExpressionAttributeNames: this.#getAttributeNames(),
 			ExpressionAttributeValues: this.#getAttributeValues(),
 		});
@@ -202,6 +202,7 @@ export class Table<T extends {}> {
 		const cmd = new DeleteCommand({
 			TableName: this._table,
 			Key: { [this._key]: keyValue },
+			ConditionExpression: this._condition,
 			ExpressionAttributeNames: this.#getAttributeNames(),
 			ExpressionAttributeValues: this.#getAttributeValues(),
 		});
@@ -215,6 +216,7 @@ export class Table<T extends {}> {
 			UpdateExpression: [...this._updateExpressions.entries()]
 				.map(([type, v]) => `${type} ${v.join(", ")}`)
 				.join(" "),
+			ConditionExpression: this._condition,
 			ExpressionAttributeNames: this.#getAttributeNames(),
 			ExpressionAttributeValues: this.#getAttributeValues(),
 		});

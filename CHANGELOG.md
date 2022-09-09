@@ -7,10 +7,11 @@
   - [-] api keys for user
   - [-] use the passed fetch function
   - [-] generate api docs
-- [ ] dont show errors
+- [ ] handle all errors
 - [ ] username field
 - [ ] link for each profile
 - [ ] review code before update
+- [ ] prevent dos attacks by submitting large forms
 
 - [ ] document and publish ddb utility library
 - [ ] expiring session tokens
