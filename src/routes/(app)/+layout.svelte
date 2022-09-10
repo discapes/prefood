@@ -1,15 +1,11 @@
 <script lang="ts">
-	import "$lib/../styles/classes.scss";
-	import "$lib/../styles/theme.css";
 	import Header from "$lib/components/header/Header.svelte";
 	import cookie from "cookie";
-	import { page } from "$app/stores";
 	import { onMount, setContext } from "svelte";
 	import type { Writable } from "svelte/store";
 	import { writable } from "svelte/store";
 	import { v4 as uuidv4 } from "uuid";
 	import type { PageData } from "./$types";
-	import { dev } from "$app/environment";
 
 	export let data: PageData;
 
@@ -60,6 +56,9 @@
 </div>
 
 <style>
+	@use "theme.css";
+	@use "classes.scss";
+
 	main {
 		flex: 1;
 		display: flex;

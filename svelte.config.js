@@ -7,6 +7,10 @@ const config = {
 	// for more information about preprocessors
 	preprocess: preprocess({
 		postcss: true,
+		scss: {
+			includePaths: ["src/styles/"],
+			renderSync: true,
+		},
 	}),
 
 	onwarn: (warning, handler) => {

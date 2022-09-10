@@ -14,11 +14,12 @@
 - before 1.0
 
   - [ ] handle all errors
-  - [ ] review code before update
+  - [ ] review code
   - [ ] test and fix all features
 
 - additional tasks
 
+  - [ ] sass includepaths finally works
   - [ ] fix counter
   - [ ] add titles for each page
   - [ ] human readable receipt, don't include stripe data

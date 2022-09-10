@@ -21,13 +21,6 @@ const config = {
 			allow: [path.resolve("../kit/packages/kit/src")],
 		},
 	},
-	css: {
-		preprocessorOptions: {
-			scss: {
-				loadPaths: ["src/styles/"],
-			},
-		},
-	},
 };
 
 export default config;

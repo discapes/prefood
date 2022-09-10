@@ -1,4 +1,4 @@
-import { jsonResponse } from "$lib/api";
+import { jsonResponse } from "$lib/server/api";
 import type { Restaurant } from "$lib/services/Restaurant";
 import RestaurantService from "$lib/services/RestaurantService";
 import type { RequestHandler } from "@sveltejs/kit";

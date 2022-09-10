@@ -1,4 +1,4 @@
-import { negotiate } from "$lib/api";
+import { negotiate } from "$lib/server/api";
 import type { RequestHandler } from "@sveltejs/kit";
 import { Example, Get, Produces, Route } from "tsoa";
 
