@@ -16,6 +16,11 @@ class AccountsService {
 			return auth.userID;
 		}
 	}
+	async delete(auth: UserAuth) {
+		await this.table()
+			.condition(ddb`contains(sessionTokens, :${hash(auth.sessionToken)})`)
+			.deleteItem(auth.userID);
+	}
 	getScopes(auth: Auth, user: Account): string[] | undefined {
 		if ("sessionToken" in auth) {
 			if (user.sessionTokens?.has(hash(auth.sessionToken))) return ["*"];

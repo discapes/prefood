@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
-	import { applyAction, enhance } from "$app/forms";
+	import { applyAction, enhance, type SubmitFunction } from "$app/forms";
 	import { invalidateAll } from "$app/navigation";
 	import { page } from "$app/stores";
 	import { URLS } from "$lib/addresses";
@@ -12,12 +12,13 @@
 	import type { Account } from "$lib/services/Account";
 	import { LinkParameters } from "$lib/types";
 	import { formFrom, getDataURL, getEncoder } from "$lib/util";
+	import type { ActionResult } from "@sveltejs/kit";
 	import { getContext } from "svelte";
 	import type { Writable } from "svelte/store";
 	import type { ActionData } from "./$types";
 
 	export let form: ActionData;
-	const { userData } = <{ userData: Account }>$page.data;
+	$: userData = $page.data.userData;
 	const stateToken: Writable<string> = getContext("stateToken");
 	let pictureDataURL = "";
 
@@ -46,8 +47,11 @@
 	$: {
 		if (browser && form?.message) {
 			editMode = false;
-			alert(form?.message);
+			setTimeout(() => alert(form?.message), 0);
 		}
+	}
+	function editResult({ result }: { result: ActionResult }) {
+		invalidateAll();
 	}
 </script>
 
@@ -125,8 +129,7 @@
 				<form
 					class="contents"
 					id="editform"
-					use:enhance={() =>
-						({ result }) => (invalidateAll(), applyAction(result))}
+					use:enhance={editResult}
 					method="POST"
 					action="?/editprofile"
 				>

@@ -44,6 +44,7 @@ export const actions: Actions = {
 		async function encodeImage(file: File) {
 			return await sharp(new Uint8Array(await file.arrayBuffer()))
 				.resize(500, 500)
+				.rotate()
 				.webp()
 				.toBuffer();
 		}

@@ -5,13 +5,11 @@ import { getSecretStripe } from "$lib/server/stripe";
 import type { Order } from "$lib/services/Order";
 import type { SessionMetadata } from "$lib/types";
 import { getSlugFromOrder } from "$lib/util";
-import { error } from "@sveltejs/kit";
+import { error, type RequestHandler } from "./$types";
 import type Stripe from "stripe";
+import { STRIPE_ENDPOINT_SECRET } from "$env/static/private";
 import { v4 as uuidv4 } from "uuid";
-import type { RequestHandler } from "./$types";
 
-const endpointSecret =
-	"whsec_7875c134218714a9d36bb383f34e1e0ac2fb5199d8d8cbabc1a757b8098fbf26";
 const stripe = getSecretStripe();
 
 function toBuffer(ab: ArrayBuffer): Buffer {
@@ -29,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
 
 		const _rawBody = await request.arrayBuffer();
 		const payload = toBuffer(_rawBody);
-		const event = stripe.webhooks.constructEvent(payload, sig!, endpointSecret);
+		const event = stripe.webhooks.constructEvent(payload, sig!, STRIPE_ENDPOINT_SECRET);
 
 		switch (event.type) {
 			case "checkout.session.completed": {

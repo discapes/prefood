@@ -2,26 +2,35 @@
 
 ## TODO
 
-- [-] allow changing profile info and authentication methods, and delete account
-- [ ] handle all errors
-- [ ] review code before update
+- next update
 
-- [ ] username field
-- [ ] link for each profile
+  - [ ] username field
+  - [ ] link for each profile
+  - [ ] separate database objects and client objects
+  - [ ] expand API
+    - [ ] allow user to generate API keys with selected scopes
+    - [ ] API Key support in all account operations
 
-- [-] separate page endpoints and server endpoints, to make an api
-  - [-] api keys for user
-  - [-] use the passed fetch function
-  - [-] generate api docs
-- [ ] prevent dos attacks by submitting large forms
-- [ ] rotate profile image correctly
-- [ ] document and publish ddb utility library
-- [ ] expiring session tokens
-- [ ] secure restaurant add page
+- before 1.0
 
-- [ ] oispaeliitti integration
+  - [ ] handle all errors
+  - [ ] review code before update
+  - [ ] test and fix all features
+
+- additional tasks
+
+  - [ ] fix counter
+  - [ ] add titles for each page
+  - [ ] human readable receipt, don't include stripe data
+  - [ ] info page with link to my website
+  - [ ] expiring session tokens
+  - [ ] secure restaurant add page
+  - [ ] prevent dos attacks by submitting large forms
+
+- large
 - [ ] view where restaurant owners can see new orders and change their status
 - [ ] serviceworker
+
   - [ ] web push API
     - [ ] notifications and page update on order status change for user
     - [ ] notifications and page update on new order for restaurant
@@ -29,50 +38,57 @@
     - [ ] on minor update reload on next visit
       - [ ] same thing with menu updates
   - [ ] server cache menu pages
-- low priority
-  - [ ] don't leak internal database data to even authenticated users
-  - [ ] add titles for each page
-  - [ ] human readable receipt
-  - [ ] info page with link to my website
-- [x] load user data in layout
-- [x] svelte new cookies api
-- [x] custom dynamodb wrapper
-- [x] add css loadpath
-- [x] more authentication options
-  - [x] show linked identifications on account page
-  - [x] GitHub authentication
-  - [x] create account with email
-  - [x] email sign in
-  - [x] referer injection impossible, form for creating account is confirmed to belong to email
-  - [x] remove google verify as request already comes from google
-  - [x] cover edge cases
-    - [x] can't link id method thats already linked to another account
-      - [x] can't implicitly create account that would have an email already in use
-- [x] security
-  - [x] hash sessionTokens
-  - [x] additional cookie security (SameSite, Secure, HttpOnly)
-  - [x] make sure all sensitive endpoints POST if possible
+
+- long term
+  - [ ] oispaeliitti integration
+  - [ ] publish dynamodb wrapper
+  - [ ] separate authentication to a library
+
+## [0.0.7] 2022-09-10
+
+### Added
+
+- authentication
+  - GitHub authentication
+  - email authentication
+  - show linked identifications on account page
+  - remove google verify as request already comes from google
+  - cover edge cases
+    - can't link auth method thats already linked to another account
+      - can't implicitly create account with taken email
+- stripe webhook
+  - create order and add to database
+  - send receipt to email
+  - order tracking page
+  - anonymous orders
+  - save account payment details
+- security
+
+  - extracted stripe endpoint secret to environment variable
+  - hash sessionTokens
+  - additional cookie security (SameSite, Secure, HttpOnly)
+  - make sure all sensitive endpoints POST if possible
     - SOP and SvelteKit prevent CSRF
-  - [x] prevent login CSRF with double-submit cookie + state
-  - [x] prevent XSS by not using @html
-- [x] limit sessionIDs for user
-- [x] add Dependabot with pnpm lockfile updater
-- [x] open repo to public
-  - [x] squash commits
-  - [x] add tags
-  - [x] add readme
-  - [x] add license and copyright
-- [x] describe database schema in SCHEMA.md
-- [x] stripe webhook
-  - [x] send receipt
-  - [x] create tracking page
-  - [x] anonymous accounts
-  - [x] save customerID
-  - [x] create order from line_items
+  - prevent login CSRF with double-submit cookie and state
+  - prevent XSS by not using @html
+
+- account
+  - allow changing profile info and authentication methods, and delete account
+  - profile bio and picture
+    - rotate image according to EXIF data
+  - load user data in root layout
+    - show profile pic in header
+- API and docs with tsoa
+- use new SvelteKit actions API
+- use new cookies API
+- custom dynamodb wrapper library
+- add css import loadpath
+- Dependabot with pnpm lockfile updater
+- describe database schema in SCHEMA.md
 
 ## [0.0.6] 2022-08-10
 
-### Add
+### Added
 
 - types for serviceworker
 - signing out removes sessionID on database

@@ -48,10 +48,10 @@
 	},
 	"type": "module",
 	"dependencies": {
-		"@aws-sdk/client-dynamodb": "^3.165.0",
-		"@aws-sdk/lib-dynamodb": "^3.165.0",
+		"@aws-sdk/client-dynamodb": "^3.168.0",
+		"@aws-sdk/lib-dynamodb": "^3.168.0",
 		"@fontsource/fira-mono": "^4.5.9",
-		"@stripe/stripe-js": "^1.35.0",
+		"@stripe/stripe-js": "^1.36.0",
 		"@types/nodemailer": "^6.4.5",
 		"cookie": "^0.5.0",
 		"js-yaml": "^4.1.0",

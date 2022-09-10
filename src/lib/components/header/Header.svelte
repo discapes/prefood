@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { page } from "$app/stores";
+	import { URLS } from "$lib/addresses";
 	import { createEventDispatcher } from "svelte";
 	import logo from "./svelte-logo.svg";
 
@@ -11,14 +12,25 @@
 		{ path: "/orders", name: "Orders" },
 		{ path: "/restaurants", name: "Restaurants" },
 	];
+	$: userData = $page.data.userData;
 </script>
 
 <header>
-	<div class="corner inline-flex justify-end items-end">
-		<a class="w-5/6 h-5/6" href="https://kit.svelte.dev">
-			<img class="w-full h-full" src={logo} alt="SvelteKit" />
+	{#if userData}
+		<a href={URLS.ACCOUNT} class="corner inline-flex justify-end items-end">
+			<img
+				alt="profile"
+				class="object-cover w-5/6 h-5/6 border border-white dark:border-neutral-400"
+				src={userData.picture}
+			/>
 		</a>
-	</div>
+	{:else}
+		<div class="corner inline-flex justify-end items-end">
+			<a class="w-5/6 h-5/6" href={URLS.ACCOUNT}>
+				<img class="w-full h-full" src={logo} alt="SvelteKit" />
+			</a>
+		</div>
+	{/if}
 
 	<nav>
 		<svg viewBox="0 0 2 3" aria-hidden="true">
