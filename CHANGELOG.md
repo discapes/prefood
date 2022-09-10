@@ -3,21 +3,24 @@
 ## TODO
 
 - [-] allow changing profile info and authentication methods, and delete account
+- [ ] handle all errors
+- [ ] review code before update
+
+- [ ] username field
+- [ ] link for each profile
+
 - [-] separate page endpoints and server endpoints, to make an api
   - [-] api keys for user
   - [-] use the passed fetch function
   - [-] generate api docs
-- [ ] handle all errors
-- [ ] username field
-- [ ] link for each profile
-- [ ] review code before update
 - [ ] prevent dos attacks by submitting large forms
-
+- [ ] rotate profile image correctly
 - [ ] document and publish ddb utility library
 - [ ] expiring session tokens
+- [ ] secure restaurant add page
+
 - [ ] oispaeliitti integration
 - [ ] view where restaurant owners can see new orders and change their status
-- [ ] secure restaurant add page
 - [ ] serviceworker
   - [ ] web push API
     - [ ] notifications and page update on order status change for user

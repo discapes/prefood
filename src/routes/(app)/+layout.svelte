@@ -34,9 +34,9 @@
 	});
 </script>
 
-{#if dev}
+<!-- {#if dev}
 	{JSON.stringify($page.data)}
-{/if}
+{/if} -->
 <div class="flex flex-col min-h-[100vh]">
 	<script>
 		$darkmode = localStorage.getItem("darkmode") == "true";
