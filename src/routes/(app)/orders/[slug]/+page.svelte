@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { PUBLIC_APP_NAME } from "$env/static/public";
+	import type { Order } from "$lib/services/Order";
 	import { fly } from "svelte/transition";
 	import type { PageData } from "./$types";
 
@@ -7,7 +9,7 @@
 </script>
 
 <svelte:head>
-	<title>{order.restaurantName} - pizzapp</title>
+	<title>{order.restaurantName} order - {PUBLIC_APP_NAME}</title>
 </svelte:head>
 
 <section in:fly={{ duration: 200, y: 200 }}>

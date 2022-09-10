@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { PUBLIC_APP_NAME } from "$env/static/public";
 	import Banner from "$lib/components/Banner.svelte";
 
 	let title: string = "CANCEL";
@@ -6,7 +7,7 @@
 </script>
 
 <svelte:head>
-	<title>{title}</title>
+	<title>{title} - {PUBLIC_APP_NAME}</title>
 	<meta name="description" content={subtitle} />
 </svelte:head>
 

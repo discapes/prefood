@@ -1,23 +1,27 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
-	import { applyAction, enhance, type SubmitFunction } from "$app/forms";
+	import { enhance } from "$app/forms";
 	import { invalidateAll } from "$app/navigation";
 	import { page } from "$app/stores";
-	import { URLS } from "$lib/addresses";
+	import { PUBLIC_APP_NAME } from "$env/static/public";
+	import { DEFAULTSCOPES, SCOPES, URLS } from "$lib/addresses";
 	import pen from "$lib/assets/pen.png";
 	import upload from "$lib/assets/upload.png";
 	import GithubButton from "$lib/components/GithubButton.svelte";
 	import GoogleButton from "$lib/components/GoogleButton.svelte";
 	import Login from "$lib/components/Login.svelte";
-	import type { Account } from "$lib/services/Account";
+	import type { Account, ApiKey } from "$lib/services/Account";
 	import { LinkParameters } from "$lib/types";
 	import { formFrom, getDataURL, getEncoder } from "$lib/util";
 	import type { ActionResult } from "@sveltejs/kit";
 	import { getContext } from "svelte";
 	import type { Writable } from "svelte/store";
+	import { v4 as uuid } from "uuid";
+	import eye from "$lib/assets/eye.svg";
 	import type { ActionData } from "./$types";
 
 	export let form: ActionData;
+	let userData: Account;
 	$: userData = $page.data.userData;
 	const stateToken: Writable<string> = getContext("stateToken");
 	let pictureDataURL = "";
@@ -53,8 +57,39 @@
 	function editResult({ result }: { result: ActionResult }) {
 		invalidateAll();
 	}
+	let scopeModal = false;
+	let editingKey: ApiKey | undefined;
+	let scopes: Record<string, boolean> = { ...DEFAULTSCOPES };
+	let showKeys = false;
+	function addApiKey() {
+		if (!userData.apiKeys) userData.apiKeys = [];
+		if (!editingKey) {
+			userData.apiKeys = [...userData.apiKeys, { key: uuid(), scopes: trueValues(scopes) }];
+		} else {
+			editingKey.scopes = trueValues(scopes);
+		}
+
+		scopeModal = false;
+
+		function trueValues(rec: Record<string, boolean>) {
+			return new Set([...Object.entries(rec)].flatMap(([k, v]) => (v ? [k] : [])));
+		}
+	}
+	function editKey(key?: ApiKey) {
+		if (!key) {
+			editingKey = undefined;
+			scopes = { ...DEFAULTSCOPES };
+		} else {
+			editingKey = key;
+			scopes = Object.fromEntries([...key.scopes.keys()].map((k) => [k, true]));
+		}
+		scopeModal = true;
+	}
 </script>
 
+<svelte:head>
+	<title>Account - {PUBLIC_APP_NAME}</title>
+</svelte:head>
 {#if !userData}
 	<Login />
 {:else}
@@ -193,6 +228,79 @@
 		<form method="POST" on:submit={() => confirm("Delete account")} action="?/deleteaccount">
 			<button type="submit" class="cont w-60">Delete account</button>
 		</form>
+		<div class="h-10" />
+		<h2>API keys</h2>
+		{#if userData.apiKeys}
+			{#each userData.apiKeys as key}
+				<div>
+					<img
+						on:click={() => (showKeys = !showKeys)}
+						class="dark:invert cursor-pointer h-6 w-6 inline align-baseline mr-3"
+						src={eye}
+					/>
+					{#if showKeys}
+						<span>{key.key}</span>
+					{:else}
+						<span>{"~ ".repeat(key.key.length / 2)}</span>
+					{/if}
+					<img
+						on:click={() => editKey(key)}
+						class="dark:invert cursor-pointer h-6 w-6 inline align-baseline ml-3"
+						src={pen}
+					/>
+				</div>
+			{/each}
+		{/if}
+		<button class="cont" on:click={() => editKey()}>Add</button>
+		<div class:flex={scopeModal} class="modal items-center justify-center">
+			<div class="bg-white relative p-5 flex flex-col gap-5 items-start">
+				<button
+					on:click={() => (scopeModal = false)}
+					class="absolute right-5 top-5 text-2xl leading-[15px]">&times;</button
+				>
+				<div
+					class="inline-grid grid-cols-[auto_auto_auto] gap-3 gap-x-5 justify-items-center items-center"
+				>
+					<span>Read</span>
+					<span>Write</span>
+					<span>Field</span>
+					{#each Object.entries(SCOPES.fields) as [field, types]}
+						{#if types.read}
+							<input
+								bind:checked={scopes[field + ":read"]}
+								type="checkbox"
+								disabled={types.forced}
+								class="rounded-full w-8 h-8"
+								class:bg-neutral-300={!types.forced}
+								class:bg-transparent={types.forced}
+							/>
+						{:else}&nbsp;{/if}
+						{#if types.write}
+							<input
+								type="checkbox"
+								bind:checked={scopes[field + ":write"]}
+								class="bg-neutral-300 rounded-full w-8 h-8"
+							/>
+						{:else}&nbsp;{/if}
+						<div class="w-full">{field}</div>
+					{/each}
+				</div>
+				Actions
+				<div
+					class="grid grid-cols-[auto_auto] gap-3 gap-x-5 justify-items-center items-center"
+				>
+					{#each Object.entries(SCOPES.actions) as [action, name]}
+						<input
+							type="checkbox"
+							bind:checked={scopes[action]}
+							class="bg-neutral-300 rounded-full w-8 h-8"
+						/>
+						<div class="w-full">{name}</div>
+					{/each}
+				</div>
+				<button class="cont" on:click={addApiKey}>Add key</button>
+			</div>
+		</div>
 	</div>
 {/if}
 

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { PUBLIC_APP_NAME } from "$env/static/public";
+
 	import Login from "$lib/components/Login.svelte";
 	import type { Account } from "$lib/services/Account";
 	import type { Order } from "$lib/services/Order";
@@ -11,6 +13,9 @@
 	let orders: Order[] | undefined = data.orders;
 </script>
 
+<svelte:head>
+	<title>Orders - {PUBLIC_APP_NAME}</title>
+</svelte:head>
 {#if !userData || !orders}
 	<Login />
 {:else}

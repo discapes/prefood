@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance } from "$app/forms";
+	import { PUBLIC_APP_NAME } from "$env/static/public";
 	import type { ActionData } from "./$types";
 
 	/* this is comparable to the github and google endpoints,
@@ -8,6 +9,9 @@
 	export let form: ActionData;
 </script>
 
+<svelte:head>
+	<title>Signup - {PUBLIC_APP_NAME}</title>
+</svelte:head>
 {#if form.sent}
 	<h1>Check your email</h1>
 {:else}

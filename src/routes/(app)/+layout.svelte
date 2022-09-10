@@ -7,6 +7,7 @@
 	import { v4 as uuidv4 } from "uuid";
 	import type { PageData } from "./$types";
 	import "$lib/../styles/theme.css";
+	import { PUBLIC_APP_NAME } from "$env/static/public";
 
 	export let data: PageData;
 
@@ -34,6 +35,9 @@
 <!-- {#if dev}
 	{JSON.stringify($page.data)}
 {/if} -->
+<svelte:head>
+	<title>{PUBLIC_APP_NAME}</title>
+</svelte:head>
 <div class="flex flex-col min-h-[100vh]">
 	<script>
 		$darkmode = localStorage.getItem("darkmode") == "true";
@@ -41,9 +45,6 @@
 		else document.body.classList.remove("dark");
 	</script>
 	<Header on:darkmodetoggle={darkmodetoggle} />
-	<!-- {#if data.userData}
-		<img class="w-20 h-20" src={data.userData.picture} />
-	{/if} -->
 
 	<main class="grow flex flex-col items-center">
 		<slot />

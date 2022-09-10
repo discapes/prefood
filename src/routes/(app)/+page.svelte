@@ -1,9 +1,10 @@
 <script lang="ts">
+	import { PUBLIC_APP_NAME } from "$env/static/public";
 	import Counter from "$lib/components/Counter.svelte";
 </script>
 
 <svelte:head>
-	<title>Home</title>
+	<title>Home - {PUBLIC_APP_NAME}</title>
 	<meta name="description" content="Svelte demo app" />
 </svelte:head>
 
@@ -16,7 +17,9 @@
 			</picture>
 		</span>
 
-		to <a href="https://miikat.dev"><b>Miika</b></a>'s<br />totally cool <br /><span class="tracking-widest">webapp</span>
+		to <a href="https://miikat.dev"><b>Miika</b></a>'s<br />totally cool <br /><span
+			class="tracking-widest">webapp</span
+		>
 	</h1>
 
 	<h2 class=" border-b border-black dark:border-white flex gap-3">

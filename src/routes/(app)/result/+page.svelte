@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Banner from "$lib/components/Banner.svelte";
-	import { PUBLIC_STRIPE_KEY } from "$env/static/public";
+	import { PUBLIC_APP_NAME, PUBLIC_STRIPE_KEY } from "$env/static/public";
 	import { onMount } from "svelte";
 	import { loadStripe } from "@stripe/stripe-js";
 
@@ -36,7 +36,7 @@
 </script>
 
 <svelte:head>
-	<title>{title}</title>
+	<title>{title} - {PUBLIC_APP_NAME}</title>
 	<meta name="description" content={subtitle} />
 </svelte:head>
 

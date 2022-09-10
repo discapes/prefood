@@ -1,12 +1,13 @@
 <script lang="ts">
 	import type { PageData } from "./$types";
 	import { fly } from "svelte/transition";
+	import { PUBLIC_APP_NAME } from "$env/static/public";
 
 	export let data: PageData;
 </script>
 
 <svelte:head>
-	<title>Restaurants - pizzapp</title>
+	<title>Restaurants - {PUBLIC_APP_NAME}</title>
 </svelte:head>
 
 <section in:fly={{ duration: 200, y: 200 }} class="flex justify-center p-10">

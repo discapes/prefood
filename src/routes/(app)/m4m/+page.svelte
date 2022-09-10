@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { beforeNavigate } from "$app/navigation";
-	import { PUBLIC_STRIPE_KEY } from "$env/static/public";
+	import { PUBLIC_APP_NAME, PUBLIC_STRIPE_KEY } from "$env/static/public";
 	import Slider from "$lib/components/Slider.svelte";
 	import {
 		loadStripe,
@@ -97,7 +97,7 @@
 </script>
 
 <svelte:head>
-	<title>About</title>
+	<title>About - {PUBLIC_APP_NAME}</title>
 	<meta name="description" content="About this app" />
 </svelte:head>
 

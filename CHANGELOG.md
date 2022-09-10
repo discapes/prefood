@@ -19,9 +19,11 @@
 
 - additional tasks
 
-  - [ ] sass includepaths finally works
-  - [ ] fix counter
-  - [ ] add titles for each page
+  - [ ] dark mode improve
+  - [ ] m4m change amount
+  - [x] sass includepaths finally works
+  - [x] fix counter
+  - [x] add titles for each page
   - [ ] human readable receipt, don't include stripe data
   - [ ] info page with link to my website
   - [ ] expiring session tokens

@@ -15,7 +15,7 @@ export type Account = {
 
 export type ApiKey = {
 	key: string;
-	scopes: string[];
+	scopes: Set<string>;
 };
 
 export const UserAuth = z.object({
