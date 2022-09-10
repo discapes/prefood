@@ -6,6 +6,7 @@
 	import { writable } from "svelte/store";
 	import { v4 as uuidv4 } from "uuid";
 	import type { PageData } from "./$types";
+	import "$lib/../styles/theme.css";
 
 	export let data: PageData;
 
@@ -55,10 +56,10 @@
 	</footer>
 </div>
 
-<style>
-	@use "theme.css";
-	@use "classes.scss";
-
+<style lang="scss">
+	:global {
+		@import "classes.scss";
+	}
 	main {
 		flex: 1;
 		display: flex;
