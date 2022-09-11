@@ -3,10 +3,10 @@ import { jsonResponse } from "$lib/server/api";
 import { assertNever, Get, Request, Route, Security, Tags } from "tsoa";
 import { error } from "@sveltejs/kit";
 import AccountService from "$lib/services/AccountService";
-import { Auth, type Account } from "$lib/services/Account";
+import { Auth, type DBAccount } from "$lib/services/Account";
 import { assert } from "$lib/util";
 
-type PartialAccount = Partial<Omit<Account, "sessionTokens">>;
+type PartialAccount = Partial<Omit<DBAccount, "sessionTokens">>;
 
 @Route("account")
 @Tags("account")

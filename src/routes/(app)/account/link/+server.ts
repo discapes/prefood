@@ -1,4 +1,5 @@
 import { URLS } from "$lib/addresses";
+import { UserAuth } from "$lib/services/Account";
 import AccountService from "$lib/services/AccountService";
 import { LinkParameters } from "$lib/types";
 import { getDecoder } from "$lib/util";
@@ -17,11 +18,9 @@ export const GET: RequestHandler = async ({
 	const { i } = await verifyIdentity(url, options.method);
 
 	if (await AccountService.existsTI(i)) throw error(400, "Method álready linked");
-	await AccountService.setAttribute({
-		attribute: i.methodName,
+	await AccountService.setAttribute(UserAuth.parse({ sessionToken, userID }), {
+		key: i.methodName,
 		value: i.methodValue,
-		userID: z.string().parse(userID),
-		sessionToken: z.string().parse(sessionToken),
 	});
 
 	cookies.delete("state");

@@ -1,6 +1,8 @@
 import { z } from "zod";
 import type { Order } from "./services/Order";
 
+export type Modify<T, R> = Omit<T, keyof R> & R;
+
 export function getDataURL(file: File | undefined): Promise<string> {
 	return new Promise((res) => {
 		if (!file) return res("");
@@ -17,8 +19,8 @@ export function assert(x: unknown): asserts x {
 }
 
 export async function formEntries(request: Request) {
-	const fields = Object.create(null);
-	const files = Object.create(null);
+	const fields: Record<string, string | undefined> = Object.create(null);
+	const files: Record<string, File | undefined> = Object.create(null);
 
 	for (const [key, value] of await request.formData()) {
 		if (typeof value === "string") {
@@ -146,7 +148,7 @@ export function randomElem<T>(array: T[]) {
 	return array[Math.floor(Math.random() * array.length)];
 }
 
-export function trueStrings(...args: unknown[]) {
+export function trueStrings(args: unknown[]): args is string[] {
 	return args.every((s) => s && typeof s === "string");
 }
 

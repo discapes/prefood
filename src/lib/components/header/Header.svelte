@@ -1,17 +1,11 @@
 <script lang="ts">
 	import { page } from "$app/stores";
-	import { URLS } from "$lib/addresses";
+	import { HEADERPAGES, URLS } from "$lib/addresses";
 	import { createEventDispatcher } from "svelte";
 	import logo from "./svelte-logo.svg";
 
 	const dispatch = createEventDispatcher();
-	const listedPages = [
-		{ path: "/", name: "Home" },
-		{ path: "/m4m", name: "M4M" },
-		{ path: "/account", name: "Account" },
-		{ path: "/orders", name: "Orders" },
-		{ path: "/restaurants", name: "Restaurants" },
-	];
+
 	$: userData = $page.data.userData;
 </script>
 
@@ -37,7 +31,7 @@
 			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
 		</svg>
 		<ul class="flex flex-col py-2 rounded-b-xl gap-1 sm:flex-row sm:py-0 sm:rounded-none">
-			{#each listedPages as listedPage}
+			{#each HEADERPAGES as listedPage}
 				<li class:active={$page.url.pathname === listedPage.path}>
 					<a data-sveltekit-prefetch href={listedPage.path}>{listedPage.name}</a>
 				</li>

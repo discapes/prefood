@@ -6,7 +6,7 @@
 
   - [ ] username field
   - [ ] link for each profile
-  - [ ] separate database objects and client objects
+  - [x] separate database objects and client objects
   - [ ] expand API
     - [ ] allow user to generate API keys with selected scopes
     - [ ] API Key support in all account operations
@@ -19,15 +19,17 @@
 
 - additional tasks
 
+  - [ ] fix restaurant button hitbox
   - [ ] dark mode improve
   - [ ] m4m change amount
+  - [x] account edit cancel button
   - [x] sass includepaths finally works
   - [x] fix counter
   - [x] add titles for each page
   - [ ] human readable receipt, don't include stripe data
   - [ ] info page with link to my website
   - [ ] expiring session tokens
-  - [ ] secure restaurant add page
+  - [ ] secure restaurant edit page
   - [ ] prevent dos attacks by submitting large forms
 
 - large

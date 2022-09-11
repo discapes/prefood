@@ -11,7 +11,7 @@
 	import { getContext, onMount } from "svelte";
 	import type { Unsubscriber, Writable } from "svelte/store";
 	import { fade } from "svelte/transition";
-	import type { PageData } from "./$types";
+	import type { PageData } from "../../../../.svelte-kit/types/src/routes/(app)/m4m/$types";
 
 	export let data: PageData;
 	const darkmode: Writable<boolean> = getContext("darkmode");

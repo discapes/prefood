@@ -153,6 +153,21 @@ export class Table<T extends {}> {
 		this._condition = this.#mergeExpression(condition);
 		return this;
 	}
+	and(condition: Expression) {
+		if (!this._condition) return this.condition(condition);
+		this._condition = `(${this._condition}) AND (${this.#mergeExpression(condition)})`;
+		return this;
+	}
+	or(condition: Expression) {
+		if (!this._condition) return this.condition(condition);
+		this._condition = `(${this._condition}) OR (${this.#mergeExpression(condition)})`;
+		return this;
+	}
+	not() {
+		if (!this._condition) throw new Error("Cannot be called before conditions");
+		this._condition = `NOT (${this._condition})`;
+		return this;
+	}
 	reverse() {
 		this._reverse = !this._reverse;
 		return this;
