@@ -4,50 +4,69 @@
 
 - next update
 
-  - [ ] username field
-  - [ ] link for each profile
-  - [x] separate database objects and client objects
-  - [ ] expand API
-    - [ ] allow user to generate API keys with selected scopes
-    - [ ] API Key support in all account operations
-
-- before 1.0
-
-  - [ ] handle all errors
-  - [ ] review code
-  - [ ] test and fix all features
+  - [ ] API support for all actions
+  - [ ] dark mode improve
+  - [ ] info page with link to my website
+  - [ ] fix bug where if you click login too fast stateParameter isnt generated
+  - [ ] update SCHEMA.md
+  - [ ] prevent dos attacks by submitting large forms
 
 - additional tasks
 
-  - [ ] fix restaurant button hitbox
-  - [ ] dark mode improve
   - [ ] m4m change amount
-  - [x] account edit cancel button
-  - [x] sass includepaths finally works
-  - [x] fix counter
-  - [x] add titles for each page
   - [ ] human readable receipt, don't include stripe data
-  - [ ] info page with link to my website
   - [ ] expiring session tokens
   - [ ] secure restaurant edit page
-  - [ ] prevent dos attacks by submitting large forms
+
+---
+
+- before 1.0
+
+  - [ ] test coverage
+  - [ ] handle all errors
+  - [ ] error logging and audit logs
+  - [ ] review code
+  - [ ] test and fix all features
+  - [ ] update my goddamn resume
 
 - large
-- [ ] view where restaurant owners can see new orders and change their status
-- [ ] serviceworker
 
-  - [ ] web push API
-    - [ ] notifications and page update on order status change for user
-    - [ ] notifications and page update on new order for restaurant
-  - [ ] on major update popup changelog, reload on close
-    - [ ] on minor update reload on next visit
-      - [ ] same thing with menu updates
-  - [ ] server cache menu pages
+  - [ ] friend lists and instant messaging
+  - [ ] view where restaurant owners can see new orders and change their status
+  - [ ] serviceworker
+    - [ ] web push API
+      - [ ] notifications and page update on order status change for user
+      - [ ] notifications and page update on new order for restaurant
+    - [ ] on major update popup changelog, reload on close
+      - [ ] on minor update reload on next visit
+        - [ ] same thing with menu updates
+    - [ ] server cache menu pages
 
 - long term
   - [ ] oispaeliitti integration
   - [ ] publish dynamodb wrapper
   - [ ] separate authentication to a library
+
+## [0.0.8] 2022-09-12
+
+### Added
+
+- **allow users to completely manage API keys and their scopes**
+- **revoking other logins and deleting account**
+- **username field**
+- **own url for every profile**
+- **separate database objects and client objects**
+- account edit cancel button
+- Sass includePaths
+- titles for each page
+- account operations to show alert on fail, fading dialog on success
+
+### Fixed
+
+- counter styles
+- authentication (login and linking)
+- restaurant button hitbox
+- input validation for profile editing
 
 ## [0.0.7] 2022-09-10
 

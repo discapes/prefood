@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { PUBLIC_APP_NAME } from "$env/static/public";
-	import type { Order } from "$lib/services/Order";
+	import type { Order } from "$lib/types/Order";
 	import { fly } from "svelte/transition";
 	import type { PageData } from "./$types";
 
@@ -23,9 +23,7 @@
 		<div class="flex flex-col gap-3">
 			<h4>Date</h4>
 			<p>
-				{new Date(order.timestamp).toLocaleTimeString()} on {new Date(
-					order.timestamp
-				).toLocaleDateString()}
+				{new Date(order.timestamp).toLocaleTimeString()} on {new Date(order.timestamp).toLocaleDateString()}
 			</p>
 		</div>
 		<div class="flex flex-col gap-3">
@@ -33,9 +31,7 @@
 			<div class="flex flex-col gap-1">
 				{#each order.items as item}
 					<p>
-						{item.quantity}x {item.description} - {(item.amount_total / 100)
-							.toFixed(2)
-							.replace(".", ",")}&nbsp;€
+						{item.quantity}x {item.description} - {(item.amount_total / 100).toFixed(2).replace(".", ",")}&nbsp;€
 					</p>
 				{/each}
 			</div>

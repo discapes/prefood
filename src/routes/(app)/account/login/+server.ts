@@ -1,16 +1,42 @@
 import { SESSION_MAXAGE_HOURS } from "$env/static/private";
-import AccountService from "$lib/services/AccountService";
-import { LoginParameters } from "$lib/types";
+import { URLS } from "$lib/addresses";
+import { UserAuth } from "$lib/server/services/Account";
+import AccountService from "$lib/server/services/AccountService";
+import { LinkParameters, LoginParameters, StateParameters } from "$lib/types/misc";
 import { getDecoder, log } from "$lib/util";
-import { error, redirect, type RequestHandler } from "@sveltejs/kit";
+import { error, redirect, type Cookies, type RequestHandler } from "@sveltejs/kit";
 import type cookie from "cookie";
 import { verifyIdentity } from "../common";
 
-export const GET: RequestHandler = async ({ url, locals: { state }, cookies }) => {
-	const options = getDecoder(LoginParameters).parse(url.searchParams.get("state"));
+async function linkHandler(url: URL, options: LinkParameters, cookies: Cookies, locals: App.Locals): Promise<Response> {
+	const { i } = await verifyIdentity(url, options.method);
+
+	if (await AccountService.existsTI(i)) throw error(400, "Method álready linked");
+	await AccountService.setAttribute(UserAuth.parse(locals), {
+		key: i.methodName,
+		value: i.methodValue,
+	});
+
+	cookies.delete("state");
+	throw redirect(300, URLS.ACCOUNT);
+}
+
+export const GET: RequestHandler = async ({ url, locals, cookies }) => {
+	const { state } = locals;
+	const options = getDecoder(StateParameters).parse(url.searchParams.get("state"));
 	log(url.pathname, { state, options });
 	if (!state || options.stateToken !== state) throw error(400, "invalid state");
+	switch (options.type) {
+		case "link":
+			return await linkHandler(url, options, cookies, locals);
+		case "login":
+			return await loginHandler(url, options, cookies);
+		default:
+			throw error(500, "Something went wrong");
+	}
+};
 
+async function loginHandler(url: URL, options: LoginParameters, cookies: Cookies): Promise<Response> {
 	const { i, getACD } = await verifyIdentity(url, options.method);
 	let userID = await AccountService.fetchUIDForTI(i);
 	let newSessionToken: string;
@@ -33,4 +59,4 @@ export const GET: RequestHandler = async ({ url, locals: { state }, cookies }) =
 	cookies.delete("state");
 	log(url.pathname, "success, set cookies");
 	throw redirect(300, new URL(options.referer, url).href);
-};
+}

@@ -1,7 +1,7 @@
 {
 	"name": "pizzapp",
 	"version": "0.0.1",
-	"_pnpm": {
+	"pnpm": {
 		"overrides": {
 			"@sveltejs/kit": "../kit/packages/kit",
 			"@sveltejs/adapter-auto": "../kit/packages/adapter-auto"

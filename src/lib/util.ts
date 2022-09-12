@@ -1,5 +1,5 @@
-import { z } from "zod";
-import type { Order } from "./services/Order";
+import { z, ZodError } from "zod";
+import type { Order } from "./types/Order";
 export { v4 as uuid } from "uuid";
 
 export type Modify<T, R> = Omit<T, keyof R> & R;
@@ -34,10 +34,7 @@ export async function formEntries(request: Request) {
 }
 
 export function getDecoder<T extends z.ZodTypeAny>(Type: T) {
-	return z.preprocess(
-		(a: unknown) => typeof a === "string" && JSON.parse(decodeB64URL(a)),
-		Type
-	);
+	return z.preprocess((a: unknown) => typeof a === "string" && JSON.parse(decodeB64URL(a)), Type);
 }
 export function getEncoder<T extends z.ZodTypeAny>(Type: T) {
 	return {
@@ -76,9 +73,7 @@ export function decodeB64URL(input: string) {
 	var pad = input.length % 4;
 	if (pad) {
 		if (pad === 1) {
-			throw new Error(
-				"InvalidLengthError: Input base64url string is the wrong length to determine padding"
-			);
+			throw new Error("InvalidLengthError: Input base64url string is the wrong length to determine padding");
 		}
 		input += new Array(5 - pad).join("=");
 	}
@@ -161,8 +156,23 @@ export function hook(o: any, fname: string, mine: any) {
 	};
 }
 
-export function isObject(o: unknown) {
+export function capitalize<T extends string>(str: T): Capitalize<T> {
+	return <Capitalize<T>>(str.charAt(0).toUpperCase() + str.slice(1));
+}
+
+export function isObject(o: unknown): o is Record<string, unknown> {
 	return (typeof o === "object" && o !== null) || typeof o === "function";
+}
+
+export function asRecord(o: unknown): Record<string, unknown> | undefined {
+	if ((typeof o === "object" && o !== null) || typeof o === "function") return o as any;
+	else {
+		return undefined;
+	}
+}
+
+export function zerrorMessage(e: ZodError) {
+	return `Invalid entries:\n\t${e.issues.map((i) => i.path + `: ` + i.message).join(",\n\t")}`;
 }
 
 export function formFrom(o: Record<string, string | Blob>) {
@@ -229,9 +239,7 @@ export function numberValidator(node: HTMLInputElement, val: any) {
 }
 
 export function firstTrue<T>(promises: Array<Promise<T>>) {
-	const newPromises = promises.map(
-		(p) => new Promise((resolve, reject) => p.then((v) => v && resolve(v), reject))
-	);
+	const newPromises = promises.map((p) => new Promise((resolve, reject) => p.then((v) => v && resolve(v), reject)));
 	newPromises.push(Promise.all(promises).then(() => false));
 	return <Promise<T>>Promise.race(newPromises);
 }

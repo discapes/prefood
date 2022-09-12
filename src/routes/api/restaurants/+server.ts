@@ -1,6 +1,6 @@
 import { jsonResponse } from "$lib/server/api";
-import type { Restaurant } from "$lib/services/Restaurant";
-import RestaurantService from "$lib/services/RestaurantService";
+import type { Restaurant } from "$lib/types/Restaurant";
+import RestaurantService from "$lib/server/services/RestaurantService";
 import type { RequestHandler } from "@sveltejs/kit";
 import { Example, Get, Route, Tags } from "tsoa";
 
@@ -62,5 +62,4 @@ class F {
 	}
 }
 
-export const GET: RequestHandler = ({ request }) =>
-	F.GET().then((r) => jsonResponse(r, request.headers));
+export const GET: RequestHandler = ({ request }) => F.GET().then((r) => jsonResponse(r, request.headers));

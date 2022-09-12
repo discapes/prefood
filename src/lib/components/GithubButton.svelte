@@ -5,11 +5,10 @@
 
 	export let passState: string;
 	export let text = "Sign in with Github";
-	export let redirect_uri = "";
 
 	$: params = new URLSearchParams({
 		client_id: PUBLIC_GITHUB_CLIENT_ID,
-		redirect_uri: redirect_uri || `${$page.url.origin}${URLS.LOGIN}`,
+		redirect_uri: `${$page.url.origin}${URLS.LOGIN}`,
 		state: passState,
 		scope: "user:email",
 	});

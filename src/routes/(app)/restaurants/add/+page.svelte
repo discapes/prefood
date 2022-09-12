@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { MenuItem, Restaurant } from "$lib/services/Restaurant";
+	import type { MenuItem, Restaurant } from "$lib/types/Restaurant";
 	import { inputValidator, numberValidator } from "$lib/util";
 	import { fly } from "svelte/transition";
 
@@ -9,10 +9,8 @@
 	let menu: Partial<MenuItem>[] = [{}];
 
 	async function save() {
-		if (!name || typeof stars !== "number" || typeof reviews !== "number")
-			return alert("Enter all restaurant fields correctly.");
-		if (!menu.every((i) => i.name && i.image && typeof i.price_cents == "number"))
-			return alert("Fill all menu fields correctly.");
+		if (!name || typeof stars !== "number" || typeof reviews !== "number") return alert("Enter all restaurant fields correctly.");
+		if (!menu.every((i) => i.name && i.image && typeof i.price_cents == "number")) return alert("Fill all menu fields correctly.");
 
 		const restaurant: Restaurant = {
 			name,
@@ -46,35 +44,15 @@
 	<div class="flex flex-col gap-3">
 		<div class="flex flex-col">
 			<label for="name">Name</label>
-			<input
-				use:inputValidator={name}
-				bind:value={name}
-				class="cont"
-				name="name"
-				placeholder="Name"
-			/>
+			<input use:inputValidator={name} bind:value={name} class="cont" name="name" placeholder="Name" />
 		</div>
 		<div class="flex flex-col">
 			<label for="stars">Stars </label>
-			<input
-				type="number"
-				use:numberValidator={stars}
-				bind:value={stars}
-				class="cont"
-				name="stars"
-				placeholder="Stars"
-			/>
+			<input type="number" use:numberValidator={stars} bind:value={stars} class="cont" name="stars" placeholder="Stars" />
 		</div>
 		<div class="flex flex-col">
 			<label for="reviews">Reviews</label>
-			<input
-				type="number"
-				use:numberValidator={reviews}
-				bind:value={reviews}
-				class="cont"
-				name="reviews"
-				placeholder="Reviews"
-			/>
+			<input type="number" use:numberValidator={reviews} bind:value={reviews} class="cont" name="reviews" placeholder="Reviews" />
 		</div>
 		<button class="cont" on:click={save}>Save</button>
 		<button class="cont" on:click={del}>Delete</button>
@@ -83,28 +61,12 @@
 		Menu items:
 		{#each menu as item}
 			<div class="flex flex-col gap-1" transition:fly={{ duration: 200 }}>
-				<input
-					class="cont w-full"
-					use:inputValidator={item.name}
-					bind:value={item.name}
-					placeholder="Item name"
-				/>
+				<input class="cont w-full" use:inputValidator={item.name} bind:value={item.name} placeholder="Item name" />
 				<div class="flex gap-2 items-center">
-					<input
-						type="number"
-						class="cont"
-						use:numberValidator={item.price_cents}
-						bind:value={item.price_cents}
-						placeholder="Item price"
-					/>
+					<input type="number" class="cont" use:numberValidator={item.price_cents} bind:value={item.price_cents} placeholder="Item price" />
 					cents
 				</div>
-				<input
-					class="cont w-full"
-					use:inputValidator={item.image}
-					bind:value={item.image}
-					placeholder="Image url"
-				/>
+				<input class="cont w-full" use:inputValidator={item.image} bind:value={item.image} placeholder="Image url" />
 			</div>
 		{/each}
 		<button on:click={() => (menu = [...menu, {}])} class="cont w-full">+</button>

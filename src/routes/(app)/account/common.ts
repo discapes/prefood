@@ -1,13 +1,10 @@
-import type { AccountCreationData, TrustedIdentity } from "$lib/types";
+import type { AccountCreationData, TrustedIdentity } from "$lib/types/misc";
 import { error } from "@sveltejs/kit";
 import { verifyEmailIdentity } from "./email";
 import { verifyGithubIdentity } from "./github";
 import { verifyGoogleIdentity } from "./google";
 
-export async function verifyIdentity(
-	url: URL,
-	method: string
-): Promise<{ i: TrustedIdentity; getACD: () => Promise<AccountCreationData> }> {
+export async function verifyIdentity(url: URL, method: string): Promise<{ i: TrustedIdentity; getACD: () => Promise<AccountCreationData> }> {
 	switch (method) {
 		case "githubID":
 			return verifyGithubIdentity(url);

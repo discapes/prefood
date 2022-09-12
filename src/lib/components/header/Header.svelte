@@ -11,16 +11,8 @@
 
 <header>
 	{#if userData}
-		<a
-			href={URLS.ACCOUNT}
-			data-sveltekit-prefetch=""
-			class="corner inline-flex justify-end items-end"
-		>
-			<img
-				alt="profile"
-				class="object-cover w-5/6 h-5/6 border border-white dark:border-neutral-400"
-				src={userData.picture}
-			/>
+		<a href={URLS.ACCOUNT} data-sveltekit-prefetch="" class="corner inline-flex justify-end items-end">
+			<img alt="profile" class="object-cover w-5/6 h-5/6 border border-white dark:border-neutral-400" src={userData.picture} />
 		</a>
 	{:else}
 		<div class="corner inline-flex justify-end items-end">
@@ -47,10 +39,7 @@
 	</nav>
 
 	<div class="corner inline-flex justify-start items-end">
-		<button
-			class="w-5/6 h-5/6 rounded-bl darkmodetoggle"
-			on:click={() => dispatch("darkmodetoggle")}
-		/>
+		<button class="w-5/6 h-5/6 rounded-bl darkmodetoggle" on:click={() => dispatch("darkmodetoggle")} />
 	</div>
 </header>
 

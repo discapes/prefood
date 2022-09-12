@@ -9,8 +9,6 @@
 	import "$lib/../styles/theme.css";
 	import { PUBLIC_APP_NAME } from "$env/static/public";
 
-	export let data: PageData;
-
 	let darkmode: Writable<boolean | null> = writable(null);
 	setContext("darkmode", darkmode);
 

@@ -2,16 +2,11 @@
 	import { beforeNavigate } from "$app/navigation";
 	import { PUBLIC_APP_NAME, PUBLIC_STRIPE_KEY } from "$env/static/public";
 	import Slider from "$lib/components/Slider.svelte";
-	import {
-		loadStripe,
-		type Stripe,
-		type StripeElements,
-		type StripePaymentElement,
-	} from "@stripe/stripe-js";
+	import { loadStripe, type Stripe, type StripeElements, type StripePaymentElement } from "@stripe/stripe-js";
 	import { getContext, onMount } from "svelte";
 	import type { Unsubscriber, Writable } from "svelte/store";
 	import { fade } from "svelte/transition";
-	import type { PageData } from "../../../../.svelte-kit/types/src/routes/(app)/m4m/$types";
+	import type { PageData } from "./$types";
 
 	export let data: PageData;
 	const darkmode: Writable<boolean> = getContext("darkmode");
@@ -29,9 +24,7 @@
 	onMount(async () => {
 		stripe = (await loadStripe(PUBLIC_STRIPE_KEY, { apiVersion: "2022-08-01" }))!;
 		if (!stripe) throw new Error("Couldn't load stripe!");
-		stripe
-			.retrievePaymentIntent(data.clientSecret)
-			.then((pi) => (paymentIntentID = pi.paymentIntent!.id));
+		stripe.retrievePaymentIntent(data.clientSecret).then((pi) => (paymentIntentID = pi.paymentIntent!.id));
 		createElements(document.body.classList.contains("dark"));
 	});
 
@@ -111,12 +104,7 @@
 		{/if}
 		<div id="paymentElement" class="mb-9 outline-none" />
 		{#if buttonVisible}
-			<button
-				disabled={buttonLoading}
-				in:fade={{ duration: 1000 }}
-				on:click={pay}
-				class="tracking-widest"
-			>
+			<button disabled={buttonLoading} in:fade={{ duration: 1000 }} on:click={pay} class="tracking-widest">
 				{#if buttonLoading}
 					<div class="m4mspinner" />
 				{:else}

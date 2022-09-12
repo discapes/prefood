@@ -1,21 +1,21 @@
-import type { RequestEvent, RequestHandler } from "./$types";
 import { jsonResponse } from "$lib/server/api";
-import { assertNever, Get, Request, Route, Security, Tags } from "tsoa";
-import { error } from "@sveltejs/kit";
-import AccountService from "$lib/services/AccountService";
-import { Auth, type DBAccount } from "$lib/services/Account";
+import { OAuth } from "$lib/server/services/Account";
+import AccountService from "$lib/server/services/AccountService";
+import type { Account } from "$lib/types/Account";
 import { assert } from "$lib/util";
-
-type PartialAccount = Partial<Omit<DBAccount, "sessionTokens">>;
+import { error } from "@sveltejs/kit";
+import { Get, Request, Route, Security, Tags } from "tsoa";
+import type { RequestEvent, RequestHandler } from "./$types";
 
 @Route("account")
 @Tags("account")
 @Security("oauth")
 export class F {
 	@Get()
-	static async GET(@Request() e: RequestEvent): Promise<PartialAccount> {
+	static async GET(@Request() e: RequestEvent): Promise<Partial<Account>> {
 		try {
-			const ud = await AccountService.fetchScopedData(Auth.parse(e.locals));
+			const auth = OAuth.parse(e.request.headers.get("Authorization"));
+			const ud = await AccountService.fetchScopedData(auth);
 			assert(ud);
 			return ud;
 		} catch (e) {
@@ -24,5 +24,4 @@ export class F {
 	}
 }
 
-export const GET: RequestHandler = (e) =>
-	F.GET(e).then((r) => jsonResponse(r, e.request.headers));
+export const GET: RequestHandler = (e) => F.GET(e).then((r) => jsonResponse(r, e.request.headers));

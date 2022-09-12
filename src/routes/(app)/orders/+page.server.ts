@@ -1,8 +1,8 @@
-import OrderService from "$lib/services/OrderService";
+import OrderService from "$lib/server/services/OrderService";
 import { error } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({ locals: { userID, sessionToken }, parent }) => {
+export const load: PageServerLoad = async ({ locals: { userID }, parent }) => {
 	if (userID) {
 		let orderDataPromise = OrderService.forUser(userID);
 		const { userData } = await parent();

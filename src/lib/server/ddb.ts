@@ -1,15 +1,7 @@
 import { DDB_ACCESS_ID, DDB_ACCESS_KEY, DDB_REGION } from "$env/static/private";
-import { isObject } from "$lib/util";
+import { asRecord } from "$lib/util";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
-import {
-	DeleteCommand,
-	DynamoDBDocumentClient,
-	GetCommand,
-	PutCommand,
-	QueryCommand,
-	ScanCommand,
-	UpdateCommand,
-} from "@aws-sdk/lib-dynamodb";
+import { DeleteCommand, DynamoDBDocumentClient, GetCommand, PutCommand, QueryCommand, ScanCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { string } from "zod";
 
 const dynamoClient = new DynamoDBClient({
@@ -39,13 +31,13 @@ const dynamo = DynamoDBDocumentClient.from(dynamoClient, {
 	marshallOptions,
 });
 const send = dynamo.send.bind(dynamo);
+const verbose = true;
 dynamo.send = async function (...args: Array<any>) {
 	const name = args[0].constructor.name;
-	if (name !== "GetCommand") console.log(name, args[0]?.clientCommand?.input);
+	if (verbose || name !== "GetCommand") console.log(name, args[0]?.clientCommand?.input);
 	// @ts-expect-error
 	const res = <any>await send(...args);
-	if (name !== "UpdateCommand" && name !== "GetCommand")
-		console.log(name + " ->", res.Item || res.Items || res.$metadata);
+	if (verbose || (name !== "UpdateCommand" && name !== "GetCommand")) console.log(name + " ->", res.Item || res.Items || res.$metadata);
 	if (res.$metadata.httpStatusCode !== 200) throw new Error(`Database operation failed`);
 	return res;
 };
@@ -109,7 +101,7 @@ export class Table<T extends {}> {
 	#clone(): Table<T> {
 		const other = new Table<T>(this._table);
 		for (const key in this) {
-			if (!isObject(this[key])) (<any>other)[key] = this[key];
+			if (!asRecord(this[key])) (<any>other)[key] = this[key];
 		}
 		return other;
 	}
@@ -151,6 +143,9 @@ export class Table<T extends {}> {
 	}
 	set(e: Expression) {
 		return this.#update("SET", e);
+	}
+	remove(e: Expression) {
+		return this.#update("REMOVE", e);
 	}
 	return(rv: string) {
 		this._returnValues = rv;
@@ -239,9 +234,7 @@ export class Table<T extends {}> {
 		const cmd = new UpdateCommand({
 			TableName: this._table,
 			Key: { [this._key]: keyValue },
-			UpdateExpression: [...this._updateExpressions.entries()]
-				.map(([type, v]) => `${type} ${v.join(", ")}`)
-				.join(" "),
+			UpdateExpression: [...this._updateExpressions.entries()].map(([type, v]) => `${type} ${v.join(", ")}`).join(" "),
 			ConditionExpression: this._condition,
 			ExpressionAttributeNames: this.#getAttributeNames(),
 			ExpressionAttributeValues: this.#getAttributeValues(),

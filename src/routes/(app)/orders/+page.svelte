@@ -1,9 +1,8 @@
 <script lang="ts">
 	import { PUBLIC_APP_NAME } from "$env/static/public";
-
 	import Login from "$lib/components/Login.svelte";
-	import type { Account } from "$lib/services/Account";
-	import type { Order } from "$lib/services/Order";
+	import type { Account } from "$lib/types/Account";
+	import type { Order } from "$lib/types/Order";
 	import { getSlugFromOrder } from "$lib/util";
 	import { fly } from "svelte/transition";
 	import type { PageData } from "./$types";
@@ -24,10 +23,7 @@
 		<ol class="flex flex-col gap-5">
 			{#each orders as order}
 				<li>
-					<a
-						href="/orders/{getSlugFromOrder(order)}"
-						class="nolink smallscale flex gap-8 bg-white/50 p-5 rounded dark:bg-white/10"
-					>
+					<a href="/orders/{getSlugFromOrder(order)}" class="nolink smallscale flex gap-8 bg-white/50 p-5 rounded dark:bg-white/10">
 						<div class="flex flex-col gap-3">
 							<h4>Restaurant</h4>
 							<p>
@@ -37,9 +33,7 @@
 						<div class="flex flex-col gap-3">
 							<h4>Date</h4>
 							<p>
-								{new Date(order.timestamp).toLocaleTimeString()} on {new Date(
-									order.timestamp
-								).toLocaleDateString()}
+								{new Date(order.timestamp).toLocaleTimeString()} on {new Date(order.timestamp).toLocaleDateString()}
 							</p>
 						</div>
 						<div class="flex flex-col gap-3">
@@ -47,9 +41,7 @@
 							<div class="flex flex-col gap-1">
 								{#each order.items as item}
 									<p>
-										{item.quantity}x {item.description} - {(item.amount_total / 100)
-											.toFixed(2)
-											.replace(".", ",")}&nbsp;€
+										{item.quantity}x {item.description} - {(item.amount_total / 100).toFixed(2).replace(".", ",")}&nbsp;€
 									</p>
 								{/each}
 							</div>

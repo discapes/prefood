@@ -12,6 +12,7 @@
 <svelte:head>
 	<title>Signup - {PUBLIC_APP_NAME}</title>
 </svelte:head>
+
 {#if form.sent}
 	<h1>Check your email</h1>
 {:else}

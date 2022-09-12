@@ -1,13 +1,11 @@
 import { GITHUB_CLIENT_SECRET } from "$env/static/private";
 import { PUBLIC_GITHUB_CLIENT_ID } from "$env/static/public";
-import { AccountCreationData, TrustedIdentity } from "$lib/types";
+import { AccountCreationData, TrustedIdentity } from "$lib/types/misc";
 import { error } from "@sveltejs/kit";
 import { z } from "zod";
 import { log } from "$lib/util";
 
-export async function verifyGithubIdentity(
-	url: URL
-): Promise<{ i: TrustedIdentity; getACD: () => Promise<AccountCreationData> }> {
+export async function verifyGithubIdentity(url: URL): Promise<{ i: TrustedIdentity; getACD: () => Promise<AccountCreationData> }> {
 	const code = url.searchParams.get("code");
 	log("verifySenderGithub", { code });
 	if (typeof code !== "string") throw error(400, "code is undefined");
@@ -18,15 +16,12 @@ export async function verifyGithubIdentity(
 		code,
 	});
 
-	const { access_token } = await fetch(
-		`https://github.com/login/oauth/access_token?${atParams}`,
-		{
-			method: "POST",
-			headers: {
-				Accept: "application/json",
-			},
-		}
-	).then((res) => res.json());
+	const { access_token } = await fetch(`https://github.com/login/oauth/access_token?${atParams}`, {
+		method: "POST",
+		headers: {
+			Accept: "application/json",
+		},
+	}).then((res) => res.json());
 
 	if (!access_token) throw error(500, "invalid access token");
 	log(`got access token ${access_token}, getting profile info`);

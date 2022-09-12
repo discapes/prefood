@@ -1,9 +1,7 @@
-import { API } from "$lib/addresses";
-import { ddb, Table } from "$lib/server/ddb";
-import AccountService from "$lib/services/AccountService";
-import type { PageLoad } from "./$types";
+import AccountService from "$lib/server/services/AccountService";
+import type { PageServerLoad } from "./$types";
 
-export const load: PageLoad = async ({ params }) => {
+export const load: PageServerLoad = async ({ params }) => {
 	const user = await AccountService.getPublicDataByUsername(params.username);
 
 	return {

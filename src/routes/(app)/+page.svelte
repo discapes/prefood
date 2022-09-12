@@ -17,9 +17,7 @@
 			</picture>
 		</span>
 
-		to <a href="https://miikat.dev"><b>Miika</b></a>'s<br />totally cool <br /><span
-			class="tracking-widest">webapp</span
-		>
+		to <a href="https://miikat.dev"><b>Miika</b></a>'s<br />totally cool <br /><span class="tracking-widest">webapp</span>
 	</h1>
 
 	<h2 class=" border-b border-black dark:border-white flex gap-3">

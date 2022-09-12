@@ -1,6 +1,5 @@
 import { ddb, Table } from "$lib/server/ddb";
-import type { Order } from "./Order";
-import { QueryCommand } from "@aws-sdk/lib-dynamodb";
+import type { Order } from "../../types/Order";
 
 class OrderService {
 	table = new Table<Order>("orders").key("userID", "timestamp").clone();
@@ -11,9 +10,7 @@ class OrderService {
 			.queryItems(ddb`userID = :${userID}`);
 	}
 	async getSpecific({ userID, timestamp }: { userID: string; timestamp: number }) {
-		const res = await this.table().queryItems(
-			ddb`userID = :${userID} and #${"timestamp"} = :${timestamp}`
-		);
+		const res = await this.table().queryItems(ddb`userID = :${userID} and #${"timestamp"} = :${timestamp}`);
 		return <Order | undefined>res[0];
 	}
 }

@@ -1,7 +1,8 @@
 <script lang="ts">
+	import { enhance } from "$app/forms";
 	import { page } from "$app/stores";
 	import { URLS } from "$lib/addresses";
-	import { LoginParameters } from "$lib/types";
+	import { LoginParameters } from "$lib/types/misc";
 	import { getEncoder } from "$lib/util";
 	import { getContext } from "svelte";
 	import type { Writable } from "svelte/store";
@@ -13,6 +14,7 @@
 
 	let params: Omit<LoginParameters, "method">;
 	$: params = {
+		type: "login",
 		rememberMe,
 		referer: $page.url.pathname,
 		stateToken: $stateToken,
@@ -31,7 +33,7 @@
 		<GithubButton passState={getEncoder(LoginParameters).encode({ ...params, method: "githubID" })} />
 	</div>
 
-	<form method="POST" class="flex gap-3 justify-center w-full" action={URLS.EMAILENDPOINT}>
+	<form use:enhance method="POST" class="flex gap-3 justify-center w-full" action={URLS.EMAILENDPOINT + `?/loginlink`}>
 		<input name="email" class="cont w-full" placeholder="user@example.com" />
 		<input class="hidden" name="passState" value={getEncoder(LoginParameters).encode({ ...params, method: "email" })} />
 		<button type="submit" class="cont w-full basis-0 whitespace-nowrap"> Sign in with email </button>

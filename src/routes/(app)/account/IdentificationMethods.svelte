@@ -1,15 +1,13 @@
 <script lang="ts">
-	import { enhance } from "$app/forms";
-	import GithubButton from "$lib/components/GithubButton.svelte";
+	import { applyAction, enhance } from "$app/forms";
 	import { page } from "$app/stores";
-	import type { Account } from "$lib/services/Account";
-	import { formFrom, getEncoder } from "$lib/util";
-	import { LinkParameters } from "$lib/types";
+	import GithubButton from "$lib/components/GithubButton.svelte";
 	import GoogleButton from "$lib/components/GoogleButton.svelte";
-	import { URLS } from "$lib/addresses";
-	import type { Writable } from "svelte/types/runtime/store";
+	import type { Account } from "$lib/types/Account";
+	import { LinkParameters } from "$lib/types/misc";
+	import { formFrom, getEncoder } from "$lib/util";
 	import { getContext } from "svelte";
-	import { invalidateAll } from "$app/navigation";
+	import type { Writable } from "svelte/types/runtime/store";
 
 	export let account: Account;
 
@@ -17,6 +15,7 @@
 
 	let linkparams: Omit<LinkParameters, "method">;
 	$: linkparams = {
+		type: "link",
 		referer: $page.url.pathname,
 		stateToken: $stateToken,
 	};
@@ -24,14 +23,14 @@
 	async function changeEmail() {
 		const email = prompt("New email?");
 		if (!email) return;
-		const res = await fetch($page.url, {
+		const res = await fetch($page.url + `?/changeemail`, {
 			method: "POST",
 			body: formFrom({
 				email,
 				passState: getEncoder(LinkParameters).encode({ ...linkparams, method: "email" }),
 			}),
 		}).then((res) => res.json());
-		console.log(res);
+		applyAction(res);
 	}
 </script>
 
@@ -41,44 +40,24 @@
 		<span class="text-xl">Email</span>
 	</div>
 	<button on:click={changeEmail} class="cont w-full h-full">Change</button>
-	<div
-		class="{account.githubID
-			? 'bg-lime-300/50'
-			: 'bg-rose-300/50'} rounded px-1 w-full h-full flex items-center"
-	>
+	<div class="{account.githubID ? 'bg-lime-300/50' : 'bg-rose-300/50'} rounded px-1 w-full h-full flex items-center">
 		<span class="text-xl">Github</span>
 	</div>
 	{#if account.githubID}
-		<form method="POST" use:enhance={() => invalidateAll} action="?/unlink">
-			<button type="submit" name="method" value="githubID" class="cont w-full h-full"
-				>Unlink</button
-			>
+		<form method="POST" use:enhance action="?/unlink">
+			<button type="submit" name="method" value="githubID" class="cont w-full h-full">Unlink</button>
 		</form>
 	{:else}
-		<GithubButton
-			text="Link Github"
-			redirect_uri={`${$page.url.origin}${URLS.LINK}`}
-			passState={getEncoder(LinkParameters).encode({ ...linkparams, method: "githubID" })}
-		/>
+		<GithubButton text="Link Github" passState={getEncoder(LinkParameters).encode({ ...linkparams, method: "githubID" })} />
 	{/if}
-	<div
-		class="{account.googleID
-			? 'bg-lime-300/50'
-			: 'bg-rose-300/50'} rounded px-1 w-full h-full flex items-center"
-	>
+	<div class="{account.googleID ? 'bg-lime-300/50' : 'bg-rose-300/50'} rounded px-1 w-full h-full flex items-center">
 		<span class="text-xl">Google</span>
 	</div>
 	{#if account.googleID}
-		<form method="POST" use:enhance={() => invalidateAll} action="?/unlink">
-			<button type="submit" name="method" value="googleID" class="cont w-full h-full"
-				>Unlink</button
-			>
+		<form method="POST" use:enhance action="?/unlink">
+			<button type="submit" name="method" value="googleID" class="cont w-full h-full">Unlink</button>
 		</form>
 	{:else}
-		<GoogleButton
-			text="Link Google"
-			redirect_uri={`${$page.url.origin}${URLS.LINK}`}
-			passState={getEncoder(LinkParameters).encode({ ...linkparams, method: "googleID" })}
-		/>
+		<GoogleButton text="Link Google" passState={getEncoder(LinkParameters).encode({ ...linkparams, method: "googleID" })} />
 	{/if}
 </div>

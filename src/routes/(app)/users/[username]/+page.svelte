@@ -6,9 +6,7 @@
 </script>
 
 <div class="flex flex-col gap-3 items-center m-10">
-	<div
-		class="mb-2 h-40 w-40 rounded-full border-8 border-white overflow-hidden dark:border-neutral-700"
-	>
+	<div class="mb-2 h-40 w-40 rounded-full border-8 border-white overflow-hidden dark:border-neutral-700">
 		<img alt="profile" class="object-cover w-full h-full" src={user.picture} />
 	</div>
 

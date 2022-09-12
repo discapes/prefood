@@ -1,14 +1,12 @@
 import { GOOGLE_CLIENT_SECRET } from "$env/static/private";
 import { PUBLIC_GOOGLE_CLIENT_ID } from "$env/static/public";
 import { URLS } from "$lib/addresses";
-import { AccountCreationData, TrustedIdentity } from "$lib/types";
+import { AccountCreationData, TrustedIdentity } from "$lib/types/misc";
 import { error } from "@sveltejs/kit";
 import jwtDecode from "jwt-decode";
 import { log } from "$lib/util";
 
-export async function verifyGoogleIdentity(
-	url: URL
-): Promise<{ i: TrustedIdentity; getACD: () => Promise<AccountCreationData> }> {
+export async function verifyGoogleIdentity(url: URL): Promise<{ i: TrustedIdentity; getACD: () => Promise<AccountCreationData> }> {
 	const code = url.searchParams.get("code");
 	log("verifySenderGoogle", { code });
 	if (typeof code !== "string") throw error(400, "code is undefined");

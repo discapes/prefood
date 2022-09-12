@@ -1,20 +1,16 @@
 import { TAX_RATE_ID } from "$env/static/private";
 import { getSecretStripe } from "$lib/server/stripe";
-import { Auth } from "$lib/services/Account";
-import AccountService from "$lib/services/AccountService";
-import type { MenuItem } from "$lib/services/Restaurant";
-import RestaurantService from "$lib/services/RestaurantService";
-import type { SessionMetadata } from "$lib/types";
+import { UserAuth } from "$lib/server/services/Account";
+import AccountService from "$lib/server/services/AccountService";
+import type { MenuItem } from "$lib/types/Restaurant";
+import RestaurantService from "$lib/server/services/RestaurantService";
+import type { SessionMetadata } from "$lib/types/misc";
 import { error } from "@sveltejs/kit";
 import type Stripe from "stripe";
 import type { RequestHandler } from "./$types";
 
-export const POST: RequestHandler = async ({
-	url,
-	request,
-	locals: { userID, sessionToken },
-}) => {
-	const userDataP = AccountService.fetchScopedData(Auth.parse({ userID, sessionToken }));
+export const POST: RequestHandler = async ({ url, request, locals: { userID, sessionToken } }) => {
+	const userDataP = AccountService.fetchAllData(UserAuth.parse({ userID, sessionToken }));
 	const stripe = getSecretStripe();
 	const formData = await request.formData();
 
@@ -58,25 +54,18 @@ export const POST: RequestHandler = async ({
 };
 
 function getItemNamesFromFormData(formData: FormData) {
-	return [...formData.keys()].flatMap((i) =>
-		i.startsWith("item-") ? [i.slice("item-".length)] : []
-	);
+	return [...formData.keys()].flatMap((i) => (i.startsWith("item-") ? [i.slice("item-".length)] : []));
 }
 
 async function getMenuItems(restaurantName: string, itemNames: string[]) {
 	const restaurant = await RestaurantService.get(restaurantName);
 	if (!restaurant) throw error(500, `restaurant ${restaurantName} does not exist!`);
 	const filtered = restaurant.menu.filter((mi) => itemNames.includes(mi.name));
-	if (filtered.length !== itemNames.length)
-		throw error(400, `incorrect items specified: ${itemNames}`);
+	if (filtered.length !== itemNames.length) throw error(400, `incorrect items specified: ${itemNames}`);
 	return filtered;
 }
 
-function getLineItems(
-	restaurantName: string,
-	menuItems: MenuItem[],
-	url: string
-): Stripe.Checkout.SessionCreateParams.LineItem[] {
+function getLineItems(restaurantName: string, menuItems: MenuItem[], url: string): Stripe.Checkout.SessionCreateParams.LineItem[] {
 	return menuItems.map((item) => {
 		return {
 			price_data: {

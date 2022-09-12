@@ -2,9 +2,9 @@ import { MAIL_FROM_DOMAIN } from "$env/static/private";
 import { URLS } from "$lib/addresses";
 import { getEncoderCrypt } from "$lib/server/crypto";
 import { sendMail } from "$lib/server/mail";
-import AccountService from "$lib/services/AccountService";
-import { EmailLoginCode } from "$lib/types";
-import { formEntries, log } from "$lib/util";
+import AccountService from "$lib/server/services/AccountService";
+import { EmailLoginCode } from "$lib/types/misc";
+import { formEntries, log, trueStrings } from "$lib/util";
 import { error, redirect } from "@sveltejs/kit";
 import type { Actions, PageServerLoad } from "./$types";
 
@@ -25,14 +25,12 @@ export const load: PageServerLoad = async ({ request }) => {
 };
 
 export const actions: Actions = {
-	default: async ({ url, request }): Promise<EmailMeResult> => {
-		// sends login link to user
+	loginlink: async ({ url, request }): Promise<EmailMeResult> => {
 		const {
 			fields: { email, passState },
 		} = await formEntries(request);
 		log(url.pathname, { email, passState });
-		if (typeof email !== "string" || typeof passState !== "string")
-			throw error(400, "invalid");
+		if (typeof email !== "string" || typeof passState !== "string") throw error(400, "invalid request: " + JSON.stringify({ email, passState }));
 
 		if (await AccountService.existsTI({ methodName: "email", methodValue: email })) {
 			const code = getEncoderCrypt(EmailLoginCode).encode({
@@ -56,16 +54,22 @@ export const actions: Actions = {
 			};
 		}
 	},
-	newuser: async ({ url, request }): Promise<EmailMeSuccess> => {
+	newuser: async ({ url, request }): Promise<EmailMeResult> => {
 		// sends register link to new user
 		const {
 			fields: { email, name, picture, passState },
 		} = await formEntries(request);
+		if (!trueStrings([email, name, picture, passState]))
+			return {
+				sent: false,
+				email: email ?? "",
+				passState: passState ?? "",
+			};
 		log(url.pathname, { email, passState, name, picture });
 		// needs to be encrypted so we know receiver actually has email
 		const code = getEncoderCrypt(EmailLoginCode).encode({
 			timestamp: Date.now(),
-			email,
+			email: email!,
 			picture,
 			name,
 		});

@@ -1,5 +1,5 @@
 import { Table } from "$lib/server/ddb";
-import type { Restaurant } from "./Restaurant";
+import type { Restaurant } from "../../types/Restaurant";
 
 class RestaurantService {
 	table = new Table<Restaurant>("restaurants").key("name").clone();

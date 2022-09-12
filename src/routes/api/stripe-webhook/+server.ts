@@ -2,13 +2,14 @@ import { MAIL_FROM_DOMAIN } from "$env/static/private";
 import { ddb, Table } from "$lib/server/ddb";
 import { sendMail } from "$lib/server/mail";
 import { getSecretStripe } from "$lib/server/stripe";
-import type { Order } from "$lib/services/Order";
-import type { SessionMetadata } from "$lib/types";
+import type { Order } from "$lib/types/Order";
+import type { SessionMetadata } from "$lib/types/misc";
 import { getSlugFromOrder } from "$lib/util";
-import { error, type RequestHandler } from "./$types";
+import type { RequestHandler } from "./$types";
 import type Stripe from "stripe";
 import { STRIPE_ENDPOINT_SECRET } from "$env/static/private";
 import { v4 as uuidv4 } from "uuid";
+import { error } from "@sveltejs/kit";
 
 const stripe = getSecretStripe();
 
