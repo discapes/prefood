@@ -10,3 +10,4 @@
 *.secret
 node_modules
 static/swagger.json
+vite.config.js.timestamp-*
