@@ -11,7 +11,11 @@
 
 <header>
 	{#if userData}
-		<a href={URLS.ACCOUNT} class="corner inline-flex justify-end items-end">
+		<a
+			href={URLS.ACCOUNT}
+			data-sveltekit-prefetch=""
+			class="corner inline-flex justify-end items-end"
+		>
 			<img
 				alt="profile"
 				class="object-cover w-5/6 h-5/6 border border-white dark:border-neutral-400"

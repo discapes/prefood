@@ -3,6 +3,7 @@ export const URLS = {
 	LOGIN: "/account/login",
 	LINK: "/account/link",
 	EMAILENDPOINT: "/account/emailendpoint",
+	USERS: "/users",
 };
 
 export const HEADERPAGES = [

@@ -12,6 +12,7 @@
 		<img alt="profile" class="object-cover w-full h-full" src={user.picture} />
 	</div>
 
+	<h1>{user.username}</h1>
 	<div class="grid grid-cols-[auto_auto] gap-x-3">
 		<h2 class="text-right">Name:</h2>
 		<h2 class="text-left font-bold inline">{user.name}</h2>

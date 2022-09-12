@@ -1,10 +1,11 @@
 import type { AccountCreationData, TrustedIdentity } from "$lib/types";
-import { log } from "$lib/util";
+import { firstTrue, log } from "$lib/util";
 import { error } from "@sveltejs/kit";
 import { v4 as uuid, v4 as uuidv4 } from "uuid";
 import { hash } from "../server/crypto";
-import { ddb, Table } from "../server/ddb";
+import { ddb, Table, type Expression } from "../server/ddb";
 import { type DBAccount, type Auth, type Edits, type UserAuth, Account } from "./Account";
+import AccountService from "$lib/services/AccountService";
 
 class AccountsService {
 	table = new Table<DBAccount>("users").key("userID").clone();
@@ -105,7 +106,7 @@ class AccountsService {
 			key: string;
 			value: unknown;
 		}
-	): Promise<boolean> {
+	) {
 		const condition = this.isUserAuth(auth)
 			? ddb`contains(sessionTokens, :${hash(auth.sessionToken)})`
 			: ddb`contains(apiKeys.#${auth.apiKey}, :${key + ":write"})`;
@@ -113,7 +114,29 @@ class AccountsService {
 			.condition(condition)
 			.set(ddb`#${key} = :${value}`)
 			.updateItem(this.parseUIDFromAuth(auth));
-		return true;
+	}
+	async setKey(auth: UserAuth, { key, scopes }: { key: string; scopes: Set<string> }) {
+		const p1 = this.table()
+			.condition(ddb`contains(sessionTokens, :${hash(auth.sessionToken)})`)
+			.and(ddb`attribute_not_exists(apiKeys)`)
+			.set(ddb`apiKeys = :${{ [key]: scopes }}`)
+			.return("UPDATED_NEW")
+			.updateItem(auth.userID)
+			.catch((e) => undefined);
+		const p2 = this.table()
+			.condition(ddb`contains(sessionTokens, :${hash(auth.sessionToken)})`)
+			.and(ddb`attribute_exists(apiKeys)`)
+			.set(ddb`apiKeys.#${key} = :${scopes}`)
+			.return("UPDATED_NEW")
+			.updateItem(auth.userID)
+			.catch((e) => undefined);
+		const res = await firstTrue([p1, p2]);
+	}
+	async deleteKey(auth: UserAuth, key: string) {
+		await this.table()
+			.condition(ddb`contains(sessionTokens, :${hash(auth.sessionToken)})`)
+			.delete(ddb`apiKeys.#${key}`)
+			.updateItem(auth.userID);
 	}
 	isUserAuth(auth: Auth): auth is UserAuth {
 		return "sessionToken" in auth;

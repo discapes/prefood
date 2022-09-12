@@ -10,6 +10,7 @@ import {
 	ScanCommand,
 	UpdateCommand,
 } from "@aws-sdk/lib-dynamodb";
+import { string } from "zod";
 
 const dynamoClient = new DynamoDBClient({
 	region: DDB_REGION,
@@ -40,17 +41,18 @@ const dynamo = DynamoDBDocumentClient.from(dynamoClient, {
 const send = dynamo.send.bind(dynamo);
 dynamo.send = async function (...args: Array<any>) {
 	const name = args[0].constructor.name;
-	console.log(name, args[0]?.clientCommand?.input);
+	if (name !== "GetCommand") console.log(name, args[0]?.clientCommand?.input);
 	// @ts-expect-error
 	const res = <any>await send(...args);
-	console.log(name + " ->", res.Item || res.Items || res.$metadata);
+	if (name !== "UpdateCommand" && name !== "GetCommand")
+		console.log(name + " ->", res.Item || res.Items || res.$metadata);
 	if (res.$metadata.httpStatusCode !== 200) throw new Error(`Database operation failed`);
 	return res;
 };
 
 type KeyValue = string | number | Uint8Array;
 
-type Expression = {
+export type Expression = {
 	str: string;
 	values: unknown[];
 	names: string[];
@@ -95,6 +97,7 @@ export class Table<T extends {}> {
 	_reverse = false;
 	_names = Array<string>();
 	_values = Array<unknown>();
+	_returnValues?: string;
 	_updateExpressions = new Map<string, string[]>();
 
 	constructor(name: string) {
@@ -148,6 +151,10 @@ export class Table<T extends {}> {
 	}
 	set(e: Expression) {
 		return this.#update("SET", e);
+	}
+	return(rv: string) {
+		this._returnValues = rv;
+		return this;
 	}
 	condition(condition: Expression) {
 		this._condition = this.#mergeExpression(condition);
@@ -209,8 +216,10 @@ export class Table<T extends {}> {
 			ConditionExpression: this._condition,
 			ExpressionAttributeNames: this.#getAttributeNames(),
 			ExpressionAttributeValues: this.#getAttributeValues(),
+			ReturnValues: this._returnValues,
 		});
 		const res = await dynamo.send(cmd);
+		return res.Attributes;
 	}
 	async deleteItem(keyValue: KeyValue) {
 		if (!this._key) throw new Error("key not specified");
@@ -220,8 +229,10 @@ export class Table<T extends {}> {
 			ConditionExpression: this._condition,
 			ExpressionAttributeNames: this.#getAttributeNames(),
 			ExpressionAttributeValues: this.#getAttributeValues(),
+			ReturnValues: this._returnValues,
 		});
 		const res = await dynamo.send(cmd);
+		return res.Attributes;
 	}
 	async updateItem(keyValue: KeyValue) {
 		if (!this._key) throw new Error("key not specified");
@@ -234,8 +245,10 @@ export class Table<T extends {}> {
 			ConditionExpression: this._condition,
 			ExpressionAttributeNames: this.#getAttributeNames(),
 			ExpressionAttributeValues: this.#getAttributeValues(),
+			ReturnValues: this._returnValues,
 		});
-		await dynamo.send(cmd);
+		const res = await dynamo.send(cmd);
+		return res.Attributes;
 	}
 	async queryItems(keyCondition: Expression): Promise<T[]> {
 		const kc = this.#mergeExpression(keyCondition);

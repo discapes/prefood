@@ -55,7 +55,7 @@ export const SCOPES: {
 		{
 			read?: boolean;
 			write?: boolean;
-			forced?: boolean;
+			required?: boolean;
 		}
 	>;
 	actions: Record<string, string>;
@@ -63,7 +63,7 @@ export const SCOPES: {
 	fields: {
 		userID: {
 			read: true,
-			forced: true,
+			required: true,
 		},
 		email: {
 			read: true,
@@ -90,3 +90,18 @@ export const SCOPES: {
 		delete: "Delete this account irreverseably",
 	},
 };
+export const MINSCOPES = new Set(
+	[...Object.entries(SCOPES.fields)]
+		.filter(([f, { required }]) => required)
+		.map(([f]) => f + ":read")
+);
+export const MAXSCOPES = new Set(
+	[...Object.entries(SCOPES.fields)]
+		.flatMap(([f, { read, write }]) => {
+			let s = read ? [f + ":read"] : [];
+			if (write) s.push(f + ":write");
+			return s;
+		})
+		.concat(...Object.keys(SCOPES.actions))
+);
+console.log(MAXSCOPES);

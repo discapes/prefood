@@ -2,10 +2,10 @@ import { MAIL_FROM_DOMAIN } from "$env/static/private";
 import { URLS } from "$lib/addresses";
 import { getEncoderCrypt } from "$lib/server/crypto";
 import { sendMail } from "$lib/server/mail";
-import { UserAuth, type Edits } from "$lib/services/Account";
+import { MAXSCOPES, MINSCOPES, UserAuth, type Edits } from "$lib/services/Account";
 import AccountService from "$lib/services/AccountService";
 import { EmailLoginCode } from "$lib/types";
-import { formEntries, log, trueStrings } from "$lib/util";
+import { formEntries, log, trueStrings, uuid } from "$lib/util";
 import { error } from "@sveltejs/kit";
 import sharp from "sharp";
 import { z } from "zod";
@@ -19,9 +19,14 @@ const EditFields = z
 	})
 	.partial();
 
-type Result = {
+type Success = {
+	success: true;
+};
+type Failure = {
 	message: string;
 };
+
+export type Result = Success | Failure;
 
 export const actions: Actions = {
 	logout: async ({ locals: { sessionToken, userID }, cookies }): Promise<Result> => {
@@ -30,18 +35,18 @@ export const actions: Actions = {
 		await AccountService.removeSessionToken({ userID, sessionToken });
 		cookies.delete("sessionToken");
 		cookies.delete("userID");
-		return { message: "Logged out" };
+		return { success: true };
 	},
 	editprofile: async ({ url, request, locals }): Promise<Result> => {
 		const { fields, files } = await formEntries(request);
-
 		const edits: Edits = {
 			...EditFields.parse(fields),
 			picture: files.picture ? await encodeImage(files.picture) : undefined,
 		};
+
 		const res = await AccountService.edit(edits, UserAuth.parse(locals));
-		if (!res) return { message: "username taken" };
-		else return { message: "edit successful" };
+		if (!res) return { message: `Username ${edits.username} is taken` };
+		else return { success: true };
 
 		async function encodeImage(file: File) {
 			return await sharp(new Uint8Array(await file.arrayBuffer()))
@@ -53,13 +58,20 @@ export const actions: Actions = {
 	},
 	savekey: async ({ request, locals }): Promise<Result> => {
 		const { fields } = await formEntries(request);
-		const scopes = Object.keys(fields).filter((k) => k !== "key");
+		const scopes = new Set([
+			...Object.keys(fields).filter((k) => k !== "key" && MAXSCOPES.has(k)),
+			...MINSCOPES,
+		]);
 		const { key } = fields;
-		await AccountService.setAttribute(UserAuth.parse(locals), {
-			key: `apiKeys.${key}`,
-			value: scopes,
-		});
-		return { message: JSON.stringify(scopes, null, 2) };
+		if (!key) return { message: "error: no key" };
+		await AccountService.setKey(UserAuth.parse(locals), { key, scopes });
+		return { success: true };
+	},
+	deletekey: async ({ request, locals }): Promise<Result> => {
+		const key = await request.formData().then((f) => f.get("key"));
+		if (typeof key !== "string") return { message: "error: no key" };
+		await AccountService.deleteKey(UserAuth.parse(locals), key);
+		return { success: true };
 	},
 	deleteaccount: async ({ locals: { sessionToken, userID } }): Promise<Result> => {
 		log("deleteaccount");

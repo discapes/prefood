@@ -1,5 +1,6 @@
 import { z } from "zod";
 import type { Order } from "./services/Order";
+export { v4 as uuid } from "uuid";
 
 export type Modify<T, R> = Omit<T, keyof R> & R;
 
@@ -227,17 +228,25 @@ export function numberValidator(node: HTMLInputElement, val: any) {
 	};
 }
 
-export function removeElem<T>(arr: T[], elem: T) {
-	arr.splice(
-		arr.findIndex((e) => e === elem),
-		1
+export function firstTrue<T>(promises: Array<Promise<T>>) {
+	const newPromises = promises.map(
+		(p) => new Promise((resolve, reject) => p.then((v) => v && resolve(v), reject))
 	);
+	newPromises.push(Promise.all(promises).then(() => false));
+	return <Promise<T>>Promise.race(newPromises);
 }
 
-const dialogs: HTMLDivElement[] = [];
+export function removeElem<T>(arr: T[], elem: T) {
+	const i = arr.findIndex((e) => e === elem);
+	if (~i) arr.splice(i, 1);
+}
+
+let dialogs: HTMLDivElement[] = [];
 export function dialog(text: string, duration: number, fadeduration: number) {
 	let div = document.createElement("div");
-	const offset = dialogs.reduce((prev, cur) => prev + cur.clientHeight + 10, 0) + 10;
+	if (dialogs.length >= 10) dialogs = (dialogs.forEach((div) => div.remove()), []);
+	const other = dialogs.at(-1);
+	const offset = other ? other.offsetTop + other.offsetHeight + 10 : 10;
 	dialogs.push(div);
 	div.style.top = offset + "px";
 	div.style.right = "10px";

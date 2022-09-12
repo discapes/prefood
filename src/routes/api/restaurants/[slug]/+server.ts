@@ -6,7 +6,7 @@ import { Example, Get, Path, Route, Tags } from "tsoa";
 import type { RequestHandler } from "./$types";
 
 @Route("restaurants")
-@Tags("restaurantss")
+@Tags("restaurants")
 class F {
 	/**
 	 * @summary Get information about a specific restaurant

@@ -1,18 +1,21 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
-	import { enhance } from "$app/forms";
+	import { applyAction, enhance } from "$app/forms";
 	import { invalidateAll } from "$app/navigation";
 	import { page } from "$app/stores";
 	import { PUBLIC_APP_NAME } from "$env/static/public";
+	import { URLS } from "$lib/addresses";
 	import pen from "$lib/assets/pen.png";
 	import upload from "$lib/assets/upload.png";
 	import Login from "$lib/components/Login.svelte";
 	import type { Account } from "$lib/services/Account";
-	import { getDataURL } from "$lib/util";
+	import { dialog, getDataURL } from "$lib/util";
+	import type { ActionResult } from "@sveltejs/kit";
+	import type { Result } from "./+page.server";
 	import ApiKeyEditor from "./ApiKeyEditor.svelte";
 	import IdentificationMethods from "./IdentificationMethods.svelte";
 
-	export let form: { message: string };
+	export let form: Result;
 	let account: Account;
 	$: account = $page.data.userData;
 
@@ -25,6 +28,32 @@
 			editMode = false;
 			setTimeout(() => alert(form?.message), 0);
 		}
+	}
+
+	async function handleSubmit(this: HTMLFormElement, event: SubmitEvent) {
+		editMode = false;
+		const data = new FormData(this);
+		let kept = 0;
+		for (const [k, v] of Array.from(data.entries())) {
+			if (typeof v === "string" && account[k] === v) data.delete(k);
+			else if (typeof v === "object" && "size" in v && v.size === 0) data.delete(k);
+			else kept++;
+		}
+		if (!kept) {
+			return;
+		}
+
+		const response = await fetch(this.action, {
+			method: "POST",
+			body: data,
+		});
+		const result: ActionResult = await response.json();
+
+		if (result.type === "success") {
+			await invalidateAll();
+		}
+
+		applyAction(result);
 	}
 </script>
 
@@ -43,19 +72,28 @@
 			name="picture"
 			class="hidden"
 		/>
-		<div
-			id={editMode ? "pcont" : ""}
-			on:click={() => editMode && imgUpload.click()}
-			class:cursor-pointer={editMode}
-			class="relative grid place-items-center mb-2 h-40 w-40 rounded-full border-8 border-white overflow-hidden dark:border-neutral-700"
-		>
-			<img id="poverlay" alt="upload" class="" src={upload} />
-			<div id="poverlay2" alt="" class="invert dark:invert-0 bg-black/30" />
-			<img
-				alt="profile"
-				class="object-cover w-full h-full"
-				src={pictureDataURL ?? account.picture}
-			/>
+		<div class="relative mb-2 h-40 w-40">
+			<button
+				on:click={() => {
+					navigator.clipboard.writeText(`${location.origin}${URLS.USERS}/${account.username}`);
+					dialog(`Copied profile link to clipboard`, 2, 1);
+				}}
+				class="absolute right-0 top-0 hover:drop-shadow-md">🔗</button
+			>
+			<div
+				id={editMode ? "pcont" : ""}
+				on:click={() => editMode && imgUpload.click()}
+				class:cursor-pointer={editMode}
+				class="relative grid place-items-center w-full h-full rounded-full border-8 border-white overflow-hidden dark:border-neutral-700"
+			>
+				<img id="poverlay" alt="upload" class="" src={upload} />
+				<div id="poverlay2" alt="" class="invert dark:invert-0 bg-black/30" />
+				<img
+					alt="profile"
+					class="object-cover w-full h-full"
+					src={pictureDataURL ?? account.picture}
+				/>
+			</div>
 		</div>
 
 		<div class="grid grid-cols-[auto_auto] gap-x-3">
@@ -78,7 +116,7 @@
 					<input
 						form="editform"
 						name={field.toLowerCase()}
-						class="h-full text-2xl bg-transparent border-b font-bold text-left w-80"
+						class="h-full text-2xl bg-transparent border-b font-bold text-left w-full"
 						value={account[field.toLowerCase()] ?? ""}
 					/>
 				{/if}
@@ -88,7 +126,7 @@
 				<form
 					class="hidden"
 					id="editform"
-					use:enhance={() => () => (invalidateAll(), (editMode = false))}
+					on:submit|preventDefault={handleSubmit}
 					method="POST"
 					action="?/editprofile"
 				/>
@@ -142,6 +180,6 @@
 		height: 50%;
 		width: 50%;
 		z-index: 10;
-		filter: invert(1);
+		filter: invert(1) brightness(200%);
 	}
 </style>
