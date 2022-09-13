@@ -11,6 +11,17 @@
   - [ ] update SCHEMA.md
   - [ ] prevent dos attacks by submitting large forms
 
+- the next update
+
+  - [ ] unit testing
+
+- after that
+
+  - [ ] api ratelimiting with aws memorydb
+  - [ ] save connectionId to order mapping in order to remove them on disconnect?
+    - or alternatively kick everyone on status update, and just have onclose() => invalidateAll and add new websocket
+      - if we dont want to close the connection we can just ask everyone to respond in order to maintain their connection id as a listener
+
 - additional tasks
 
   - [ ] m4m change amount
@@ -22,28 +33,38 @@
 
 - before 1.0
 
-  - [ ] test coverage
-  - [ ] handle all errors
-  - [ ] error logging and audit logs
-  - [ ] review code
+  - [ ] good test coverage
+  - [ ] handle all errors on server
+  - [ ] error logging and database audit logs
+  - [ ] review code thoroughly
   - [ ] test and fix all features
   - [ ] update my goddamn resume
+  - [ ] [community health files](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file)
+  - [ ] test ease of AWS deployment
+    - CloudFormation template with Former2
 
 - large
 
-  - [ ] friend lists and instant messaging
+  - [ ] friend lists and instant messaging?
   - [ ] view where restaurant owners can see new orders and change their status
   - [ ] serviceworker
-    - [ ] web push API
-      - [ ] notifications and page update on order status change for user
-      - [ ] notifications and page update on new order for restaurant
+    - server notifications
+      - Web push
+        - custom?
+        - google fcs?
+        - onesignal?
+      - pushpin
+      - aws api gateway
+    - [ ] notifications and page update on order status change for user
+    - [ ] notifications and page update on new order for restaurant
     - [ ] on major update popup changelog, reload on close
       - [ ] on minor update reload on next visit
         - [ ] same thing with menu updates
     - [ ] server cache menu pages
 
 - long term
-  - [ ] oispaeliitti integration
+  - [ ] [live streaming?](https://aws.amazon.com/solutions/implementations/live-streaming-on-aws/)
+  - [ ] oispaeliitti integration?
   - [ ] publish dynamodb wrapper
   - [ ] separate authentication to a library
 

@@ -1,14 +1,14 @@
-import { DDB_ACCESS_ID, DDB_ACCESS_KEY, DDB_REGION } from "$env/static/private";
+import { AWS_ACCESS_ID, AWS_ACCESS_KEY, AWS_REGION } from "$env/static/private";
 import { asRecord } from "$lib/util";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DeleteCommand, DynamoDBDocumentClient, GetCommand, PutCommand, QueryCommand, ScanCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
 import { string } from "zod";
 
 const dynamoClient = new DynamoDBClient({
-	region: DDB_REGION,
+	region: AWS_REGION,
 	credentials: {
-		accessKeyId: DDB_ACCESS_ID,
-		secretAccessKey: DDB_ACCESS_KEY,
+		accessKeyId: AWS_ACCESS_ID,
+		secretAccessKey: AWS_ACCESS_KEY,
 	},
 });
 

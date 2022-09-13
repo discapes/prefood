@@ -49,6 +49,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@aws-sdk/client-apigatewaymanagementapi": "^3.169.0",
 		"@aws-sdk/client-dynamodb": "^3.169.0",
 		"@aws-sdk/lib-dynamodb": "^3.169.0",
 		"@fontsource/fira-mono": "^4.5.9",
