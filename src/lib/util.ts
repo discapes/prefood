@@ -223,6 +223,22 @@ export function inputValidator(node: HTMLInputElement, _val: any) {
 	};
 }
 
+export function cli(i: HTMLInputElement, h: (value: string) => void) {
+	const okd = (e: KeyboardEvent) => {
+		if (e.key === "Enter") {
+			const val = i.value;
+			i.value = "";
+			h(val);
+		}
+	};
+	i.addEventListener("keydown", okd);
+	return {
+		destroy() {
+			i.removeEventListener("keydown", okd);
+		},
+	};
+}
+
 export function numberValidator(node: HTMLInputElement, val: any) {
 	let check = false;
 	const initial = val;
