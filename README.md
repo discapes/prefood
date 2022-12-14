@@ -1,6 +1,6 @@
-# pizzapp
+# prefood
 
-This is a **SvelteKit** application that allows you to order food from restaurants, pay, and track your orders (TODO). It is written in **TypeScript**, and uses Amazon's **DynamoDB** as its database. You can checkout the schema in [SCHEMA.md](SCHEMA.md). Other features include user authentication and darkmode for now. Payments are implemented with **Stripe**. The app is deployed to **Vercel**, and the latest commit on master is accessible at [pizzapp.miikat.dev](https://pizzapp.miikat.dev). The name of this project is just a temporary placeholder. See the changelog in [CHANGELOG.md](CHANGELOG.md).
+This is a **SvelteKit** application that allows you to order food from restaurants, pay, and track your orders (TODO). It is written in **TypeScript**, and uses Amazon's **DynamoDB** as its database. You can checkout the schema in [SCHEMA.md](SCHEMA.md). Other features include user authentication and darkmode for now. Payments are implemented with **Stripe**. The app is deployed to **Vercel**, and the latest commit on master is accessible at [prefood.miikat.dev](https://prefood.miikat.dev). The name of this project is just a temporary placeholder. See the changelog in [CHANGELOG.md](CHANGELOG.md).
 
 ## Developing
 

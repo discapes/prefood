@@ -1,10 +1,10 @@
 openapi: 3.0.0
 info:
-  title: Pizzapp
+  title: PreFood
   version: next
-  description: API for the pizzapp service.
+  description: API for the prefood service.
   contact:
-    email: support@pizzapp.miikat.dev
+    email: support@prefood.miikat.dev
   license:
     name: GNU Affero General Public License
     url: "https://www.gnu.org/licenses/agpl-3.0.en.html"
