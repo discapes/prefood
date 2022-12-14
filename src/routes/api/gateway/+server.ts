@@ -1,14 +1,14 @@
-import { AWS_ACCESS_ID, AWS_ACCESS_KEY, AWS_REGION } from "$env/static/private";
+import { AWS_ACCESS_ID, AWS_ACCESS_KEY_MY, AWS_REGION_MY } from "$env/static/private";
 import { PUBLIC_GATEWAY_ENDPOINT } from "$env/static/public";
 import { ApiGatewayManagementApiClient, GetConnectionCommand } from "@aws-sdk/client-apigatewaymanagementapi";
 import type { RequestHandler } from "./$types";
 
 const client = new ApiGatewayManagementApiClient({
-	region: AWS_REGION,
+	region: AWS_REGION_MY,
 	endpoint: "https://" + PUBLIC_GATEWAY_ENDPOINT,
 	credentials: {
 		accessKeyId: AWS_ACCESS_ID,
-		secretAccessKey: AWS_ACCESS_KEY,
+		secretAccessKey: AWS_ACCESS_KEY_MY,
 	},
 });
 

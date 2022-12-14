@@ -1,6 +1,6 @@
 import { REDIS_ENDPOINT } from "$env/static/private";
 import { formEntries } from "$lib/util";
-import { createClient } from "redis";
+import { createClient } from "@redis/client";
 import type { Actions } from "./$types";
 
 export const actions: Actions = {
