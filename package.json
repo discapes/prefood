@@ -21,7 +21,7 @@
 		"@sveltejs/adapter-auto": "next",
 		"@sveltejs/kit": "next",
 		"@types/cookie": "^0.5.1",
-		"@types/google.accounts": "^0.0.2",
+		"@types/google.accounts": "^0.0.4",
 		"@types/serviceworker": "^0.0.51",
 		"@types/sharp": "^0.30.5",
 		"@types/swagger-ui-dist": "^3.30.1",
