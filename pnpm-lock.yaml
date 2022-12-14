@@ -34,7 +34,7 @@ specifiers:
   prettier-plugin-svelte: ^2.9.0
   sass: ^1.56.2
   sharp: ^0.31.2
-  stripe: ^10.17.0
+  stripe: ^11.3.0
   svelte: ^3.55.0
   svelte-check: ^2.10.2
   svelte-preprocess: ^4.10.7
@@ -61,7 +61,7 @@ dependencies:
   nodemailer: 6.8.0
   prettier-plugin-svelte: 2.9.0_ajxj753sv7dbwexjherrch25ta
   sharp: 0.31.2
-  stripe: 10.17.0
+  stripe: 11.3.0
   swagger-ui-dist: 4.15.5
   uuid: 9.0.0
   zod: 3.20.2
@@ -3435,9 +3435,9 @@ packages:
     engines: {node: '>=8'}
     dev: true
 
-  /stripe/10.17.0:
-    resolution: {integrity: sha512-JHV2KoL+nMQRXu3m9ervCZZvi4DDCJfzHUE6CmtJxR9TmizyYfrVuhGvnsZLLnheby9Qrnf4Hq6iOEcejGwnGQ==}
-    engines: {node: ^8.1 || >=10.*}
+  /stripe/11.3.0:
+    resolution: {integrity: sha512-/ZVM1dmwrSZzNvN0vIixqhN79fgW2l3qBjw57bnFr5EQcRJTQkuJw6iEgb/EKg/40i2K/lWoa4gwnQkekC326Q==}
+    engines: {node: '>=12.*'}
     dependencies:
       '@types/node': 18.11.15
       qs: 6.11.0
