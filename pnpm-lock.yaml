@@ -10,7 +10,7 @@ specifiers:
   '@sveltejs/adapter-auto': next
   '@sveltejs/kit': next
   '@types/cookie': ^0.5.1
-  '@types/google.accounts': ^0.0.2
+  '@types/google.accounts': ^0.0.4
   '@types/nodemailer': ^6.4.6
   '@types/serviceworker': ^0.0.51
   '@types/sharp': ^0.30.5
@@ -70,7 +70,7 @@ devDependencies:
   '@sveltejs/adapter-auto': 1.0.0-next.90
   '@sveltejs/kit': 1.0.0-next.587_svelte@3.55.0+vite@4.0.1
   '@types/cookie': 0.5.1
-  '@types/google.accounts': 0.0.2
+  '@types/google.accounts': 0.0.4
   '@types/serviceworker': 0.0.51
   '@types/sharp': 0.30.5
   '@types/swagger-ui-dist': 3.30.1
@@ -1286,8 +1286,8 @@ packages:
     resolution: {integrity: sha512-COUnqfB2+ckwXXSFInsFdOAWQzCCx+a5hq2ruyj+Vjund94RJQd4LG2u9hnvJrTgunKAaax7ancBYlDrNYxA0g==}
     dev: true
 
-  /@types/google.accounts/0.0.2:
-    resolution: {integrity: sha512-wmnbDIiGZNr3dJ+NCGiWme78rhsf5gn1YJM6uRjf3FCb8lrRptybQeAnHQ+GDfKSo+z2hRxhS32VRDXJEAvCmg==}
+  /@types/google.accounts/0.0.4:
+    resolution: {integrity: sha512-X42obEgMx+Ptt3RZShgfRNLxGfm9PTLB/zdQkVBYtjnQnbQvTdbU02kZuS6pahp7LA9a5tUxB5vGBnD81SUhjg==}
     dev: true
 
   /@types/json-schema/7.0.11:
