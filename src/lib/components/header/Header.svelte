@@ -9,7 +9,7 @@
 	$: userData = $page.data.userData;
 </script>
 
-<header>
+<header class="fixed flex justify-between w-full z-10">
 	{#if userData}
 		<a href={URLS.ACCOUNT} data-sveltekit-prefetch="" class="corner inline-flex justify-end items-end">
 			<img alt="profile" class="object-cover w-5/6 h-5/6 border border-white dark:border-neutral-400" src={userData.picture} />
@@ -57,11 +57,6 @@
 		background-repeat: no-repeat;
 		background-size: contain;
 		background-position: center left;
-	}
-
-	header {
-		display: flex;
-		justify-content: space-between;
 	}
 
 	.corner {
@@ -129,7 +124,7 @@
 		padding: 0 1em;
 		color: var(--heading-color);
 		font-weight: 700;
-		font-size: 0.8rem;
+		/* font-size: 0.8rem; */
 		text-transform: uppercase;
 		letter-spacing: 0.1em;
 		text-decoration: none;

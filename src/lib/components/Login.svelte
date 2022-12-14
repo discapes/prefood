@@ -25,22 +25,24 @@
 	<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@100;400&display=swap" rel="stylesheet" />
 </svelte:head>
 
-<div class="flex flex-col gap-10 items-center">
-	<h1 class="mb-0">Sign in</h1>
+<div class="flex justify-center p-20">
+	<div class="flex flex-col gap-10 items-center max-w-lg text-white">
+		<h1 class="mb-0">Sign in</h1>
 
-	<div class="flex gap-3 font-['Roboto'] justify-center flex-wrap">
-		<GoogleButton passState={getEncoder(LoginParameters).encode({ ...params, method: "googleID" })} />
-		<GithubButton passState={getEncoder(LoginParameters).encode({ ...params, method: "githubID" })} />
-	</div>
+		<div class="flex gap-3 font-['Roboto'] justify-center flex-wrap">
+			<GoogleButton passState={getEncoder(LoginParameters).encode({ ...params, method: "googleID" })} />
+			<GithubButton passState={getEncoder(LoginParameters).encode({ ...params, method: "githubID" })} />
+		</div>
 
-	<form use:enhance method="POST" class="flex gap-3 justify-center w-full" action={URLS.EMAILENDPOINT + `?/loginlink`}>
-		<input name="email" class="cont w-full" placeholder="user@example.com" />
-		<input class="hidden" name="passState" value={getEncoder(LoginParameters).encode({ ...params, method: "email" })} />
-		<button type="submit" class="cont w-full basis-0 whitespace-nowrap"> Sign in with email </button>
-	</form>
+		<form use:enhance method="POST" class="flex gap-3 justify-center w-full" action={URLS.EMAILENDPOINT + `?/loginlink`}>
+			<input name="email" class="cont w-full" placeholder="user@example.com" />
+			<input class="hidden" name="passState" value={getEncoder(LoginParameters).encode({ ...params, method: "email" })} />
+			<button type="submit" class="cont text-black w-full basis-0 whitespace-nowrap"> Sign in with email </button>
+		</form>
 
-	<div class="flex gap-3 items-stretch">
-		<label for="rememberMe">Remember me:</label>
-		<input bind:checked={rememberMe} type="checkbox" class="bg-white/90 dark:bg-white/20 w-8 h-8 rounded-full" name="rememberMe" />
+		<div class="flex gap-3 items-stretch">
+			<label for="rememberMe">Remember me:</label>
+			<input bind:checked={rememberMe} type="checkbox" class="bg-white/90 dark:bg-white/20 w-8 h-8 rounded-full" name="rememberMe" />
+		</div>
 	</div>
 </div>

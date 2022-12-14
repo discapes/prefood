@@ -6,53 +6,60 @@
 <svelte:head>
 	<title>Home - {PUBLIC_APP_NAME}</title>
 	<meta name="description" content="Svelte demo app" />
+	<style>
+		main {
+			padding: 0 !important;
+		}
+	</style>
 </svelte:head>
 
-<section>
-	<h1>
-		<span class="welcome">
-			<picture>
-				<source srcset="svelte-welcome.webp" type="image/webp" />
-				<img src="svelte-welcome.png" alt="" />
-			</picture>
-		</span>
-
-		to <a href="https://miikat.dev"><b>Miika</b></a>'s<br />totally cool <br /><span class="tracking-widest">webapp</span>
-	</h1>
-
-	<h2 class=" border-b border-black dark:border-white flex gap-3">
-		Here's a <b class="tracking-[8px]">counter:</b>
-	</h2>
-
-	<Counter />
+<section class="flex flex-col">
+	<div class="grid grid-cols-3 w-full min-h-[600px] relative text-white">
+		<img src="burger.jpg" class="-z-10 absolute h-full right-0 object-cover max-w-full" />
+		<div class="bg-rose-600 heading p-20 flex">
+			<h1 class="font-extrabold basis-0 text-8xl text-left">Fastest way to order food</h1>
+			<div />
+		</div>
+		<div class="bg-rose-600 text-9xl title flex items-center justify-center">&nbsp;PreFood&nbsp;</div>
+		<div class="w-full bg-gradient-to-r from-rose-600" />
+	</div>
+	<div class="flex justify-center bg-rose-600">
+		<div class="inline-grid grid-cols-2 gap-20 justify-items-center p-20 text-rose-600 font-semibold">
+			<div class="card">
+				<b class="text-6xl"> 1.</b>
+				<p class="text-3xl">Pick a restaurant</p>
+			</div>
+			<div class="card">
+				<b class="text-6xl">2.</b>
+				<p class="text-3xl">Select a nice meal</p>
+			</div>
+			<div class="card">
+				<b class="text-6xl">3.</b>
+				<p class="text-3xl">Pick it up</p>
+			</div>
+			<div class="card">
+				<b class="text-6xl">4.</b>
+				<p class="text-3xl">Enjoy!</p>
+			</div>
+		</div>
+	</div>
+	<div class="bg-rose-600 flex justify-center items-center p-20 pb-40">
+		<a href="/about" class="cursor-pointer text-white text-6xl bg-rose-500 p-10 rounded-[30px] card2">About Us</a>
+	</div>
 </section>
 
 <style>
-	section {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		flex: 1;
+	.card {
+		@apply w-80 h-48 bg-rose-100 rounded-[30px] flex items-center p-10 gap-5;
+		box-shadow: 0px 0px 5px 6px rgb(255 228 230), inset 0 0 10px rgb(225 29 72);
 	}
 
-	h1 {
-		width: 100%;
+	.card2 {
+		box-shadow: inset 0 0 10px rgb(225 29 72);
 	}
 
-	.welcome {
-		display: block;
-		position: relative;
-		width: 100%;
-		height: 0;
-		padding: 0 0 calc(100% * 495 / 2048) 0;
-	}
-
-	.welcome img {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		top: 0;
-		display: block;
+	.title {
+		text-decoration: underline overline;
+		text-underline-offset: 20px;
 	}
 </style>

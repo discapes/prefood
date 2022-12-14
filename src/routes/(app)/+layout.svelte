@@ -4,10 +4,10 @@
 	import { onMount, setContext } from "svelte";
 	import type { Writable } from "svelte/store";
 	import { writable } from "svelte/store";
-	import { v4 as uuidv4 } from "uuid";
-	import type { PageData } from "./$types";
+	import { uuid } from "$lib/util";
 	import "$lib/../styles/theme.css";
 	import { PUBLIC_APP_NAME } from "$env/static/public";
+	import { HEADERPAGES } from "$lib/addresses";
 
 	let darkmode: Writable<boolean | null> = writable(null);
 	setContext("darkmode", darkmode);
@@ -23,7 +23,7 @@
 	onMount(() => {
 		$stateToken = cookie.parse(document.cookie).state;
 		if (!$stateToken) {
-			$stateToken = uuidv4();
+			$stateToken = uuid();
 			document.cookie = `state=${$stateToken}; Path=/`;
 		}
 		console.log({ $stateToken });
@@ -44,13 +44,34 @@
 	</script>
 	<Header on:darkmodetoggle={darkmodetoggle} />
 
-	<main class="grow flex flex-col items-center">
+	<main class="grow p-14">
 		<slot />
 	</main>
 
-	<footer>
-		<p class="border border-black/30 dark:border-white/40 p-3 rounded">
-			made with <a href="https://kit.svelte.dev">sveltekit</a>
+	<footer class="bg-stone-700 text-neutral-300 text-lg p-5 pt-10 flex flex-col w-full items-center gap-10">
+		<div class="flex justify-evenly grow w-full">
+			<div>
+				<p class="text-3xl font-bold mb-4">PreFood</p>
+				<p class="max-w-md">
+					Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever
+					since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five
+					centuries, but also the leap into electronic typesetting, remaining essentially unchanged.
+				</p>
+			</div>
+			<div class="flex flex-col">
+				<b class="text-3xl mb-4">Navigation</b>
+				{#each HEADERPAGES as hp}
+					<a class="hover:underline" href={hp.path}>{hp.name}</a>
+				{/each}
+			</div>
+			<div class="flex flex-col">
+				<b class="text-3xl mb-4">Contact</b>
+				<span>Turku, Finland</span>
+				<span>miika.km.tuominen@gmail.com</span>
+			</div>
+		</div>
+		<p class="text-center">
+			© {new Date().getFullYear()} Miika Tuominen
 		</p>
 	</footer>
 </div>
@@ -59,32 +80,28 @@
 	:global {
 		@import "classes.scss";
 	}
-	main {
-		flex: 1;
-		display: flex;
-		flex-direction: column;
-		padding: 1rem;
-		width: 100%;
-		max-width: 1024px;
-		margin: 0 auto;
-		box-sizing: border-box;
-	}
+	// main {
+	// 	flex: 1;
+	// 	display: flex;
+	// 	flex-direction: column;
+	// 	padding: 1rem;
+	// 	width: 100%;
+	// 	max-width: 1024px;
+	// 	margin: 0 auto;
+	// 	box-sizing: border-box;
+	// }
 
-	footer {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-		padding: 40px;
-	}
+	// footer {
+	// 	display: flex;
+	// 	flex-direction: column;
+	// 	justify-content: center;
+	// 	align-items: center;
+	// 	padding: 40px;
+	// }
 
-	footer a {
-		font-weight: bold;
-	}
-
-	@media (min-width: 480px) {
-		footer {
-			padding: 40px 0;
-		}
-	}
+	// @media (min-width: 480px) {
+	// 	footer {
+	// 		padding: 40px 0;
+	// 	}
+	// }
 </style>

@@ -39,13 +39,13 @@
 	<div class="bg-lime-300/50 rounded px-1 w-full h-full flex items-center">
 		<span class="text-xl">Email</span>
 	</div>
-	<button on:click={changeEmail} class="cont w-full h-full">Change</button>
+	<button on:click={changeEmail} class="cont w-full h-fulltext-black">Change</button>
 	<div class="{account.githubID ? 'bg-lime-300/50' : 'bg-rose-300/50'} rounded px-1 w-full h-full flex items-center">
 		<span class="text-xl">Github</span>
 	</div>
 	{#if account.githubID}
-		<form method="POST" use:enhance action="?/unlink">
-			<button type="submit" name="method" value="githubID" class="cont w-full h-full">Unlink</button>
+		<form method="post" use:enhance action="?/unlink">
+			<button type="submit" name="ident_method" value="githubID" class="text-black cont w-full h-full">Unlink</button>
 		</form>
 	{:else}
 		<GithubButton text="Link Github" passState={getEncoder(LinkParameters).encode({ ...linkparams, method: "githubID" })} />
@@ -54,8 +54,8 @@
 		<span class="text-xl">Google</span>
 	</div>
 	{#if account.googleID}
-		<form method="POST" use:enhance action="?/unlink">
-			<button type="submit" name="method" value="googleID" class="cont w-full h-full">Unlink</button>
+		<form method="post" use:enhance action="?/unlink">
+			<button type="submit" name="ident_method" value="googleID" class="text-black cont w-full h-full">Unlink</button>
 		</form>
 	{:else}
 		<GoogleButton text="Link Google" passState={getEncoder(LinkParameters).encode({ ...linkparams, method: "googleID" })} />

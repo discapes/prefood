@@ -10,6 +10,11 @@
 
 <svelte:head>
 	<title>{order.restaurantName} order - {PUBLIC_APP_NAME}</title>
+	<style>
+		body {
+			@apply bg-stone-50 !important;
+		}
+	</style>
 </svelte:head>
 
 <section in:fly={{ duration: 200, y: 200 }}>

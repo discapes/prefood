@@ -1,6 +1,6 @@
 import { z, ZodError } from "zod";
 import type { Order } from "./types/Order";
-export { v4 as uuid } from "uuid";
+export { nanoid as uuid } from "nanoid";
 
 export type Modify<T, R> = Omit<T, keyof R> & R;
 

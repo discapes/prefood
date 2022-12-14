@@ -66,7 +66,13 @@
 
 <svelte:head>
 	<title>Account - {PUBLIC_APP_NAME}</title>
+	<style>
+		body {
+			@apply bg-stone-50 !important;
+		}
+	</style>
 </svelte:head>
+
 {#if !account}
 	<Login />
 {:else}
@@ -100,7 +106,7 @@
 					<div>
 						<h2 class="text-left font-bold inline">{account[field] ?? ""}</h2>
 						{#if field !== "email"}
-							<img on:click={() => (editMode = true)} class="dark:invert cursor-pointer h-6 w-6 inline align-baseline ml-3" src={pen} />
+							<img on:click={() => (editMode = true)} class="invert cursor-pointer h-6 w-6 inline align-baseline ml-3" src={pen} />
 						{/if}
 					</div>
 				{:else if field === "email"}

@@ -7,7 +7,7 @@ import AccountService from "$lib/server/services/AccountService";
 import { MAXSCOPES, MINSCOPES } from "$lib/types/Account";
 import { EmailLoginCode } from "$lib/types/misc";
 import { formEntries, log, trueStrings, zerrorMessage } from "$lib/util";
-import { error, invalid } from "@sveltejs/kit";
+import { error, fail } from "@sveltejs/kit";
 import sharp from "sharp";
 import { z } from "zod";
 import type { Actions } from "./$types";
@@ -32,7 +32,7 @@ export const actions: Actions = {
 	editprofile: async ({ url, request, locals }) => {
 		const { fields, files } = await formEntries(request);
 		const parsedFields = EditFields.safeParse(fields);
-		if (!parsedFields.success) return invalid(400, { success: false, message: zerrorMessage(parsedFields.error) });
+		if (!parsedFields.success) return fail(400, { success: false, message: zerrorMessage(parsedFields.error) });
 		const edits: Edits = {
 			...parsedFields.data,
 			picture: files.picture ? await encodeImage(files.picture) : undefined,

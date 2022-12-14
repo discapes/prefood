@@ -4,10 +4,10 @@
 
 - next update
 
-  - [ ] professionalize
-    - [ ] home page
+  - [x] professionalize
+    - [x] home page
       - [ ] contact form
-    - [ ] about page
+    - [x] about page
       - [ ] donate form
       - [ ] credits
   - [ ] fix bugs

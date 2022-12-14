@@ -1,7 +1,7 @@
 import type { AccountCreationData, TrustedIdentity } from "$lib/types/misc";
 import { firstTrue, log } from "$lib/util";
 import { error } from "@sveltejs/kit";
-import { v4 as uuidv4 } from "uuid";
+import { uuid } from "$lib/util";
 import { hash } from "../crypto";
 import { ddb, Table } from "../ddb";
 import { Account } from "../../types/Account";
@@ -86,7 +86,7 @@ class AccountsService {
 			.updateItem(userID);
 	}
 	async addSessionToken({ userID }: { userID: string }) {
-		const newSessionToken = uuidv4();
+		const newSessionToken = uuid();
 		await this.table()
 			.add(ddb`sessionTokens :${new Set([hash(newSessionToken)])}`)
 			.updateItem(userID);
@@ -182,8 +182,8 @@ class AccountsService {
 		while (await this.exists("username", username)) {
 			username += Math.floor(Math.random() * 10);
 		}
-		const userID = uuidv4();
-		const initialSessionToken = uuidv4();
+		const userID = uuid();
+		const initialSessionToken = uuid();
 		log(`Creating account with ${JSON.stringify({ userID, acd, initialSessionToken })}`);
 		const oper = this.table()
 			.set(ddb`#${"sessionTokens"} = :${new Set([hash(initialSessionToken)])}`)

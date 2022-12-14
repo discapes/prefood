@@ -8,7 +8,7 @@ import { getSlugFromOrder } from "$lib/util";
 import type { RequestHandler } from "./$types";
 import type Stripe from "stripe";
 import { STRIPE_ENDPOINT_SECRET } from "$env/static/private";
-import { v4 as uuidv4 } from "uuid";
+import { uuid } from "$lib/util";
 import { error } from "@sveltejs/kit";
 
 const stripe = getSecretStripe();
@@ -71,7 +71,7 @@ async function fulfillOrder(session: Stripe.Checkout.Session, url: string) {
 
 	const order: Order = {
 		restaurantName: metadata.restaurantName,
-		userID: metadata.userID || uuidv4(),
+		userID: metadata.userID || uuid(),
 		items: line_items,
 		timestamp: Date.now(),
 	};

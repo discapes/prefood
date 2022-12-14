@@ -19,7 +19,7 @@
 	<title>{restaurant.name} - {PUBLIC_APP_NAME}</title>
 </svelte:head>
 
-<section in:fly={{ duration: 200, y: 200 }}>
+<section in:fly={{ duration: 200, y: 200 }} class="">
 	<form on:submit={() => (buttonLoading = true)} method="POST" action="/checkout" class="flex flex-col gap-10 items-center p-10">
 		<input type="text" name="restaurant-name" value={restaurant.name} class="hidden" />
 		<ol class="flex gap-3 flex-col">

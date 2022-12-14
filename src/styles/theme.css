@@ -24,13 +24,15 @@ button {
 
 body {
 	--accent-color: #ff3e00;
-	--header-color: rgba(255, 255, 255, 0.7);
+	--heading-color: rgb(225 29 72);
+	--header-color: rgba(255, 255, 255, 0.85);
 	--text-color: #444444;
 	--button-color: rgba(255, 255, 255, 0.7);
 	--button-hover-color: rgba(255, 255, 255, 1);
 	--button-disabled-color: rgb(230 230 230);
 	color: var(--text-color);
-	background: linear-gradient(180deg, #b9c6d2 0%, #d0dde9 10.45%, #edf0f8 41.35%);
+	background-color: rgb(225 29 72);
+	/* background: linear-gradient(180deg, #b9c6d2 0%, #d0dde9 10.45%, #edf0f8 41.35%); */
 }
 
 body.dark {
@@ -46,7 +48,7 @@ body.dark {
 }
 
 p {
-	max-width: 30rem;
+	/* max-width: 30rem; */
 	margin: 0;
 	line-height: 1.35;
 }
@@ -99,7 +101,7 @@ h6 {
 	margin-block-end: 2.33em;
 }
 
-a {
+/* a {
 	color: var(--accent-color);
 	text-decoration: none;
 }
@@ -107,7 +109,7 @@ a {
 a:hover {
 	text-decoration: underline;
 	text-decoration-color: var(--text-color);
-}
+} */
 
 h1,
 h2 {

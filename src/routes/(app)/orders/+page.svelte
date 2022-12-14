@@ -14,6 +14,11 @@
 
 <svelte:head>
 	<title>Orders - {PUBLIC_APP_NAME}</title>
+	<style>
+		body {
+			@apply bg-stone-50 !important;
+		}
+	</style>
 </svelte:head>
 {#if !userData || !orders}
 	<Login />
