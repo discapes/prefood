@@ -1,0 +1,193 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Metadata:
+  Generator: "former2"
+Description: ""
+Resources:
+  DynamoDBTable:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "timestamp"
+          AttributeType: "N"
+        - AttributeName: "userID"
+          AttributeType: "S"
+      TableName: "orders"
+      KeySchema:
+        - AttributeName: "userID"
+          KeyType: "HASH"
+        - AttributeName: "timestamp"
+          KeyType: "RANGE"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 3
+        WriteCapacityUnits: 3
+
+  DynamoDBTable2:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "name"
+          AttributeType: "S"
+      TableName: "restaurants"
+      KeySchema:
+        - AttributeName: "name"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
+  DynamoDBTable3:
+    Type: "AWS::DynamoDB::Table"
+    Properties:
+      AttributeDefinitions:
+        - AttributeName: "email"
+          AttributeType: "S"
+        - AttributeName: "githubID"
+          AttributeType: "S"
+        - AttributeName: "googleID"
+          AttributeType: "S"
+        - AttributeName: "userID"
+          AttributeType: "S"
+        - AttributeName: "username"
+          AttributeType: "S"
+      TableName: "users"
+      KeySchema:
+        - AttributeName: "userID"
+          KeyType: "HASH"
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+      GlobalSecondaryIndexes:
+        - IndexName: "githubID-index"
+          KeySchema:
+            - AttributeName: "githubID"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "KEYS_ONLY"
+          ProvisionedThroughput:
+            ReadCapacityUnits: 2
+            WriteCapacityUnits: 2
+        - IndexName: "username-index"
+          KeySchema:
+            - AttributeName: "username"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "ALL"
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+        - IndexName: "googleID-index"
+          KeySchema:
+            - AttributeName: "googleID"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "KEYS_ONLY"
+          ProvisionedThroughput:
+            ReadCapacityUnits: 2
+            WriteCapacityUnits: 2
+        - IndexName: "email-index"
+          KeySchema:
+            - AttributeName: "email"
+              KeyType: "HASH"
+          Projection:
+            ProjectionType: "KEYS_ONLY"
+          ProvisionedThroughput:
+            ReadCapacityUnits: 1
+            WriteCapacityUnits: 1
+
+  ApiGatewayV2Api:
+    Type: "AWS::ApiGatewayV2::Api"
+    Properties:
+      ApiKeySelectionExpression: "$request.header.x-api-key"
+      ProtocolType: "WEBSOCKET"
+      RouteSelectionExpression: "$request.body.action"
+      DisableExecuteApiEndpoint: false
+
+  ApiGatewayV2Stage:
+    Type: "AWS::ApiGatewayV2::Stage"
+    Properties:
+      StageName: "production"
+      StageVariables: {}
+      ApiId: !Ref ApiGatewayV2Api
+      DeploymentId: "pec95o"
+      RouteSettings: {}
+      DefaultRouteSettings:
+        DataTraceEnabled: false
+        DetailedMetricsEnabled: false
+        LoggingLevel: "OFF"
+        ThrottlingBurstLimit: 5000
+        ThrottlingRateLimit: 10000
+
+  ApiGatewayV2Stage2:
+    Type: "AWS::ApiGatewayV2::Stage"
+    Properties:
+      StageName: "test"
+      StageVariables: {}
+      ApiId: !Ref ApiGatewayV2Api
+      DeploymentId: "5emo2g"
+      RouteSettings: {}
+      DefaultRouteSettings:
+        DataTraceEnabled: true
+        DetailedMetricsEnabled: false
+        LoggingLevel: "INFO"
+        ThrottlingBurstLimit: 5000
+        ThrottlingRateLimit: 10000
+
+  ApiGatewayV2Route:
+    Type: "AWS::ApiGatewayV2::Route"
+    Properties:
+      ApiId: !Ref ApiGatewayV2Api
+      ApiKeyRequired: false
+      AuthorizationType: "NONE"
+      RouteKey: "$connect"
+      RouteResponseSelectionExpression: "$default"
+      Target: !Sub "integrations/${ApiGatewayV2Integration}"
+
+  ApiGatewayV2Route2:
+    Type: "AWS::ApiGatewayV2::Route"
+    Properties:
+      ApiId: !Ref ApiGatewayV2Api
+      ApiKeyRequired: false
+      AuthorizationType: "NONE"
+      RouteKey: "$disconnect"
+      Target: !Sub "integrations/${ApiGatewayV2Integration2}"
+
+  ApiGatewayV2Integration:
+    Type: "AWS::ApiGatewayV2::Integration"
+    Properties:
+      ApiId: !Ref ApiGatewayV2Api
+      ConnectionType: "INTERNET"
+      ContentHandlingStrategy: "CONVERT_TO_TEXT"
+      IntegrationMethod: "POST"
+      IntegrationType: "HTTP"
+      IntegrationUri: "https://dell3000.miikat.dev/api/gateway"
+      PassthroughBehavior: "WHEN_NO_TEMPLATES"
+      RequestTemplates:
+        "$default": |
+          {
+              "connectionId": "$context.connectionId",
+              "type": "connect",
+              "header": "$util.escapeJavaScript($input.params().header)",
+              "query": "$util.escapeJavaScript($input.params().querystring)"
+          }
+      TemplateSelectionExpression: "\\$default"
+      TimeoutInMillis: 29000
+      PayloadFormatVersion: "1.0"
+
+  ApiGatewayV2Integration2:
+    Type: "AWS::ApiGatewayV2::Integration"
+    Properties:
+      ApiId: !Ref ApiGatewayV2Api
+      ConnectionType: "INTERNET"
+      IntegrationMethod: "POST"
+      IntegrationType: "HTTP"
+      IntegrationUri: "https://dell3000.miikat.dev/api/gateway"
+      PassthroughBehavior: "WHEN_NO_TEMPLATES"
+      RequestTemplates:
+        "$default": |
+          {
+              "connectionId": "$context.connectionId",
+              "type": "disconnect"
+          }
+      TemplateSelectionExpression: "\\$default"
+      TimeoutInMillis: 29000
+      PayloadFormatVersion: "1.0"

@@ -18,6 +18,7 @@
   - [ ] API support for all actions
   - [ ] improved dark mode
   - [ ] update SCHEMA.md
+  - [ ] api ratelimiting with redis
   - [ ] prevent dos attacks by submitting large forms
   - [ ] allow changing donation amount
   - [ ] human readable receipt, don't include stripe data
@@ -32,14 +33,20 @@
     - [ ] error logging and audit logs
   - [ ] review code
   - [ ] test and fix all features
+  - [ ] [community health files](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file)
 
 - long term features / tasks
   - [ ] friend lists and instant messaging
   - [ ] view where restaurant owners can see new orders and change their status
     - [ ] notify clients on status change
+      - old notes:
+        - [ ] save connectionId to order mapping in order to remove them on disconnect?
+        - or alternatively kick everyone on status update, and just have onclose() => invalidateAll and add new websocket
+        - if we dont want to close the connection we can just ask everyone to respond in order to maintain their connection id as a listener
   - [ ] separate dynamodb library
   - [ ] separate authentication library
-  - [ ] automatic cloudformation deployment
+  - [ ] automatic deployments with cloudformation
+  - [ ] [live streaming?](https://aws.amazon.com/solutions/implementations/live-streaming-on-aws/)
 
 ## [0.0.8] 2022-09-12
 
