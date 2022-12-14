@@ -58,5 +58,5 @@ async function loginHandler(url: URL, options: LoginParameters, cookies: Cookies
 	cookies.set("sessionToken", newSessionToken, cookieOpts);
 	cookies.delete("state");
 	log(url.pathname, "success, set cookies");
-	throw redirect(300, new URL(options.referer, url).href);
+	throw redirect(301, new URL(options.referer, url).href);
 }

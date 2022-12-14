@@ -2,7 +2,6 @@ import { DDB_ACCESS_ID, DDB_ACCESS_KEY, DDB_REGION } from "$env/static/private";
 import { asRecord } from "$lib/util";
 import { DynamoDBClient } from "@aws-sdk/client-dynamodb";
 import { DeleteCommand, DynamoDBDocumentClient, GetCommand, PutCommand, QueryCommand, ScanCommand, UpdateCommand } from "@aws-sdk/lib-dynamodb";
-import { string } from "zod";
 
 const dynamoClient = new DynamoDBClient({
 	region: DDB_REGION,
@@ -53,8 +52,8 @@ export type Expression = {
 /* for example expression`f(#${foo}) ${"<"} :${bar}`
 	returns {
 		str: 'f(#) < :`
-		names: [<foo>]
-		values: [<bar>]
+		names: ["foo"]
+		values: ["bar"]
 	} */
 export function ddb(strs: TemplateStringsArray, ...params: unknown[]): Expression {
 	const values = Array<unknown>();

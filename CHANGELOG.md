@@ -4,48 +4,42 @@
 
 - next update
 
-  - [ ] API support for all actions
-  - [ ] dark mode improve
-  - [ ] info page with link to my website
-  - [ ] fix bug where if you click login too fast stateParameter isnt generated
-  - [ ] update SCHEMA.md
-  - [ ] prevent dos attacks by submitting large forms
+  - [ ] professionalize
+    - [ ] home page
+      - [ ] contact form
+    - [ ] about page
+      - [ ] donate form
+      - [ ] credits
+  - [ ] fix bugs
+    - [ ] if you click login too fast stateParameter isnt generated
 
 - additional tasks
 
-  - [ ] m4m change amount
+  - [ ] API support for all actions
+  - [ ] improved dark mode
+  - [ ] update SCHEMA.md
+  - [ ] prevent dos attacks by submitting large forms
+  - [ ] allow changing donation amount
   - [ ] human readable receipt, don't include stripe data
   - [ ] expiring session tokens
-  - [ ] secure restaurant edit page
-
----
+  - [ ] user roles
+    - [ ] admin -> manage restaurants and users from panel
+    - [ ] restaurant staff -> manage own restaurant and orders from panel
 
 - before 1.0
 
-  - [ ] test coverage
-  - [ ] handle all errors
-  - [ ] error logging and audit logs
+  - [ ] handle errors in a uniform way
+    - [ ] error logging and audit logs
   - [ ] review code
   - [ ] test and fix all features
-  - [ ] update my goddamn resume
 
-- large
-
+- long term features / tasks
   - [ ] friend lists and instant messaging
   - [ ] view where restaurant owners can see new orders and change their status
-  - [ ] serviceworker
-    - [ ] web push API
-      - [ ] notifications and page update on order status change for user
-      - [ ] notifications and page update on new order for restaurant
-    - [ ] on major update popup changelog, reload on close
-      - [ ] on minor update reload on next visit
-        - [ ] same thing with menu updates
-    - [ ] server cache menu pages
-
-- long term
-  - [ ] oispaeliitti integration
-  - [ ] publish dynamodb wrapper
-  - [ ] separate authentication to a library
+    - [ ] notify clients on status change
+  - [ ] separate dynamodb library
+  - [ ] separate authentication library
+  - [ ] automatic cloudformation deployment
 
 ## [0.0.8] 2022-09-12
 
