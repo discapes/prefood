@@ -36,6 +36,7 @@
 <svelte:head>
 	<title>{PUBLIC_APP_NAME}</title>
 </svelte:head>
+<!-- <div class="  overflow-auto"> -->
 <div class="flex flex-col min-h-[100vh]">
 	<script>
 		$darkmode = localStorage.getItem("darkmode") == "true";
@@ -76,6 +77,7 @@
 	</footer>
 </div>
 
+<!-- </div> -->
 <style lang="scss">
 	:global {
 		@import "classes.scss";

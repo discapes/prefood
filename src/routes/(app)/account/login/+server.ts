@@ -11,7 +11,7 @@ import { verifyIdentity } from "../common";
 async function linkHandler(url: URL, options: LinkParameters, cookies: Cookies, locals: App.Locals): Promise<Response> {
 	const { i } = await verifyIdentity(url, options.method);
 
-	if (await AccountService.existsTI(i)) throw error(400, "Method álready linked");
+	if (await AccountService.existsTI(i)) throw error(400, "Method already linked");
 	await AccountService.setAttribute(UserAuth.parse(locals), {
 		key: i.methodName,
 		value: i.methodValue,

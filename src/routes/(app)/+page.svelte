@@ -14,14 +14,14 @@
 </svelte:head>
 
 <section class="flex flex-col">
-	<div class="grid grid-cols-3 w-full min-h-[600px] relative text-white">
+	<div class="grid grid-cols-[repeat(auto-fit,_minmax(550px,_1fr));] w-full min-h-[600px] relative text-white">
 		<img src="burger.jpg" class="-z-10 absolute h-full right-0 object-cover max-w-full" />
 		<div class="bg-rose-600 heading p-20 flex">
 			<h1 class="font-extrabold basis-0 text-8xl text-left">Fastest way to order food</h1>
 			<div />
 		</div>
 		<div class="bg-rose-600 text-9xl title flex items-center justify-center">&nbsp;PreFood&nbsp;</div>
-		<div class="w-full bg-gradient-to-r from-rose-600" />
+		<div class="w-full bg-gradient-to-r via-transparent from-rose-600" />
 	</div>
 	<div class="flex justify-center bg-rose-600">
 		<div class="inline-grid grid-cols-2 gap-20 justify-items-center p-20 text-rose-600 font-semibold">
