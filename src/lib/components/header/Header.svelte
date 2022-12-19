@@ -11,7 +11,7 @@
 
 <header class="fixed flex justify-between w-full z-10">
 	{#if userData}
-		<a href={URLS.ACCOUNT} data-sveltekit-prefetch="" class="corner inline-flex justify-end items-end">
+		<a href={URLS.ACCOUNT} class="corner inline-flex justify-end items-end">
 			<img alt="profile" class="object-cover w-5/6 h-5/6 border border-white dark:border-neutral-400" src={userData.picture} />
 		</a>
 	{:else}
@@ -29,7 +29,7 @@
 		<ul class="flex flex-col py-2 rounded-b-xl gap-1 sm:flex-row sm:py-0 sm:rounded-none">
 			{#each HEADERPAGES as listedPage}
 				<li class:active={$page.url.pathname === listedPage.path}>
-					<a data-sveltekit-prefetch href={listedPage.path}>{listedPage.name}</a>
+					<a href={listedPage.path}>{listedPage.name}</a>
 				</li>
 			{/each}
 		</ul>

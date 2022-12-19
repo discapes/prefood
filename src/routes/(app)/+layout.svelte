@@ -1,49 +1,37 @@
 <script lang="ts">
+	import { PUBLIC_APP_NAME } from "$env/static/public";
+	import "$lib/../styles/theme.css";
+	import { HEADERPAGES } from "$lib/addresses";
 	import Header from "$lib/components/header/Header.svelte";
-	import cookie from "cookie";
-	import { onMount, setContext } from "svelte";
+	import { setContext } from "svelte";
 	import type { Writable } from "svelte/store";
 	import { writable } from "svelte/store";
-	import { uuid } from "$lib/util";
-	import "$lib/../styles/theme.css";
-	import { PUBLIC_APP_NAME } from "$env/static/public";
-	import { HEADERPAGES } from "$lib/addresses";
+	import type { PageData } from "./$types";
+	import { CONTEXT } from "$lib/addresses";
+
+	export let data: PageData;
+	setContext(CONTEXT.STATETOKEN, data.stateToken);
 
 	let darkmode: Writable<boolean | null> = writable(null);
-	setContext("darkmode", darkmode);
+	setContext(CONTEXT.DARKMODE, darkmode);
 
-	function darkmodetoggle() {
+	function onDarkModeToggle() {
 		document.body.classList.toggle("dark");
-		$darkmode = document.body.classList.contains("dark");
-		localStorage.setItem("darkmode", $darkmode.toString());
+		let newValue = document.body.classList.contains("dark");
+		darkmode.set(newValue);
+		localStorage.setItem("darkMode", newValue ? "true" : "false");
 	}
-
-	let stateToken: Writable<string | null> = writable(null);
-	setContext("stateToken", stateToken);
-	onMount(() => {
-		$stateToken = cookie.parse(document.cookie).state;
-		if (!$stateToken) {
-			$stateToken = uuid();
-			document.cookie = `state=${$stateToken}; Path=/`;
-		}
-		console.log({ $stateToken });
-	});
 </script>
 
-<!-- {#if dev}
-	{JSON.stringify($page.data)}
-{/if} -->
 <svelte:head>
 	<title>{PUBLIC_APP_NAME}</title>
 </svelte:head>
-<!-- <div class="  overflow-auto"> -->
 <div class="flex flex-col min-h-[100vh]">
 	<script>
-		$darkmode = localStorage.getItem("darkmode") == "true";
-		if ($darkmode) document.body.classList.add("dark");
+		if (localStorage.getItem("darkMode") == "true") document.body.classList.add("dark");
 		else document.body.classList.remove("dark");
 	</script>
-	<Header on:darkmodetoggle={darkmodetoggle} />
+	<Header on:darkmodetoggle={onDarkModeToggle} />
 
 	<main class="grow p-14">
 		<slot />

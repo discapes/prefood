@@ -1,5 +1,5 @@
 import { SESSION_MAXAGE_HOURS } from "$env/static/private";
-import { URLS } from "$lib/addresses";
+import { COOKIES, URLS } from "$lib/addresses";
 import { UserAuth } from "$lib/server/services/Account";
 import AccountService from "$lib/server/services/AccountService";
 import { LinkParameters, LoginParameters, StateParameters } from "$lib/types/misc";
@@ -8,7 +8,7 @@ import { error, redirect, type Cookies, type RequestHandler } from "@sveltejs/ki
 import type cookie from "cookie";
 import { verifyIdentity } from "../common";
 
-async function linkHandler(url: URL, options: LinkParameters, cookies: Cookies, locals: App.Locals): Promise<Response> {
+async function linkHandler(url: URL, options: LinkParameters, cookies: Cookies): Promise<Response> {
 	const { i } = await verifyIdentity(url, options.method);
 
 	if (await AccountService.existsTI(i)) throw error(400, "Method already linked");
@@ -21,14 +21,12 @@ async function linkHandler(url: URL, options: LinkParameters, cookies: Cookies, 
 	throw redirect(300, URLS.ACCOUNT);
 }
 
-export const GET: RequestHandler = async ({ url, locals, cookies }) => {
-	const { state } = locals;
+export const GET: RequestHandler = async ({ url, cookies }) => {
 	const options = getDecoder(StateParameters).parse(url.searchParams.get("state"));
-	log(url.pathname, { state, options });
-	if (!state || options.stateToken !== state) throw error(400, "invalid state");
+	if (options.stateToken !== cookies.get(COOKIES.STATETOKEN)) throw error(400, "Invalid state token!");
 	switch (options.type) {
 		case "link":
-			return await linkHandler(url, options, cookies, locals);
+			return await linkHandler(url, options, cookies);
 		case "login":
 			return await loginHandler(url, options, cookies);
 		default:

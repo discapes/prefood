@@ -65,7 +65,7 @@ export const actions: Actions = {
 		return { success: true, message: "Key deleted" };
 	},
 	deleteaccount: async ({ locals }) => {
-		await AccountService.delete(UserAuth.parse(locals));
+		await AccountService.deleteUser(UserAuth.parse(locals));
 		return { success: true, message: "Account deleted" };
 	},
 	revoke: async ({ locals }) => {

@@ -5,11 +5,10 @@
 	import { LoginParameters } from "$lib/types/misc";
 	import { getEncoder } from "$lib/util";
 	import { getContext } from "svelte";
-	import type { Writable } from "svelte/store";
 	import GithubButton from "./GithubButton.svelte";
 	import GoogleButton from "./GoogleButton.svelte";
 
-	let stateToken: Writable<string> = getContext("stateToken");
+	let stateToken: string = getContext("stateToken");
 	let rememberMe = true;
 
 	let params: Omit<LoginParameters, "method">;
@@ -17,7 +16,7 @@
 		type: "login",
 		rememberMe,
 		referer: $page.url.pathname,
-		stateToken: $stateToken,
+		stateToken,
 	};
 </script>
 
@@ -26,7 +25,7 @@
 </svelte:head>
 
 <div class="flex justify-center p-20">
-	<div class="flex flex-col gap-10 items-center max-w-lg text-white">
+	<div class="flex flex-col gap-10 items-center max-w-lg ">
 		<h1 class="mb-0">Sign in</h1>
 
 		<div class="flex gap-3 font-['Roboto'] justify-center flex-wrap">

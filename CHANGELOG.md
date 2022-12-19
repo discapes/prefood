@@ -10,8 +10,11 @@
     - [x] about page
       - [ ] donate form
       - [ ] credits
+  - [ ] remove use of cookie locals
+  - [ ] improve auth system
+  - [ ] error hook to log
   - [ ] fix bugs
-    - [ ] if you click login too fast stateParameter isnt generated
+    - [x] if you click login too fast stateParameter isnt generated
 
 - additional tasks
 

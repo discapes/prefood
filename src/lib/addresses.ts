@@ -17,3 +17,15 @@ export const API = {
 	ACCOUNT: "account",
 	RESTAURANTS: "restaurants",
 };
+
+export const COOKIES = {
+	AUTHTOKEN: "authToken",
+	STATETOKEN: "stateToken",
+};
+
+export const CONTEXT = {
+	STATETOKEN: "stateToken",
+	DARKMODE: "darkMode",
+};
+
+export const CONTACT_ADMIN = " Contact the administrator if the error persists.";

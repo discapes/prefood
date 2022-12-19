@@ -5,33 +5,43 @@ import { uuid } from "$lib/util";
 import { hash } from "../crypto";
 import { ddb, Table } from "../ddb";
 import { Account } from "../../types/Account";
-import type { DBAccount, Auth, UserAuth, OAuth, Edits } from "./Account";
+import type { DBAccount, Auth, Edits, AuthToken } from "./Account";
 
 class AccountsService {
 	table = new Table<DBAccount>("users").key("userID").clone();
 
 	parseUIDFromAuth(auth: Auth) {
-		if ("apiKey" in auth) {
+		if (auth.type === "ApiKey") {
 			return auth.apiKey.slice(0, auth.apiKey.indexOf("-"));
 		} else {
-			return auth.userID;
+			return auth.authToken.slice(0, auth.authToken.indexOf("-"));
 		}
 	}
-	async delete(auth: Auth) {
+	parseSessionToken(authToken: AuthToken) {
+		return authToken.slice(authToken.indexOf("-"));
+	}
+
+	createAuthToken({ sessionToken, userID }: { sessionToken: string; userID: string }): AuthToken {
+		return userID + "-" + sessionToken;
+	}
+
+	async deleteUser(auth: Auth) {
 		await this.table().condition(this.#getAuthCondition(auth, "delete")).deleteItem(this.parseUIDFromAuth(auth));
 	}
+
 	getScopes(auth: Auth, user: DBAccount): Set<string> | undefined {
-		if ("sessionToken" in auth) {
-			if (user.sessionTokens?.has(hash(auth.sessionToken))) return new Set(["*"]);
+		if (auth.type === "AuthToken") {
+			if (user.sessionTokens?.has(hash(this.parseSessionToken(auth.authToken)))) return new Set(["*"]);
 		} else {
 			return user.apiKeys?.[auth.apiKey];
 		}
-		return undefined;
 	}
+
 	async fetchScopes(auth: Auth): Promise<Set<string> | undefined> {
 		const ud = await this.table().getItem(this.parseUIDFromAuth(auth));
 		if (ud) return this.getScopes(auth, ud);
 	}
+
 	async fetchScopedData(auth: UserAuth): Promise<Account | undefined>;
 	async fetchScopedData(auth: OAuth): Promise<Partial<Account> | undefined>;
 	async fetchScopedData(auth: Auth): Promise<Partial<Account> | undefined> {
