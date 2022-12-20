@@ -13,9 +13,9 @@
 	<title>Signup - {PUBLIC_APP_NAME}</title>
 </svelte:head>
 
-{#if form.sent}
+{#if form && form.sent}
 	<h1>Check your email</h1>
-{:else}
+{:else if form}
 	<form use:enhance method="POST" action="?/newuser">
 		<input class="hidden" name="passState" value={form.passState} />
 		<label for="name">Email</label>
@@ -26,4 +26,6 @@
 		<input name="picture" />
 		<button type="submit" class="w-60 cont">Create account</button>
 	</form>
+{:else}
+	How did you get here?
 {/if}

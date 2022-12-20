@@ -1,13 +1,13 @@
 import { MAIL_FROM_DOMAIN } from "$env/static/private";
-import { URLS } from "$lib/addresses";
+import { COOKIES, URLS } from "$lib/addresses";
 import { getEncoderCrypt, hash } from "$lib/server/crypto";
 import { sendMail } from "$lib/server/mail";
-import { type Edits, UserAuth } from "$lib/server/services/Account";
+import { AuthToken, type Edits } from "$lib/server/services/Account";
 import AccountService from "$lib/server/services/AccountService";
 import { MAXSCOPES, MINSCOPES } from "$lib/types/Account";
 import { EmailLoginCode } from "$lib/types/misc";
 import { formEntries, log, trueStrings, zerrorMessage } from "$lib/util";
-import { error, fail } from "@sveltejs/kit";
+import { fail } from "@sveltejs/kit";
 import sharp from "sharp";
 import { z } from "zod";
 import type { Actions } from "./$types";
@@ -21,15 +21,13 @@ const EditFields = z
 	.partial();
 
 export const actions: Actions = {
-	logout: async ({ locals: { sessionToken, userID }, cookies }) => {
-		if (!sessionToken) throw error(400, "sessionToken not specified.");
-		if (!userID) throw error(400, "userID not specified.");
-		await AccountService.removeSessionToken({ userID, sessionToken });
-		cookies.delete("sessionToken");
-		cookies.delete("userID");
+	logout: async ({ cookies }) => {
+		const auth = AuthToken.parse(cookies.get(COOKIES.AUTHTOKEN));
+		await AccountService.removeSessionToken({ UID: auth.UID, SID: auth.SID });
+		cookies.delete(COOKIES.AUTHTOKEN);
 		return { success: true, message: "Logged out" };
 	},
-	editprofile: async ({ url, request, locals }) => {
+	editprofile: async ({ request, cookies }) => {
 		const { fields, files } = await formEntries(request);
 		const parsedFields = EditFields.safeParse(fields);
 		if (!parsedFields.success) return fail(400, { success: false, message: zerrorMessage(parsedFields.error) });
@@ -38,7 +36,7 @@ export const actions: Actions = {
 			picture: files.picture ? await encodeImage(files.picture) : undefined,
 		};
 
-		const res = await AccountService.edit(edits, UserAuth.parse(locals));
+		const res = await AccountService.edit(edits, AuthToken.parse(cookies.get(COOKIES.AUTHTOKEN)));
 		if (!res) return { success: false, message: `Username ${edits.username} is taken` };
 		else return { success: true, message: "Edit successful" };
 
@@ -50,30 +48,30 @@ export const actions: Actions = {
 				.toBuffer();
 		}
 	},
-	savekey: async ({ request, locals }) => {
+	savekey: async ({ request, cookies }) => {
 		const { fields } = await formEntries(request);
 		const scopes = new Set([...Object.keys(fields).filter((k) => k !== "key" && MAXSCOPES.has(k)), ...MINSCOPES]);
 		const { key } = fields;
 		if (!key) return { success: false, message: "error: no key" };
-		await AccountService.setKey(UserAuth.parse(locals), { key, scopes });
+		await AccountService.setApiKey(AuthToken.parse(cookies.get(COOKIES.AUTHTOKEN)), { key, scopes });
 		return { success: true, message: "Key saved" };
 	},
-	deletekey: async ({ request, locals }) => {
+	deletekey: async ({ request, cookies }) => {
 		const key = await request.formData().then((f) => f.get("key"));
 		if (typeof key !== "string") return { success: false, message: "error: no key" };
-		await AccountService.deleteKey(UserAuth.parse(locals), key);
+		await AccountService.deleteApiKey(AuthToken.parse(cookies.get(COOKIES.AUTHTOKEN)), key);
 		return { success: true, message: "Key deleted" };
 	},
-	deleteaccount: async ({ locals }) => {
-		await AccountService.deleteUser(UserAuth.parse(locals));
+	deleteaccount: async ({ cookies }) => {
+		await AccountService.deleteUser(AuthToken.parse(cookies.get(COOKIES.AUTHTOKEN)));
 		return { success: true, message: "Account deleted" };
 	},
-	revoke: async ({ locals }) => {
-		const auth = UserAuth.parse(locals);
-		AccountService.setAttribute(auth, { key: "sessionTokens", value: new Set([hash(auth.sessionToken)]) });
+	revoke: async ({ cookies }) => {
+		const auth = AuthToken.parse(cookies.get(COOKIES.AUTHTOKEN));
+		AccountService.setAttribute(auth, { key: "sessionTokens", value: new Set([hash(auth.SID)]) });
 		return { success: true, message: "All other login sessions are now invalid" };
 	},
-	changeemail: async ({ url, request, locals: { sessionToken, userID } }) => {
+	changeemail: async ({ url, request }) => {
 		const {
 			fields: { email, passState },
 		} = await formEntries(request);
@@ -90,7 +88,7 @@ export const actions: Actions = {
 		});
 		return { success: true, message: "Check your new mail" };
 	},
-	unlink: async ({ locals }) => {
+	unlink: async () => {
 		log("unlink");
 		return { success: false, message: "Unlink not yet implemented" };
 	},

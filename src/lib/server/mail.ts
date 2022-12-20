@@ -5,9 +5,9 @@ import { cerror, log } from "../util";
 
 export async function sendMail(options: Mail.Options) {
 	log(`sending email to ${options.to}`);
-	if (!options.to) cerror("email is undefined");
+	if (!options.to || options.to.toString().includes(";")) cerror("email is undefined or invalid");
 
-	let transporter = nodemailer.createTransport({
+	const transporter = nodemailer.createTransport({
 		host: SMTP_SERVER,
 		port: 587,
 		auth: {
@@ -15,6 +15,6 @@ export async function sendMail(options: Mail.Options) {
 			pass: SMTP_PASSWORD,
 		},
 	});
-	let info = await transporter.sendMail(options);
+	const info = await transporter.sendMail(options);
 	console.log("Message sent: %s", info.messageId);
 }

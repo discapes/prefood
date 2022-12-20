@@ -5,75 +5,60 @@ import { uuid } from "$lib/util";
 import { hash } from "../crypto";
 import { ddb, Table } from "../ddb";
 import { Account } from "../../types/Account";
-import type { DBAccount, Auth, Edits, AuthToken } from "./Account";
+import type { DBAccount, Edits, AuthToken, APIToken } from "./Account";
 
 class AccountsService {
 	table = new Table<DBAccount>("users").key("userID").clone();
 
-	parseUIDFromAuth(auth: Auth) {
-		if (auth.type === "ApiKey") {
-			return auth.apiKey.slice(0, auth.apiKey.indexOf("-"));
-		} else {
-			return auth.authToken.slice(0, auth.authToken.indexOf("-"));
-		}
-	}
-	parseSessionToken(authToken: AuthToken) {
-		return authToken.slice(authToken.indexOf("-"));
+	async deleteUser(auth: AuthToken) {
+		await this.table().condition(this.#getAuthCondition(auth, "delete")).deleteItem(auth.UID);
 	}
 
-	createAuthToken({ sessionToken, userID }: { sessionToken: string; userID: string }): AuthToken {
-		return userID + "-" + sessionToken;
-	}
-
-	async deleteUser(auth: Auth) {
-		await this.table().condition(this.#getAuthCondition(auth, "delete")).deleteItem(this.parseUIDFromAuth(auth));
-	}
-
-	getScopes(auth: Auth, user: DBAccount): Set<string> | undefined {
+	getScopes(auth: AuthToken | APIToken, user: DBAccount): Set<string> {
 		if (auth.type === "AuthToken") {
-			if (user.sessionTokens?.has(hash(this.parseSessionToken(auth.authToken)))) return new Set(["*"]);
+			if (user.sessionTokens?.has(hash(auth.SID))) return new Set(["*"]);
+			else throw error(400, "Couldn't find scopes for AuthToken.");
 		} else {
-			return user.apiKeys?.[auth.apiKey];
+			if (user.apiKeys?.[auth.apiKey]) return user.apiKeys?.[auth.apiKey];
+			else throw error(400, "Couldn't find scopes for APIToken.");
 		}
 	}
 
-	async fetchScopes(auth: Auth): Promise<Set<string> | undefined> {
-		const ud = await this.table().getItem(this.parseUIDFromAuth(auth));
+	async fetchScopes(auth: AuthToken | APIToken): Promise<Set<string>> {
+		const ud = await this.table().getItem(auth.UID);
 		if (ud) return this.getScopes(auth, ud);
+		else throw error(400, "Couldn't find user.");
 	}
 
-	async fetchScopedData(auth: UserAuth): Promise<Account | undefined>;
-	async fetchScopedData(auth: OAuth): Promise<Partial<Account> | undefined>;
-	async fetchScopedData(auth: Auth): Promise<Partial<Account> | undefined> {
-		const userID = this.parseUIDFromAuth(auth);
-		const userData = await this.table().getItem(userID);
-		if (!userData) return undefined;
+	async fetchScopedData(auth: AuthToken): Promise<Account>;
+	async fetchScopedData(auth: APIToken): Promise<Partial<Account>>;
+	async fetchScopedData(auth: AuthToken | APIToken): Promise<Partial<Account>> {
+		const userData = await this.table().getItem(auth.UID);
+		if (!userData) throw error(400, "Couldn't find user.");
 		const scopes = this.getScopes(auth, userData);
-		if (!scopes) return undefined;
 		if (scopes.has("*")) {
 			return Account.parse(userData);
-		} else if (!scopes.size) {
-			return undefined;
 		} else {
-			const e: any = [...Object.entries(userData)]
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			const scopedEntries: any = [...Object.entries(userData)]
 				.map(([k, v]) => {
 					return scopes.has(k + ":read") ? [k, v] : undefined;
 				})
 				.filter((i) => i != undefined);
-			return <Partial<Account>>Object.fromEntries(e);
+			return <Partial<Account>>Object.fromEntries(scopedEntries);
 		}
 	}
-	async fetchAllData(auth: UserAuth): Promise<DBAccount | undefined> {
-		const userData = await this.table().getItem(auth.userID);
-		if (!userData) return undefined;
-		const scopes = this.getScopes(auth, userData);
-		if (scopes?.has("*")) {
-			return userData;
-		}
+
+	async fetchInternalData(auth: AuthToken): Promise<DBAccount> {
+		const userData = await this.table().getItem(auth.UID);
+		if (!userData || userData?.sessionTokens?.has(hash(auth.SID))) throw error(400, "Couldn't access user.");
+		return userData;
 	}
+
 	async fetchUIDForTI(ti: TrustedIdentity): Promise<string | undefined> {
 		return this.fetchUIDWithIndex(ti.methodName, ti.methodValue);
 	}
+
 	async fetchUIDWithIndex(index: TrustedIdentity["methodName"] | "username", value: string): Promise<string | undefined> {
 		const res = await this.table()
 			.index(`${index}-index`)
@@ -81,6 +66,7 @@ class AccountsService {
 			.queryItems(ddb`#${index} = :${value}`);
 		return res[0]?.userID;
 	}
+
 	async existsTI(ti: TrustedIdentity): Promise<boolean> {
 		return !!(await this.fetchUIDForTI(ti));
 	}
@@ -90,16 +76,16 @@ class AccountsService {
 	async existsUID(userID: string): Promise<boolean> {
 		return !!(await this.table().project(["userID"]).getItem(userID));
 	}
-	async removeSessionToken({ sessionToken, userID }: UserAuth) {
+	async removeSessionToken({ SID, UID }: { SID: string; UID: string }) {
 		await this.table()
-			.delete(ddb`sessionTokens :${new Set([hash(sessionToken)])}`)
-			.updateItem(userID);
+			.delete(ddb`sessionTokens :${new Set([hash(SID)])}`)
+			.updateItem(UID);
 	}
-	async addSessionToken({ userID }: { userID: string }) {
+	async addSessionToken(UID: string) {
 		const newSessionToken = uuid();
 		await this.table()
 			.add(ddb`sessionTokens :${new Set([hash(newSessionToken)])}`)
-			.updateItem(userID);
+			.updateItem(UID);
 		return newSessionToken;
 	}
 	async getPublicDataByUsername(username: string) {
@@ -121,47 +107,45 @@ class AccountsService {
 				.queryItems(ddb`username = :${username}`)
 		).length;
 	}
-	#getAuthCondition(auth: Auth, scope: string) {
-		return this.isUserAuth(auth) ? ddb`contains(sessionTokens, :${hash(auth.sessionToken)})` : ddb`contains(apiKeys.#${auth.apiKey}, :${scope})`;
+	#getAuthCondition(auth: AuthToken | APIToken, scope: string) {
+		return auth.type === "AuthToken" ? ddb`contains(sessionTokens, :${hash(auth.SID)})` : ddb`contains(apiKeys.#${auth.apiKey}, :${scope})`;
 	}
-	async setAttribute(auth: Auth, { key, value }: { key: string; value: unknown }) {
+	async setAttribute(auth: AuthToken | APIToken, { key, value }: { key: string; value: unknown }) {
 		await this.table()
 			.condition(this.#getAuthCondition(auth, key + ":write"))
 			.set(ddb`#${key} = :${value}`)
-			.updateItem(this.parseUIDFromAuth(auth));
+			.updateItem(auth.UID);
 	}
-	async setKey(auth: UserAuth, { key, scopes }: { key: string; scopes: Set<string> }) {
+
+	async setApiKey(auth: AuthToken, { key, scopes }: { key: string; scopes: Set<string> }) {
 		const p1 = this.table()
-			.condition(ddb`contains(sessionTokens, :${hash(auth.sessionToken)})`)
+			.condition(ddb`contains(sessionTokens, :${hash(auth.SID)})`)
 			.and(ddb`attribute_not_exists(apiKeys)`)
 			.set(ddb`apiKeys = :${{ [key]: scopes }}`)
 			.return("UPDATED_NEW")
-			.updateItem(auth.userID)
-			.catch((e) => undefined);
+			.updateItem(auth.UID)
+			.catch(() => undefined);
 		const p2 = this.table()
-			.condition(ddb`contains(sessionTokens, :${hash(auth.sessionToken)})`)
+			.condition(ddb`contains(sessionTokens, :${hash(auth.SID)})`)
 			.and(ddb`attribute_exists(apiKeys)`)
 			.set(ddb`apiKeys.#${key} = :${scopes}`)
 			.return("UPDATED_NEW")
-			.updateItem(auth.userID)
-			.catch((e) => undefined);
-		const res = await firstTrue([p1, p2]);
+			.updateItem(auth.UID)
+			.catch(() => undefined);
+		await firstTrue([p1, p2]);
 	}
-	async deleteKey(auth: UserAuth, key: string) {
+	async deleteApiKey(auth: AuthToken, key: string) {
 		await this.table()
-			.condition(ddb`contains(sessionTokens, :${hash(auth.sessionToken)})`)
+			.condition(ddb`contains(sessionTokens, :${hash(auth.SID)})`)
 			.remove(ddb`apiKeys.#${key}`)
-			.updateItem(auth.userID);
+			.updateItem(auth.UID);
 	}
-	isUserAuth(auth: Auth): auth is UserAuth {
-		return "sessionToken" in auth;
-	}
-	async edit(edits: Edits, auth: Auth): Promise<boolean> {
+
+	async edit(edits: Edits, auth: AuthToken | APIToken): Promise<boolean> {
 		if (edits.username && (await this.usernameTaken(edits.username))) return false;
-		const userID = this.parseUIDFromAuth(auth);
-		let oper = this.table();
-		if (this.isUserAuth(auth)) {
-			oper.condition(ddb`contains(sessionTokens, :${hash(auth.sessionToken)})`);
+		const oper = this.table();
+		if (auth.type === "AuthToken") {
+			oper.condition(ddb`contains(sessionTokens, :${hash(auth.SID)})`);
 		} else {
 			Object.entries(edits).map(([key, value]) => {
 				if (value != undefined) oper.and(ddb`contains(apiKeys.#${auth.apiKey}, :${key + ":write"})`);
@@ -170,16 +154,18 @@ class AccountsService {
 		Object.entries(edits).map(([key, value]) => {
 			if (value != undefined) oper.set(ddb`#${key} = :${value}`);
 		});
-		await oper.updateItem(userID);
+		await oper.updateItem(auth.UID);
 		return true;
 	}
-	async revoke(auth: Auth) {
-		const newSet = this.isUserAuth(auth) ? new Set([hash(auth.sessionToken)]) : new Set([]);
+
+	async revokeLogins(auth: AuthToken) {
+		const newSet = auth.type === "AuthToken" ? new Set([hash(auth.SID)]) : new Set([]);
 		await this.table()
 			.condition(this.#getAuthCondition(auth, "revoke"))
 			.set(ddb`sessionTokens = :${newSet}`)
-			.updateItem(this.parseUIDFromAuth(auth));
+			.updateItem(auth.UID);
 	}
+
 	async create(acd: AccountCreationData) {
 		if (
 			await this.existsTI({
@@ -187,7 +173,8 @@ class AccountsService {
 				methodValue: acd.email,
 			})
 		)
-			throw error(400, "email already linked");
+			throw error(400, "This email already linked to another authentication method, meaning you have an account that uses another method.");
+
 		let username = acd.name.replaceAll(" ", "");
 		while (await this.exists("username", username)) {
 			username += Math.floor(Math.random() * 10);

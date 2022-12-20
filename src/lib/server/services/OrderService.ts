@@ -4,7 +4,7 @@ import type { Order } from "../../types/Order";
 class OrderService {
 	table = new Table<Order>("orders").key("userID", "timestamp").clone();
 
-	async forUser(userID: string): Promise<Order[] | undefined> {
+	async forUser(userID: string): Promise<Order[]> {
 		return this.table()
 			.reverse()
 			.queryItems(ddb`userID = :${userID}`);

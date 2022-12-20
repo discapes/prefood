@@ -60,11 +60,11 @@ export const SCOPES: {
 		delete: "Delete this account irreverseably",
 	},
 };
-export const MINSCOPES = new Set([...Object.entries(SCOPES.fields)].filter(([f, { required }]) => required).map(([f]) => f + ":read"));
+export const MINSCOPES = new Set([...Object.entries(SCOPES.fields)].filter(([, { required }]) => required).map(([f]) => f + ":read"));
 export const MAXSCOPES = new Set(
 	[...Object.entries(SCOPES.fields)]
 		.flatMap(([f, { read, write }]) => {
-			let s = read ? [f + ":read"] : [];
+			const s = read ? [f + ":read"] : [];
 			if (write) s.push(f + ":write");
 			return s;
 		})

@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { error } from "@sveltejs/kit";
 
 export type DBAccount = {
 	userID: string;
@@ -14,22 +14,54 @@ export type DBAccount = {
 	apiKeys?: Record<string, Set<string>>;
 };
 
-export const AuthToken = z.string();
-export type AuthToken = z.infer<typeof AuthToken>;
+export class AuthToken {
+	type = "AuthToken" as const;
+	token: string;
 
-export const ApiKey = z.string();
-export type ApiKey = z.infer<typeof ApiKey>;
+	static parse(token: string | undefined) {
+		if (token && token.indexOf("-") !== -1) {
+			return new AuthToken({ UID: token.slice(0, token.indexOf("-")), SID: token.slice(token.indexOf("-")) });
+		} else {
+			throw error(400, "Failed to parse AuthToken");
+		}
+	}
 
-export const Auth = z.union([
-	z.object({
-		type: z.literal("AuthToken"),
-		authToken: AuthToken,
-	}),
-	z.object({
-		type: z.literal("ApiKey"),
-		apiKey: ApiKey,
-	}),
-]);
-export type Auth = z.infer<typeof Auth>;
+	constructor({ UID, SID }: { UID: string; SID: string }) {
+		this.token = UID + "-" + SID;
+	}
+
+	toString() {
+		return this.token;
+	}
+
+	get UID() {
+		return this.token.slice(0, this.token.indexOf("-"));
+	}
+	get SID() {
+		return this.token.slice(this.token.indexOf("-"));
+	}
+}
+
+export class APIToken {
+	type = "APIToken" as const;
+	token: string;
+
+	static parse(token: string) {
+		if (token.indexOf("-") !== -1) {
+			return new APIToken({ UID: token.slice(0, token.indexOf("-")), apiKey: token.slice(token.indexOf("-")) });
+		}
+	}
+
+	constructor({ UID, apiKey }: { UID: string; apiKey: string }) {
+		this.token = UID + "-" + apiKey;
+	}
+
+	get UID() {
+		return this.token.slice(0, this.token.indexOf("-"));
+	}
+	get apiKey() {
+		return this.token.slice(0, this.token.indexOf("-"));
+	}
+}
 
 export type Edits = Pick<Partial<DBAccount>, "picture" | "bio" | "name" | "username">;

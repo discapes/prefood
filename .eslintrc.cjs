@@ -19,8 +19,9 @@ module.exports = {
 	},
 	overrides: [
 		{
+			files: ["*.*"],
 			rules: {
-				"max-len": "150",
+				"max-len": ["warn", { "code": 150 }],
 			},
 		},
 	],
