@@ -25,7 +25,12 @@
 				<li>Add API keys</li>
 			</ul>
 		</li>
-		<li>Pay for items through Stripe</li>
+		<li>
+			Pay for items through Stripe
+			<ul>
+				<li>Use card no. 4242 4242 4242 4242 for testing</li>
+			</ul>
+		</li>
 		<li>Get an email receipt and an order-specific link</li>
 		<li>See the OpenAPI documentation at /docs (in development)</li>
 		<li>Dark mode</li>
