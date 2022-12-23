@@ -7,7 +7,7 @@ import AccountService from "$lib/server/services/AccountService";
 import type { MenuItem } from "$lib/types/Restaurant";
 import type { SessionMetadata } from "$lib/types/misc";
 import type Stripe from "stripe";
-import { COOKIES } from "$lib/addresses";
+import { COOKIES, URLS } from "$lib/addresses";
 import { AuthToken } from "$lib/server/services/Account";
 
 export const load: PageServerLoad = async ({ params }) => {
@@ -44,7 +44,7 @@ export const actions: Actions = {
 		const session = await stripe.checkout.sessions.create({
 			line_items,
 			mode: "payment",
-			success_url: `${url.origin}/orders`,
+			success_url: `${url.origin}${URLS.SUCCESS}?session_id={CHECKOUT_SESSION_ID}`,
 			cancel_url: `${url.origin}/restaurants/${encodeURIComponent(restaurantName)}`,
 			allow_promotion_codes: true,
 			customer: userData?.stripeCustomerID,
@@ -58,7 +58,7 @@ export const actions: Actions = {
 			metadata,
 		});
 
-		throw redirect(303, session.url ?? `${url.origin}/cancel`);
+		throw redirect(303, session.url!);
 	},
 };
 

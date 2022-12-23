@@ -31,6 +31,7 @@ I pick from these tasks depending on priority and what I feel like completing.
 - completed SvelteKit Actions integrations
 - improved login page layout
 - robust error page
+- checkout success page
 - catch invalid images
 - updated README.md
   - updated schema
