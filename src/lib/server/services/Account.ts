@@ -20,7 +20,7 @@ export class AuthToken {
 	type = "AuthToken" as const;
 	token: string;
 
-	static parse(token: string | undefined) {
+	static parse(token?: string | null) {
 		if (token && token.indexOf(SEP) !== -1) {
 			return new AuthToken({ UID: token.slice(0, token.indexOf(SEP)), SID: token.slice(token.indexOf(SEP) + 1) });
 		} else {
@@ -48,9 +48,11 @@ export class APIToken {
 	type = "APIToken" as const;
 	token: string;
 
-	static parse(token: string) {
-		if (token.indexOf(SEP) !== -1) {
+	static parse(token?: string | null) {
+		if (token && token.indexOf(SEP) !== -1) {
 			return new APIToken({ UID: token.slice(0, token.indexOf(SEP)), apiKey: token.slice(token.indexOf(SEP)) + 1 });
+		} else {
+			throw error(400, "Failed to parse APIToken");
 		}
 	}
 

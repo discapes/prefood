@@ -1,5 +1,5 @@
 import { jsonResponse } from "$lib/server/api";
-import { OAuth } from "$lib/server/services/Account";
+import { APIToken } from "$lib/server/services/Account";
 import AccountService from "$lib/server/services/AccountService";
 import type { Account } from "$lib/types/Account";
 import { assert } from "$lib/util";
@@ -14,7 +14,7 @@ export class F {
 	@Get()
 	static async GET(@Request() e: RequestEvent): Promise<Partial<Account>> {
 		try {
-			const auth = OAuth.parse(e.request.headers.get("Authorization"));
+			const auth = APIToken.parse(e.request.headers.get("Authorization"));
 			const ud = await AccountService.fetchScopedData(auth);
 			assert(ud);
 			return ud;
