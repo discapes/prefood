@@ -64,6 +64,7 @@
 			form="editform"
 			name="picture"
 			class="hidden"
+			accept="image/png, image/jpeg, image/webp, image/gif, image/svg+xml"
 		/>
 		<div class="relative mb-2 h-40 w-40">
 			<button on:click={copyLink} class="z-10 absolute right-0 top-0 hover:drop-shadow-md">🔗</button>

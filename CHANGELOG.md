@@ -4,35 +4,37 @@
 
 I pick from these tasks depending on priority and what I feel like completing.
 
-- [ ] document and extract high-complexity code
-- [ ] restore loading animations
-- [ ] contact form
-- [ ] error hook that saves logs
-- [ ] comprehensive API support
-- [ ] update SCHEMA.md
-- [ ] API ratelimiting with Redis
-- [ ] prevent DOS attacks by submitting large forms
-- [ ] strip stripe order data on server
-- [ ] server-expiring session tokens
-- [ ] user roles
-  - [ ] admin -> manage restaurants and users from panel
-  - [ ] restaurant staff -> manage own restaurant and orders from panel
-- [ ] clean up CSS
-- [ ] [community health files](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file)
-- [ ] separate dynamodb library
-- [ ] separate authentication library
-- [ ] automatic deployments with cloudformation
-- [ ] AWS API Gateway WebSockets for live updating the orders page
+- code quality
+  - [ ] clean up CSS
+  - [ ] document and extract high-complexity code
+- UI/UX
+  - [ ] loading animations
+  - [ ] contact form
+- comprehensive API support
+  - [ ] all endpoints functional
+  - [ ] ratelimiting with Redis
+- security
+  - [ ] prevent submitting very large forms
+  - [ ] strip Stripe order data on server
+  - [ ] expiring session tokens on backend
+- features
+  - [ ] error hook that saves logs
+  - [ ] user roles
+    - [ ] admin -> manage restaurants and users from panel
+    - [ ] restaurant staff -> manage own restaurant and orders from panel
+  - [ ] automatic deployments with CloudFormation
+  - [ ] live orders page with AWS API Gateway WebSockets
 
 ## [0.0.10] 2022-12-23
 
-### Fixed
-
-- "copy profile link" button hitbox
-- SvelteKit Actions integrations
-- login page layout
-
-### Added
+- fixed "copy profile link" button hitbox
+- completed SvelteKit Actions integrations
+- improved login page layout
+- robust error page
+- catch invalid images
+- updated README.md
+  - updated schema
+- added SECURITY.md
 
 ## [0.0.9] 2022-12-23
 

@@ -1,41 +1,53 @@
 # PreFood
 
-This is a **SvelteKit** application that allows you to order food from restaurants, pay, and track your orders (TODO). It is written in **TypeScript**, and uses Amazon's **DynamoDB** as its database. You can checkout the schema in [SCHEMA.md](SCHEMA.md). Other features include user authentication and darkmode for now. Payments are implemented with **Stripe**. The app is deployed to **Vercel**, and the latest commit on master is accessible at [prefood.miikat.dev](https://prefood.miikat.dev). The name of this project is just a temporary placeholder. See the changelog in [CHANGELOG.md](CHANGELOG.md).
+This is a **SvelteKit** application that allows you to order food from restaurants, pay, and track your orders. It is written in **TypeScript**, and uses
+Amazon's **DynamoDB** as its database. Payments are implemented with **Stripe**. The app is deployed to **Vercel**, and the latest commit on master is
+accessible at [prefood.miikat.dev](https://prefood.miikat.dev). See the changelog and TODO list in [CHANGELOG.md](CHANGELOG.md).
+
+## Features
+
+- Create an account with
+  - Google
+  - Github
+  - or just your email
+- Edit profile information
+  - Upload your own photo
+  - Get a custom link to your profile
+  - Add API keys
+- Pay for items through Stripe
+  - Use card no. 4242 4242 4242 4242 for testing
+- Get an email receipt and an order-specific link
+- See the OpenAPI documentation at /docs (in development)
+- Dark mode
 
 ## Architecture
 
 ### Login flow
 
----
-
 1. The load function in `routes/(app)/+layout.server.ts` runs.
-   - returns userData if authentication cookie is set
-   - returns stateToken and makes sure it's cookie is set
 
----
+   - Loads the user's data if they're authenticated
+   - Generates a state token and makes sure it's also set as a cookie
 
 2. `routes/(app)/+layout.svelte` renders the header and footer.
-   - sets stateToken with Svelte's setContext
-   - adds the `dark` class to `<body>` if localStorage has `darkMode`
-   - adds a writable to the context that updates on darkMode toggle
 
----
+   - Adds the state token to the context
+   - Adds the `dark` class to `<body>` if localStorage has `darkMode`
 
 3. `lib/components/Login.svelte` renders the login buttons.
-   - In the `state` parameter to identity providers we pass:
-     - if rememberMe is checked
-     - whether we're logging in or just linking the identity to an account
-     - what page the user came from
-     - the method used, as they share the endpoint
-     - the actual state token to prevent CSRF
 
----
+   - In the `state` parameter to identity providers we pass:
+     - If rememberMe is checked
+     - Whether we're logging in or linking the identity to an existing account
+     - What page the user came from
+     - The authentication method used
+     - The state token to prevent CSRF
 
 4. The user gets redirected and `routes/(app)/account/login/server.ts` runs.
    - The used authentication method is read from the passed `state` parameter.
-   - A `TrustedIdentity` (`googleID`, `githubID` or `email`) is read from the URL, verified and returned from `account/common.ts` along with a function that retrieves profile data.
-     - If the trusted identity isn't already linked to an account, a new one is created.
-   - A new session token is added to the user, and concatenated with the userID to form an `AuthToken` which is set into a cookie.
+   - A trusted identity (`googleID`, `githubID` or `email`) is read from the URL and verified.
+   - A new session token is generated and added to the user's account.
+   - The session token is concatenated with the userID to form an `AuthToken` which is set into a cookie.
    - The user is redirected to where they were based on the `state` parameter.
 
 ---
@@ -44,40 +56,53 @@ This is a **SvelteKit** application that allows you to order food from restauran
 
 Steps 1 and 2 from the login flow are the same.
 
+3. User selects food items in `routes/(app)/restaurants/[slug]/+page.svelte` and triggers a SvelteKit action in `+page.server.ts`;
+
+   - The items selected are parsed and checked that they correspond to actual menu items
+   - A Stripe checkout session is created and the user is redirected to it
+
+4. Stripe's server calls `/routes/api/stripe-webhook/+server.ts`, which adds the order to the database and emails a receipt.
+
+5. The user is redirected to `/orders`, and their orders are displayed from the database
+
 ---
 
-3. User selects food items in `routes/(app)/restaurants/[slug]/+page.svelte`.
+### DynamoDB schema
 
----
+- There's three different tables: `users`, `restaurants` and `prders`.
+- (pk) = primary key
+- (sk) = sort key
+- (si) = there's a secondary index with an `-index` suffix
 
-4. User is forwarded to `routes/(app)/checkout/+server.ts`, which parses the items, creates the Stripe checkout session and redirects the user to it.
+#### `users`
 
----
+| userID (pk) | googleID (si) | githubID (si) | email (si) | name   | username | picture             | sessionTokens | stripeCustomerID | apiKeys                        |
+| ----------- | ------------- | ------------- | ---------- | ------ | -------- | ------------------- | ------------- | ---------------- | ------------------------------ |
+| string      | string?       | string?       | string     | string | string   | string / Uint8Array | Set\<string>  | string?          | Record\<string, Set\<string>>? |
 
-5. Stripe calls `routes/(app)/checkout/+server.ts`, which adds the order to the database and sends a confirmation email.
+#### `restaurants`
 
-## Developing
+| name (pk) | menu       | reviews | stars  |
+| --------- | ---------- | ------- | ------ |
+| string    | MenuItem[] | number  | number |
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` (recommended) or `yarn`), start a development server:
+#### `orders`
 
-```bash
-npm run dev
+| userID (pk) | timestamp (sk) | restaurantName | items             | status |
+| ----------- | -------------- | -------------- | ----------------- | ------ |
+| string      | number         | string         | Stripe.LineItem[] | string |
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+## Development
 
-## Building
+1. Clone the project and install dependencies with `pnpm install` or `npm install`.
+2. Create a .env file by copying and modifying .env.example
+3. Run `pnpm run dev` and visit `http://localhost:5173`
 
-To create a production version of your app:
+## Deployment
 
-```bash
-npm run build
-```
+This app is best deployed on serverless providers like Vercel, but it can also be run with node.js.
 
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+Read more [here](https://kit.svelte.dev/docs/adapters#supported-environments-node-js).
 
 ## License
 
@@ -96,4 +121,4 @@ You can preview the production build with `npm run preview`.
     GNU Affero General Public License for more details.
 
     You should have received a copy of the GNU Affero General Public License
-    along with this program. .
+    along with this program.

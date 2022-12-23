@@ -31,9 +31,18 @@ export const actions: Actions = {
 		const { fields, files } = await formEntries(request);
 		const parsedFields = EditFields.safeParse(fields);
 		if (!parsedFields.success) return fail(400, { success: false, message: zerrorMessage(parsedFields.error) });
+		let encodedImage;
+		if (files.picture) {
+			try {
+				encodedImage = await encodeImage(files.picture);
+			} catch (e) {
+				return fail(400, { success: false, message: "Invalid image." });
+			}
+		}
+
 		const edits: Edits = {
 			...parsedFields.data,
-			picture: files.picture ? await encodeImage(files.picture) : undefined,
+			picture: encodedImage,
 		};
 
 		const res = await AccountService.edit(edits, AuthToken.parse(cookies.get(COOKIES.AUTHTOKEN)));
