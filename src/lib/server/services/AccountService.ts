@@ -36,7 +36,6 @@ class AccountsService {
 		const userData = await this.table().getItem(auth.UID);
 		if (!userData) throw error(400, "Couldn't find user.");
 		const scopes = this.getScopes(auth, userData);
-		console.log(scopes);
 		if (scopes.has("*")) {
 			return Account.parse(userData);
 		} else {

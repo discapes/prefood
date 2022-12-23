@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { enhance } from "$app/forms";
 	import { PUBLIC_APP_NAME } from "$env/static/public";
 	import type { Restaurant } from "$lib/types/Restaurant";
 	import { fly } from "svelte/transition";
@@ -20,7 +21,7 @@
 </svelte:head>
 
 <section in:fly={{ duration: 200, y: 200 }} class="">
-	<form on:submit={() => (buttonLoading = true)} method="POST" action="/checkout" class="flex flex-col gap-10 items-center p-10">
+	<form use:enhance method="POST" class="flex flex-col gap-10 items-center p-10">
 		<input type="text" name="restaurant-name" value={restaurant.name} class="hidden" />
 		<ol class="flex gap-3 flex-col">
 			{#each restaurant.menu as item (item.name)}

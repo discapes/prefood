@@ -4,6 +4,8 @@
 
 I pick from these tasks depending on priority and what I feel like completing.
 
+- [ ] document and extract high-complexity code
+- [ ] restore loading animations
 - [ ] contact form
 - [ ] error hook that saves logs
 - [ ] comprehensive API support
@@ -21,6 +23,16 @@ I pick from these tasks depending on priority and what I feel like completing.
 - [ ] separate authentication library
 - [ ] automatic deployments with cloudformation
 - [ ] AWS API Gateway WebSockets for live updating the orders page
+
+## [0.0.10] 2022-12-23
+
+### Fixed
+
+- "copy profile link" button hitbox
+- SvelteKit Actions integrations
+- login page layout
+
+### Added
 
 ## [0.0.9] 2022-12-23
 

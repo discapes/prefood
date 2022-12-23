@@ -16,7 +16,7 @@
 			<li class="">
 				<a class="nolink block btn scale" href={`restaurants/${res.name}`}>
 					<div class="btn m-2">
-						<span class="text-4xl m-2">{res.name}</span>
+						<span class="text-4xl">{res.name}</span>
 					</div>
 				</a>
 			</li>

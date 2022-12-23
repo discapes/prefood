@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { applyAction, enhance } from "$app/forms";
+	import { applyAction, deserialize, enhance } from "$app/forms";
 	import { page } from "$app/stores";
 	import { CONTEXT } from "$lib/addresses";
 	import GithubButton from "$lib/components/GithubButton.svelte";
@@ -7,6 +7,7 @@
 	import type { Account } from "$lib/types/Account";
 	import { LinkParameters } from "$lib/types/misc";
 	import { formFrom, getEncoder } from "$lib/util";
+	import type { ActionResult } from "@sveltejs/kit";
 	import { getContext } from "svelte";
 
 	export let account: Account;
@@ -23,14 +24,16 @@
 	async function changeEmail() {
 		const email = prompt("New email?");
 		if (!email) return;
-		const res = await fetch($page.url + `?/changeemail`, {
+		const result: ActionResult = await fetch($page.url + `?/changeemail`, {
 			method: "POST",
 			body: formFrom({
 				email,
 				passState: getEncoder(LinkParameters).encode({ ...linkparams, method: "email" }),
 			}),
-		}).then((res) => res.json());
-		applyAction(res);
+		})
+			.then((res) => res.text())
+			.then((text) => deserialize(text));
+		applyAction(result);
 	}
 </script>
 

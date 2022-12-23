@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { browser } from "$app/environment";
-	import { applyAction, enhance } from "$app/forms";
-	import { invalidateAll } from "$app/navigation";
+	import { enhance, type SubmitFunction } from "$app/forms";
+	import { page } from "$app/stores";
 	import { PUBLIC_APP_NAME } from "$env/static/public";
 	import { URLS } from "$lib/addresses";
 	import pen from "$lib/assets/pen.png";
@@ -9,12 +9,11 @@
 	import Login from "$lib/components/Login.svelte";
 	import type { Account } from "$lib/types/Account";
 	import { capitalize, dialog, getDataURL, isObject } from "$lib/util";
-	import type { ActionResult } from "@sveltejs/kit";
 	import type { ActionData, PageData } from "./$types";
 	import ApiKeyEditor from "./ApiKeyEditor.svelte";
 	import IdentificationMethods from "./IdentificationMethods.svelte";
 
-	export let form: ActionData;
+	// export let form: ActionData;
 	export let data: PageData;
 	let account: Account | undefined;
 	$: account = data.userData;
@@ -23,15 +22,9 @@
 	let imgUpload: HTMLInputElement;
 	let editMode = false;
 
-	$: {
-		if (browser && form && form.message) {
-			if (form.success) dialog(form.message, 2, 1);
-			else setTimeout(() => alert(form?.message), 0);
-		}
-	}
+	$: if (browser && $page.form && $page.form.message) dialog($page.form.message, 2, 1);
 
-	async function handleSubmit(this: HTMLFormElement, event: SubmitEvent) {
-		const data = new FormData(this);
+	const handleSubmit: SubmitFunction = async ({ form, data, action, cancel }) => {
 		let kept = 0;
 		for (const [k, v] of <Array<[keyof Account, unknown]>>Array.from(data.entries())) {
 			if (account![k] == v || (!!account![k] === false && !!v === false)) data.delete(k);
@@ -39,38 +32,25 @@
 			else kept++;
 		}
 		if (!kept) {
-			dialog("Nothing changed", 2, 1);
+			dialog("Nothing changed.", 2, 1);
 			editMode = false;
-			return;
+			cancel();
 		}
 
-		const response = await fetch(this.action, {
-			method: "POST",
-			body: data,
-		});
-		const result: ActionResult = await response.json();
-
-		if (result.type === "success") {
-			editMode = false;
-			await invalidateAll();
-		}
-
-		applyAction(result);
-	}
+		return async ({ result, update }) => {
+			if (result.type === "success") editMode = false;
+			update();
+		};
+	};
 	const copyLink = () => {
 		navigator.clipboard.writeText(`${location.origin}${URLS.USERS}/${account!.username}`);
-		dialog(`Copied profile link to clipboard`, 2, 1);
+		dialog(`Copied profile link to clipboard.`, 2, 1);
 	};
 	const profileFields: Array<keyof Account> = ["username", "name", "bio", "email"];
 </script>
 
 <svelte:head>
 	<title>Account - {PUBLIC_APP_NAME}</title>
-	<style>
-		body {
-			@apply bg-emerald-600 !important;
-		}
-	</style>
 </svelte:head>
 
 {#if !account}
@@ -86,7 +66,7 @@
 			class="hidden"
 		/>
 		<div class="relative mb-2 h-40 w-40">
-			<button on:click={copyLink} class="absolute right-0 top-0 hover:drop-shadow-md">🔗</button>
+			<button on:click={copyLink} class="z-10 absolute right-0 top-0 hover:drop-shadow-md">🔗</button>
 			<div
 				id={editMode ? "pcont" : ""}
 				on:click={() => editMode && imgUpload.click()}
@@ -115,14 +95,14 @@
 					<input
 						form="editform"
 						name={field}
-						class="h-full text-2xl bg-transparent border-b font-bold text-left w-full"
+						class="h-full text-2xl bg-transparent border-b border-b-white outline-none font-bold text-left w-full"
 						value={account[field] ?? ""}
 					/>
 				{/if}
 			{/each}
 			{#if editMode}
 				<div />
-				<form class="hidden" id="editform" on:submit|preventDefault={handleSubmit} method="POST" action="?/editprofile" />
+				<form class="hidden" id="editform" use:enhance={handleSubmit} method="POST" action="?/editprofile" />
 				<div>
 					<button type="submit" class="cont w-48 mt-3" form="editform">Save</button>
 					<button on:click={() => ((editMode = false), (pictureDataURL = undefined))} class="cont w-32 mt-3">Cancel</button>
@@ -137,7 +117,13 @@
 			<button formaction="?/revoke" type="submit" class="cont w-60">Revoke other logins</button>
 			<button formaction="?/logout" type="submit" class="cont w-60">Sign out</button>
 		</form>
-		<form method="POST" on:submit={() => confirm("Delete account?")} action="?/deleteaccount">
+		<form
+			method="POST"
+			use:enhance={({ cancel }) => {
+				if (!confirm("Delete account?")) cancel();
+			}}
+			action="?/deleteaccount"
+		>
 			<button type="submit" class="cont w-60">Delete account</button>
 		</form>
 

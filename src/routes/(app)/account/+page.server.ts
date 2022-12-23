@@ -90,8 +90,8 @@ export const actions: Actions = {
 		});
 		return { success: true, message: "Check your new mail" };
 	},
-	unlink: async () => {
+	unlink: async ({ request }) => {
 		log("unlink");
-		return { success: false, message: "Unlink not yet implemented" };
+		return { success: false, message: `Unlink not yet implemented ${await request.formData()}` };
 	},
 };

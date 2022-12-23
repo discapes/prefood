@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { applyAction } from "$app/forms";
+	import { applyAction, deserialize, enhance } from "$app/forms";
 	import { invalidateAll } from "$app/navigation";
 	import eye from "$lib/assets/eye.svg";
 	import pen from "$lib/assets/pen.png";
 	import { SCOPES, type Account } from "$lib/types/Account";
-	import { uuid } from "$lib/util";
-	import type { ActionResult } from "@sveltejs/kit";
+	import { dialog, uuid } from "$lib/util";
+	import type { ActionResult, SubmitFunction } from "@sveltejs/kit";
 
 	export let apiKeys: Account["apiKeys"];
 
@@ -28,31 +28,21 @@
 	function setToFlagMap(set: Set<string>) {
 		return Object.fromEntries([...set.keys()].map((k) => [k, true]));
 	}
-	async function handleSubmit(this: HTMLFormElement, e: SubmitEvent) {
+
+	const handleSubmit: SubmitFunction = async ({ form, data, action, cancel }) => {
 		scopeEditorOpen = false;
-		const data = new FormData(this);
 		if (currentlyEditing === undefined) data.set("key", [...Object.keys(apiKeys ?? {})].length.toString().padStart(2, "0") + "_" + uuid());
-		if (
-			// @ts-ignore
-			!e?.submitter?.formAction?.includes?.("deletekey") &&
+
+		const keyUnchanged =
 			[...data.keys()]
 				.filter((k) => k !== "key")
 				.sort()
-				.join(" ") === [...Object.keys(scopeFlagMap)].join(" ")
-		)
-			return;
-
-		const result: ActionResult = await fetch(
-			// @ts-ignore
-			e?.submitter?.hasAttribute("formaction") ? e.submitter.formAction : this.action,
-			{
-				method: "POST",
-				body: data,
-			}
-		).then((res) => res.json());
-		if (result.type === "success") await invalidateAll();
-		applyAction(result);
-	}
+				.join(" ") === [...Object.keys(scopeFlagMap)].join(" ");
+		if (action.search === "?/savekey" && keyUnchanged) {
+			dialog("Nothing changed.", 2, 1);
+			cancel();
+		}
+	};
 </script>
 
 <h2>API keys</h2>
@@ -72,7 +62,7 @@
 
 <button class="cont" on:click={() => editKey()}>Add</button>
 {#if scopeEditorOpen}
-	<form on:submit|preventDefault={handleSubmit} action={"?/savekey"} class="flex modal items-center justify-center text-stone-900 dark:text-stone-50">
+	<form use:enhance={handleSubmit} method="POST" action="?/savekey" class="flex modal items-center justify-center text-stone-900 dark:text-stone-50">
 		<div class="bg-stone-50 dark:bg-stone-700 relative p-5 flex flex-col gap-5 items-start">
 			<button type="button" on:click={() => (scopeEditorOpen = false)} class="absolute right-5 top-5 text-2xl leading-[15px]">&times;</button>
 			<div class="inline-grid grid-cols-[auto_auto_auto] gap-3 gap-x-5 justify-items-center items-center">

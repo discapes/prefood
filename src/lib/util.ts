@@ -261,7 +261,7 @@ export function firstTrue<T>(promises: Array<Promise<T>>) {
 }
 
 export function removeElem<T>(arr: T[], elem: T) {
-	const i = arr.findIndex((e) => e === elem);
+	const i = arr.indexOf(elem);
 	if (~i) arr.splice(i, 1);
 }
 
@@ -270,9 +270,9 @@ export function dialog(text: string, duration: number, fadeduration: number) {
 	const div = document.createElement("div");
 	if (dialogs.length >= 10) dialogs = (dialogs.forEach((div) => div.remove()), []);
 	const other = dialogs.at(-1);
-	const offset = other ? other.offsetTop + other.offsetHeight + 10 : 10;
+	const offset = other ? +other.style.bottom.slice(0, -2) + other.offsetHeight + 10 : 10;
 	dialogs.push(div);
-	div.style.top = offset + "px";
+	div.style.bottom = offset + "px";
 	div.style.right = "10px";
 	div.innerText = text;
 	div.classList.add("dialog");
@@ -281,5 +281,5 @@ export function dialog(text: string, duration: number, fadeduration: number) {
 	setTimeout(() => {
 		removeElem(dialogs, div);
 		div.remove();
-	}, (duration + fadeduration) * 1000);
+	}, (duration + fadeduration) * 1000 - 100);
 }
