@@ -23,27 +23,30 @@ button {
 }
 
 body {
-	--accent-color: #ff3e00;
-	--heading-color: rgb(225 29 72);
+	--accent-color: rgb(5 150 105);
+	--heading-color: rgb(5 150 105);
 	--header-color: rgba(255, 255, 255, 0.85);
-	--text-color: #444444;
+	--text-color: rgb(250 250 249);
+	/*stone-50*/
+	--dark-color: rgb(87, 83, 78);
 	--button-color: rgba(255, 255, 255, 0.7);
 	--button-hover-color: rgba(255, 255, 255, 1);
 	--button-disabled-color: rgb(230 230 230);
 	color: var(--text-color);
-	background-color: rgb(225 29 72);
+	background-color: rgb(5 150 105);
 	width: 100%;
 	/* background: linear-gradient(180deg, #b9c6d2 0%, #d0dde9 10.45%, #edf0f8 41.35%); */
 }
 
 body.dark {
-	--accent-color: #fd8a64;
+	/* --accent-color: #fd8a64; */
 	--button-color: rgba(101, 103, 106, 0.8);
 	--button-hover-color: rgba(101, 103, 106, 1);
 	--button-disabled-color: rgba(38 38 38);
 	--header-color: rgba(78, 80, 83, 0.7);
 	--heading-color: rgba(255, 255, 255, 0.9);
 	--text-color: #fefefe;
+	--dark-color: rgb(250 250 249);
 	color: var(--text-color);
 	background: linear-gradient(180deg, #424242 0%, #242424 10%, #363636 90%);
 }
@@ -143,10 +146,11 @@ input[type="checkbox"]::before {
 	height: 20px;
 	transform: scale(0);
 	transition: 120ms transform ease-in-out;
-	box-shadow: inset 1em 1em var(--text-color);
+	box-shadow: inset 1em 1em var(--dark-color);
 	transform-origin: center;
 	clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
 }
+
 
 input[type="checkbox"]:checked::before {
 	transform: scale(1);

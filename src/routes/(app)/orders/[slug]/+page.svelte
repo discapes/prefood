@@ -10,15 +10,10 @@
 
 <svelte:head>
 	<title>{order.restaurantName} order - {PUBLIC_APP_NAME}</title>
-	<style>
-		body {
-			@apply bg-stone-50 !important;
-		}
-	</style>
 </svelte:head>
 
 <section in:fly={{ duration: 200, y: 200 }}>
-	<div class="flex gap-8 bg-white/50 p-5 rounded dark:bg-white/10">
+	<div class="flex flex-wrap gap-8 bg-white/20 mt-10 p-5 rounded dark:bg-white/10">
 		<div class="flex flex-col gap-3">
 			<h4>Restaurant</h4>
 			<p>

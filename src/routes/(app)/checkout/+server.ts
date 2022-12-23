@@ -1,6 +1,5 @@
 import { TAX_RATE_ID } from "$env/static/private";
 import { getSecretStripe } from "$lib/server/stripe";
-import { UserAuth } from "$lib/server/services/Account";
 import AccountService from "$lib/server/services/AccountService";
 import type { MenuItem } from "$lib/types/Restaurant";
 import RestaurantService from "$lib/server/services/RestaurantService";
@@ -8,9 +7,13 @@ import type { SessionMetadata } from "$lib/types/misc";
 import { error } from "@sveltejs/kit";
 import type Stripe from "stripe";
 import type { RequestHandler } from "./$types";
+import { COOKIES } from "$lib/addresses";
+import { AuthToken } from "$lib/server/services/Account";
 
-export const POST: RequestHandler = async ({ url, request, locals: { userID, sessionToken } }) => {
-	const userDataP = AccountService.fetchAllData(UserAuth.parse({ userID, sessionToken }));
+export const POST: RequestHandler = async ({ url, request, cookies }) => {
+	const auth = cookies.get(COOKIES.AUTHTOKEN) ? AuthToken.parse(cookies.get(COOKIES.AUTHTOKEN)) : null;
+	if (!auth) throw error(400, "You can't yet order without an account!");
+	const userDataP = AccountService.fetchInternalData(auth);
 	const stripe = getSecretStripe();
 	const formData = await request.formData();
 
@@ -32,14 +35,14 @@ export const POST: RequestHandler = async ({ url, request, locals: { userID, ses
 		line_items,
 		mode: "payment",
 		success_url: `${url.origin}/orders`,
-		cancel_url: `${url.origin}/restaurants/${restaurantName}`,
+		cancel_url: `${url.origin}/restaurants/${encodeURIComponent(restaurantName)}`,
 		allow_promotion_codes: true,
 		customer: userData?.stripeCustomerID,
 		customer_email: !userData || userData.stripeCustomerID ? undefined : userData.email,
 		customer_creation: !userData || userData.stripeCustomerID ? undefined : "always",
 		payment_intent_data: {
-			statement_descriptor: restaurantName,
-			statement_descriptor_suffix: `- ${restaurantName}`,
+			statement_descriptor: restaurantName.replace(/'/g, "").slice(0, 20),
+			statement_descriptor_suffix: `- ${restaurantName.replace(/'/g, "").slice(0, 20)}`,
 			setup_future_usage: userData ? "on_session" : undefined,
 		},
 		metadata,

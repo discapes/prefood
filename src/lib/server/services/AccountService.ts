@@ -36,6 +36,7 @@ class AccountsService {
 		const userData = await this.table().getItem(auth.UID);
 		if (!userData) throw error(400, "Couldn't find user.");
 		const scopes = this.getScopes(auth, userData);
+		console.log(scopes);
 		if (scopes.has("*")) {
 			return Account.parse(userData);
 		} else {
@@ -51,7 +52,7 @@ class AccountsService {
 
 	async fetchInternalData(auth: AuthToken): Promise<DBAccount> {
 		const userData = await this.table().getItem(auth.UID);
-		if (!userData || userData?.sessionTokens?.has(hash(auth.SID))) throw error(400, "Couldn't access user.");
+		if (!userData || !userData?.sessionTokens?.has(hash(auth.SID))) throw error(400, "Couldn't access user.");
 		return userData;
 	}
 

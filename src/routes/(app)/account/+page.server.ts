@@ -7,7 +7,7 @@ import AccountService from "$lib/server/services/AccountService";
 import { MAXSCOPES, MINSCOPES } from "$lib/types/Account";
 import { EmailLoginCode } from "$lib/types/misc";
 import { formEntries, log, trueStrings, zerrorMessage } from "$lib/util";
-import { fail } from "@sveltejs/kit";
+import { fail, redirect } from "@sveltejs/kit";
 import sharp from "sharp";
 import { z } from "zod";
 import type { Actions } from "./$types";
@@ -24,7 +24,7 @@ export const actions: Actions = {
 	logout: async ({ cookies }) => {
 		const auth = AuthToken.parse(cookies.get(COOKIES.AUTHTOKEN));
 		await AccountService.removeSessionToken({ UID: auth.UID, SID: auth.SID });
-		cookies.delete(COOKIES.AUTHTOKEN);
+		cookies.delete(COOKIES.AUTHTOKEN, { path: "/" });
 		return { success: true, message: "Logged out" };
 	},
 	editprofile: async ({ request, cookies }) => {
@@ -64,7 +64,9 @@ export const actions: Actions = {
 	},
 	deleteaccount: async ({ cookies }) => {
 		await AccountService.deleteUser(AuthToken.parse(cookies.get(COOKIES.AUTHTOKEN)));
-		return { success: true, message: "Account deleted" };
+		cookies.delete(COOKIES.AUTHTOKEN);
+		throw redirect(303, URLS.ACCOUNT);
+		// return { success: true, message: "Account deleted" };
 	},
 	revoke: async ({ cookies }) => {
 		const auth = AuthToken.parse(cookies.get(COOKIES.AUTHTOKEN));

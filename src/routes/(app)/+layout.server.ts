@@ -1,4 +1,5 @@
 import { CONTACT_ADMIN, COOKIES } from "$lib/addresses";
+import { AuthToken } from "$lib/server/services/Account";
 import AccountService from "$lib/server/services/AccountService";
 import { uuid } from "$lib/util";
 import { error } from "@sveltejs/kit";
@@ -11,13 +12,13 @@ export const load: LayoutServerLoad = async ({ cookies }) => {
 		cookies.set(COOKIES.STATETOKEN, stateToken, { path: "/" });
 	}
 
-	let authToken = cookies.get(COOKIES.AUTHTOKEN);
+	const authToken = cookies.get(COOKIES.AUTHTOKEN);
 	let userData;
-	if (authToken) {
+	if (authToken && authToken.length) {
 		try {
-			userData = await AccountService.fetchScopedData(authToken);
+			userData = await AccountService.fetchScopedData(AuthToken.parse(authToken));
 		} catch (e) {
-			cookies.delete(COOKIES.AUTHTOKEN);
+			cookies.delete(COOKIES.AUTHTOKEN, { path: "/" });
 			throw error(400, "Invalid authentication. You have been logged out." + CONTACT_ADMIN);
 		}
 	}

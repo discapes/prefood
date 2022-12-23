@@ -34,7 +34,7 @@ const verbose = true;
 dynamo.send = async function (...args: Array<any>) {
 	const name = args[0].constructor.name;
 	if (verbose || name !== "GetCommand") console.log(name, args[0]?.clientCommand?.input);
-	// @ts-expect-error
+	// @ts-expect-error any
 	const res = <any>await send(...args);
 	if (verbose || (name !== "UpdateCommand" && name !== "GetCommand")) console.log(name + " ->", res.Item || res.Items || res.$metadata);
 	if (res.$metadata.httpStatusCode !== 200) throw new Error(`Database operation failed`);
@@ -78,7 +78,7 @@ export function ddb(strs: TemplateStringsArray, ...params: unknown[]): Expressio
 	};
 }
 
-export class Table<T extends {}> {
+export class Table<T extends object> {
 	_table: string;
 	_condition?: string;
 	_key?: string;
@@ -114,8 +114,8 @@ export class Table<T extends {}> {
 		let str = e.str;
 		let nNames = this._names.length;
 		let nValues = this._values.length;
-		str = str.replace("#", () => "#" + "a".repeat(++nNames));
-		str = str.replace(":", () => ":" + "a".repeat(++nValues));
+		str = str.replace(/#/g, () => "#" + "a".repeat(++nNames));
+		str = str.replace(/:/g, () => ":" + "a".repeat(++nValues));
 		this._names.push(...e.names);
 		this._values.push(...e.values);
 		return str;

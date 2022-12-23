@@ -9,7 +9,7 @@
 	$: userData = $page.data.userData;
 </script>
 
-<header class="fixed flex justify-between w-full z-10">
+<header class="-mb-14 md:fixed flex justify-between w-full z-10">
 	{#if userData}
 		<a href={URLS.ACCOUNT} class="corner inline-flex justify-end items-end">
 			<img alt="profile" class="object-cover w-5/6 h-5/6 border border-white dark:border-neutral-400" src={userData.picture} />
@@ -26,7 +26,7 @@
 		<svg viewBox="0 0 2 3" aria-hidden="true">
 			<path d="M0,0 L1,2 C1.5,3 1.5,3 2,3 L2,0 Z" />
 		</svg>
-		<ul class="flex flex-col py-2 rounded-b-xl gap-1 sm:flex-row sm:py-0 sm:rounded-none">
+		<ul class="flex flex-col py-2 rounded-b-xl gap-1 md:flex-row md:py-0 md:rounded-none">
 			{#each HEADERPAGES as listedPage}
 				<li class:active={$page.url.pathname === listedPage.path}>
 					<a href={listedPage.path}>{listedPage.name}</a>
@@ -45,7 +45,7 @@
 
 <style>
 	.darkmodetoggle {
-		background-image: url("/moon.png");
+		background-image: url("/sun.png");
 		background-size: contain;
 		background-repeat: no-repeat;
 		filter: invert(100%);
@@ -53,7 +53,7 @@
 	}
 
 	:global(.dark) .darkmodetoggle {
-		background: url("/sun.png");
+		background: url("/moon.png");
 		background-repeat: no-repeat;
 		background-size: contain;
 		background-position: center left;

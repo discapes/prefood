@@ -68,7 +68,7 @@
 	<title>Account - {PUBLIC_APP_NAME}</title>
 	<style>
 		body {
-			@apply bg-stone-50 !important;
+			@apply bg-emerald-600 !important;
 		}
 	</style>
 </svelte:head>
@@ -76,7 +76,7 @@
 {#if !account}
 	<Login />
 {:else}
-	<div class="flex flex-col gap-3 items-center m-10">
+	<div class="flex flex-col gap-3 items-center m-10 text-white">
 		<input
 			type="file"
 			on:change={async () => (pictureDataURL = await getDataURL(imgUpload?.files?.[0]))}

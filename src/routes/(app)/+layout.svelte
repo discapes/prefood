@@ -38,7 +38,7 @@
 	</main>
 
 	<footer class="bg-stone-700 text-neutral-300 text-lg p-5 pt-10 flex flex-col w-full items-center gap-10">
-		<div class="flex justify-evenly grow w-full">
+		<div class="flex flex-wrap gap-10 justify-evenly grow w-full">
 			<div>
 				<p class="text-3xl font-bold mb-4">PreFood</p>
 				<p class="max-w-md">
@@ -55,8 +55,9 @@
 			</div>
 			<div class="flex flex-col">
 				<b class="text-3xl mb-4">Contact</b>
-				<span>Turku, Finland</span>
-				<span>miika.km.tuominen@gmail.com</span>
+				<a class="hover:underline" href="https://miikat.dev">miikat.dev</a>
+				<a class="hover:underline" href="mailto:miika.km.tuominen@gmail.com">miika.km.tuominen@gmail.com</a>
+				<span>Made in Turku, Finland</span>
 			</div>
 		</div>
 		<p class="text-center">

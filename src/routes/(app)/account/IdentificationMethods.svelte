@@ -1,23 +1,23 @@
 <script lang="ts">
 	import { applyAction, enhance } from "$app/forms";
 	import { page } from "$app/stores";
+	import { CONTEXT } from "$lib/addresses";
 	import GithubButton from "$lib/components/GithubButton.svelte";
 	import GoogleButton from "$lib/components/GoogleButton.svelte";
 	import type { Account } from "$lib/types/Account";
 	import { LinkParameters } from "$lib/types/misc";
 	import { formFrom, getEncoder } from "$lib/util";
 	import { getContext } from "svelte";
-	import type { Writable } from "svelte/types/runtime/store";
 
 	export let account: Account;
 
-	const stateToken: Writable<string> = getContext("stateToken");
+	const stateToken: string = getContext(CONTEXT.STATETOKEN);
 
 	let linkparams: Omit<LinkParameters, "method">;
 	$: linkparams = {
 		type: "link",
 		referer: $page.url.pathname,
-		stateToken: $stateToken,
+		stateToken,
 	};
 
 	async function changeEmail() {
@@ -39,7 +39,7 @@
 	<div class="bg-lime-300/50 rounded px-1 w-full h-full flex items-center">
 		<span class="text-xl">Email</span>
 	</div>
-	<button on:click={changeEmail} class="cont w-full h-fulltext-black">Change</button>
+	<button on:click={changeEmail} class="cont w-full h-full text-black">Change</button>
 	<div class="{account.githubID ? 'bg-lime-300/50' : 'bg-rose-300/50'} rounded px-1 w-full h-full flex items-center">
 		<span class="text-xl">Github</span>
 	</div>

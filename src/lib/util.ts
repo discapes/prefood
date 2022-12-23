@@ -62,7 +62,7 @@ export function shuffle<T>(array: T[]) {
 }
 
 export function encodeB64URL(str: string) {
-	return btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/\=+$/, "");
+	return btoa(str).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 }
 
 export function decodeB64URL(input: string) {
@@ -70,7 +70,7 @@ export function decodeB64URL(input: string) {
 	input = input.replace(/-/g, "+").replace(/_/g, "/");
 
 	// Pad out with standard base64 required padding characters
-	var pad = input.length % 4;
+	const pad = input.length % 4;
 	if (pad) {
 		if (pad === 1) {
 			throw new Error("InvalidLengthError: Input base64url string is the wrong length to determine padding");
@@ -134,9 +134,9 @@ export function getDataFromOrderSlug(slug: string) {
 }
 
 export function formatHHMMSS(date: Date) {
-	let hh = date.getHours();
-	let mm = date.getMinutes();
-	let ss = date.getSeconds();
+	const hh = date.getHours();
+	const mm = date.getMinutes();
+	const ss = date.getSeconds();
 	return [hh, mm, ss].map((n) => String(n).padStart(2, "0")).join(":");
 }
 
@@ -267,7 +267,7 @@ export function removeElem<T>(arr: T[], elem: T) {
 
 let dialogs: HTMLDivElement[] = [];
 export function dialog(text: string, duration: number, fadeduration: number) {
-	let div = document.createElement("div");
+	const div = document.createElement("div");
 	if (dialogs.length >= 10) dialogs = (dialogs.forEach((div) => div.remove()), []);
 	const other = dialogs.at(-1);
 	const offset = other ? other.offsetTop + other.offsetHeight + 10 : 10;

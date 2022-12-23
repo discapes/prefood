@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { beforeNavigate } from "$app/navigation";
 	import { PUBLIC_APP_NAME, PUBLIC_STRIPE_KEY } from "$env/static/public";
+	import { CONTEXT } from "$lib/addresses";
 	import Slider from "$lib/components/Slider.svelte";
 	import { loadStripe, type Stripe, type StripeElements, type StripePaymentElement } from "@stripe/stripe-js";
 	import { getContext, onMount } from "svelte";
@@ -9,7 +10,7 @@
 	import type { PageData } from "./$types";
 
 	export let data: PageData;
-	const darkmode: Writable<boolean> = getContext("darkmode");
+	const darkmode: Writable<boolean> = getContext(CONTEXT.DARKMODE);
 
 	let paymentElement: StripePaymentElement;
 	let elements: StripeElements;

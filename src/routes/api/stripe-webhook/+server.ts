@@ -57,7 +57,7 @@ export const POST: RequestHandler = async ({ request }) => {
 async function fulfillOrder(session: Stripe.Checkout.Session, url: string) {
 	console.log(`Fulfilling order`);
 	const metadata: SessionMetadata = <SessionMetadata>session.metadata;
-	let operations = [];
+	const operations = [];
 
 	if (metadata.userID && !metadata.linkedCID) {
 		operations.push(linkCID(metadata.userID, session.customer as string));
@@ -89,7 +89,13 @@ async function sendReceipt(recipient: string | null | undefined, order: Order, u
 		to: <string>recipient, // list of receivers
 		subject: "Receipt for " + order.restaurantName, // Subject line
 		text: `You can view the order at ${new URL("/orders/" + getSlugFromOrder(order), url).href}
-${JSON.stringify(order, null, 2)}`, // plain text body
+
+Restaurant: ${order.restaurantName}
+
+Date: ${new Date(order.timestamp).toLocaleTimeString()} on ${new Date(order.timestamp).toLocaleDateString()}
+	
+Items:
+${order.items.map((item) => `${item.quantity}x ${item.description} - ${(item.amount_total / 100).toFixed(2).replace(".", ",")} €`).join("\n")}`, // plain text body
 		// html: "<b>Hello world?</b>", // html body
 	});
 }

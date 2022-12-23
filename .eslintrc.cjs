@@ -21,7 +21,9 @@ module.exports = {
 		{
 			files: ["*.*"],
 			rules: {
-				"max-len": ["warn", { "code": 150 }],
+				"max-len": ["warn", { code: 150 }],
+				"@typescript-eslint/no-empty-interface": "off",
+				
 			},
 		},
 	],

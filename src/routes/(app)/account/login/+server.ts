@@ -30,8 +30,8 @@ async function linkHandler(url: URL, options: LinkParameters, cookies: Cookies):
 		value: i.methodValue,
 	});
 
-	cookies.delete(COOKIES.STATETOKEN);
-	throw redirect(300, URLS.ACCOUNT);
+	// cookies.delete(COOKIES.STATETOKEN, { path: "/" });
+	throw redirect(303, URLS.ACCOUNT);
 }
 
 async function loginHandler(url: URL, options: LoginParameters, cookies: Cookies): Promise<Response> {
@@ -53,7 +53,7 @@ async function loginHandler(url: URL, options: LoginParameters, cookies: Cookies
 	};
 
 	cookies.set(COOKIES.AUTHTOKEN, new AuthToken({ UID: userID, SID: newSessionToken }).toString(), cookieOpts);
-	cookies.delete(COOKIES.STATETOKEN);
+	// cookies.delete(COOKIES.STATETOKEN, { path: "/" });
 	log(url.pathname, "success, set cookies");
-	throw redirect(301, new URL(options.referer, url).href);
+	throw redirect(303, new URL(options.referer, url).href);
 }

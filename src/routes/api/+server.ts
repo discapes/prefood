@@ -12,7 +12,6 @@ class F {
 	@Example("hello world")
 	@Get()
 	static async GET(): Promise<string> {
-		debugger;
 		return "hello world";
 	}
 }

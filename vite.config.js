@@ -3,7 +3,7 @@ import build_oas from "./tsoa";
 import path from "path";
 
 /** @type {import('vite').UserConfig} */
-# const config = {
+const config = {
 	plugins: [
 		sveltekit(),
 		{

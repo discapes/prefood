@@ -1,5 +1,5 @@
 .btn {
-	@apply p-2 rounded cursor-pointer text-xl;
+	@apply p-2 rounded cursor-pointer text-xl text-stone-700;
 	background: var(--button-color);
 	&:hover {
 		background: var(--button-hover-color);
@@ -10,24 +10,28 @@
 	}
 }
 
+.dark .btn {
+	@apply text-stone-50;
+}
+
 .cont {
-	@apply p-2 rounded-[5px] cursor-pointer;
-	background: white !important;
+	@apply p-2 rounded-[5px] cursor-pointer text-stone-700;
+	background: white;
 	box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.03), 0px 3px 6px rgba(0, 0, 0, 0.02);
 	border: 1px solid #e6e6e6;
 
 	&:hover {
 		filter: brightness(95%);
 	}
+}
 
-	.dark & {
-		@apply p-2 rounded-[5px] cursor-pointer;
-		background: #30313d !important;
-		box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25);
-		border: 1px solid #424353;
-		&:hover {
-			filter: brightness(130%);
-		}
+.dark .cont {
+	@apply p-2 rounded-[5px] cursor-pointer bg-stone-700 border-stone-600 text-stone-50;
+	// background: #30313d !important;
+	box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.5), 0px 1px 6px rgba(0, 0, 0, 0.25);
+	// border: 1px solid #424353;
+	&:hover {
+		filter: brightness(130%);
 	}
 }
 
@@ -68,12 +72,12 @@ input.cont:hover {
 	}
 }
 
-.nolink {
-	color: var(--text-color) !important;
-	&:hover {
-		text-decoration: none !important;
-	}
-}
+// .nolink {
+// 	color: var(--text-color) !important;
+// 	&:hover {
+// 		text-decoration: none !important;
+// 	}
+// }
 
 .greyed {
 	filter: contrast(10%);

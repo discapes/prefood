@@ -2,54 +2,44 @@
 
 ## TODO
 
-- next update
+I pick from these tasks depending on priority and what I feel like completing.
 
-  - [x] professionalize
-    - [x] home page
-      - [ ] contact form
-    - [x] about page
-      - [ ] donate form
-      - [ ] credits
-  - [ ] remove use of cookie locals
-  - [ ] improve auth system
-  - [ ] error hook to log
-  - [ ] fix bugs
-    - [x] if you click login too fast stateParameter isnt generated
+- [ ] contact form
+- [ ] error hook that saves logs
+- [ ] comprehensive API support
+- [ ] update SCHEMA.md
+- [ ] API ratelimiting with Redis
+- [ ] prevent DOS attacks by submitting large forms
+- [ ] strip stripe order data on server
+- [ ] server-expiring session tokens
+- [ ] user roles
+  - [ ] admin -> manage restaurants and users from panel
+  - [ ] restaurant staff -> manage own restaurant and orders from panel
+- [ ] clean up CSS
+- [ ] [community health files](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file)
+- [ ] separate dynamodb library
+- [ ] separate authentication library
+- [ ] automatic deployments with cloudformation
+- [ ] AWS API Gateway WebSockets for live updating the orders page
 
-- additional tasks
+## [0.0.9] 2022-12-23
 
-  - [ ] API support for all actions
-  - [ ] improved dark mode
-  - [ ] update SCHEMA.md
-  - [ ] api ratelimiting with redis
-  - [ ] prevent dos attacks by submitting large forms
-  - [ ] allow changing donation amount
-  - [ ] human readable receipt, don't include stripe data
-  - [ ] expiring session tokens
-  - [ ] user roles
-    - [ ] admin -> manage restaurants and users from panel
-    - [ ] restaurant staff -> manage own restaurant and orders from panel
+### Fixed
 
-- before 1.0
+- large improvements to authentication
+- allow for spaces in restaurant names
+- stateToken should always exist
 
-  - [ ] handle errors in a uniform way
-    - [ ] error logging and audit logs
-  - [ ] review code
-  - [ ] test and fix all features
-  - [ ] [community health files](https://docs.github.com/en/communities/setting-up-your-project-for-healthy-contributions/creating-a-default-community-health-file)
+### Added
 
-- long term features / tasks
-  - [ ] friend lists and instant messaging
-  - [ ] view where restaurant owners can see new orders and change their status
-    - [ ] notify clients on status change
-      - old notes:
-        - [ ] save connectionId to order mapping in order to remove them on disconnect?
-        - or alternatively kick everyone on status update, and just have onclose() => invalidateAll and add new websocket
-        - if we dont want to close the connection we can just ask everyone to respond in order to maintain their connection id as a listener
-  - [ ] separate dynamodb library
-  - [ ] separate authentication library
-  - [ ] automatic deployments with cloudformation
-  - [ ] [live streaming?](https://aws.amazon.com/solutions/implementations/live-streaming-on-aws/)
+- human readable receipts
+- more professional UI
+- improved dark mode
+- moved some constant strings to variables
+
+### Changed
+
+- switch from `locals` to SvelteKits cookie API
 
 ## [0.0.8] 2022-09-12
 

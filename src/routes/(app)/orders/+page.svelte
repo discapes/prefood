@@ -14,11 +14,6 @@
 
 <svelte:head>
 	<title>Orders - {PUBLIC_APP_NAME}</title>
-	<style>
-		body {
-			@apply bg-stone-50 !important;
-		}
-	</style>
 </svelte:head>
 {#if !userData || !orders}
 	<Login />
@@ -28,7 +23,7 @@
 		<ol class="flex flex-col gap-5">
 			{#each orders as order}
 				<li>
-					<a href="/orders/{getSlugFromOrder(order)}" class="nolink smallscale flex gap-8 bg-white/50 p-5 rounded dark:bg-white/10">
+					<a href="/orders/{getSlugFromOrder(order)}" class="nolink smallscale flex flex-wrap gap-8 bg-white/20 p-5 rounded dark:bg-white/10">
 						<div class="flex flex-col gap-3">
 							<h4>Restaurant</h4>
 							<p>

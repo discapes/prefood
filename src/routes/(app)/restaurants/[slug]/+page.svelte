@@ -57,6 +57,10 @@
 		box-shadow: 2px 2px 6px #ffffff40;
 	}
 
+	:global(body:not(.dark)) input {
+		--text-color: rgb(68 64 60);
+	}
+
 	:global(.dark) pre {
 		background-color: rgba(255, 255, 255, 0.3);
 	}
