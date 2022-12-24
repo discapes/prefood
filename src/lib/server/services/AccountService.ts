@@ -76,10 +76,12 @@ class AccountsService {
 	async existsUID(userID: string): Promise<boolean> {
 		return !!(await this.table().project(["userID"]).getItem(userID));
 	}
-	async removeSessionToken({ SID, UID }: { SID: string; UID: string }) {
+	async unlink(auth: AuthToken | APIToken, method: string) {
+		if (!["googleID", "githubID"].includes(method)) throw error(400, "Invalid method: " + method);
 		await this.table()
-			.delete(ddb`sessionTokens :${new Set([hash(SID)])}`)
-			.updateItem(UID);
+			.condition(this.#getAuthCondition(auth, "unlink"))
+			.remove(ddb`#${method}`)
+			.updateItem(auth.UID);
 	}
 	async addSessionToken(UID: string) {
 		const newSessionToken = uuid();

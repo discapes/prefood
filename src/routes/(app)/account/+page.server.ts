@@ -7,7 +7,7 @@ import AccountService from "$lib/server/services/AccountService";
 import { MAXSCOPES, MINSCOPES } from "$lib/types/Account";
 import { EmailLoginCode } from "$lib/types/misc";
 import { formEntries, log, trueStrings, zerrorMessage } from "$lib/util";
-import { fail, redirect } from "@sveltejs/kit";
+import { error, fail, redirect } from "@sveltejs/kit";
 import sharp from "sharp";
 import { z } from "zod";
 import type { Actions } from "./$types";
@@ -99,8 +99,11 @@ export const actions: Actions = {
 		});
 		return { success: true, message: "Check your new mail" };
 	},
-	unlink: async ({ request }) => {
-		log("unlink");
-		return { success: false, message: `Unlink not yet implemented ${await request.formData()}` };
+	unlink: async ({ request, cookies }) => {
+		const method = (await request.formData()).get("ident_method");
+		if (typeof method !== "string") throw error(400, "Invalid method: " + method?.toString());
+		const auth = AuthToken.parse(cookies.get(COOKIES.AUTHTOKEN));
+		AccountService.unlink(auth, method);
+		return { success: true, message: `Method unlinked!` };
 	},
 };

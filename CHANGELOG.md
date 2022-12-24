@@ -17,6 +17,7 @@ I pick from these tasks depending on priority and what I feel like completing.
   - [ ] prevent submitting very large forms
   - [ ] strip Stripe order data on server
   - [ ] expiring session tokens on backend
+  - [ ] reset state token
 - features
   - [ ] error hook that saves logs
   - [ ] user roles
@@ -36,6 +37,7 @@ I pick from these tasks depending on priority and what I feel like completing.
 - updated README.md
   - updated schema
 - added SECURITY.md
+- implemented unlinking
 
 ## [0.0.9] 2022-12-23
 
