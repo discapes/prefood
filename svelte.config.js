@@ -1,4 +1,4 @@
-import vercel from "@sveltejs/adapter-vercel";
+import adapter from "@sveltejs/adapter-auto";
 import preprocess from "svelte-preprocess";
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -13,9 +13,7 @@ const config = {
 	}),
 
 	kit: {
-		adapter: vercel({
-			edge: true,
-		}),
+		adapter: adapter(),
 	},
 	onwarn: (warning, handler) => {
 		const suppress = ["a11y-", "css-", "unused-"];

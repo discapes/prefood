@@ -54,7 +54,6 @@
 		"@fontsource/fira-mono": "^4.5.10",
 		"@redis/client": "^1.4.2",
 		"@stripe/stripe-js": "^1.46.0",
-		"@sveltejs/adapter-vercel": "^1.0.0",
 		"@types/nodemailer": "^6.4.7",
 		"cookie": "^0.5.0",
 		"js-yaml": "^4.1.0",
