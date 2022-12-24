@@ -83,6 +83,11 @@ class AccountsService {
 			.remove(ddb`#${method}`)
 			.updateItem(auth.UID);
 	}
+	async removeSessionToken({ SID, UID }: { SID: string; UID: string }) {
+		await this.table()
+			.delete(ddb`sessionTokens :${new Set([hash(SID)])}`)
+			.updateItem(UID);
+	}
 	async addSessionToken(UID: string) {
 		const newSessionToken = uuid();
 		await this.table()

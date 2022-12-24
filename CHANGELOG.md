@@ -14,10 +14,8 @@ I pick from these tasks depending on priority and what I feel like completing.
   - [ ] all endpoints functional
   - [ ] ratelimiting with Redis
 - security
-  - [ ] prevent submitting very large forms
   - [ ] strip Stripe order data on server
   - [ ] expiring session tokens on backend
-  - [ ] reset state token
 - features
   - [ ] error hook that saves logs
   - [ ] user roles
@@ -26,7 +24,7 @@ I pick from these tasks depending on priority and what I feel like completing.
   - [ ] automatic deployments with CloudFormation
   - [ ] live orders page with AWS API Gateway WebSockets
 
-## [0.0.10] 2022-12-23
+## unreleased [0.0.10] 2022-12-24
 
 - fixed "copy profile link" button hitbox
 - completed SvelteKit Actions integrations
@@ -38,6 +36,8 @@ I pick from these tasks depending on priority and what I feel like completing.
   - updated schema
 - added SECURITY.md
 - implemented unlinking
+- enabled edge functions
+- reset state token after login
 
 ## [0.0.9] 2022-12-23
 
